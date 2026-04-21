@@ -54,7 +54,8 @@ def _main() -> None:
     )
     process.start()
     if not ready.wait(5):
-        raise TimeoutError("py-shared-memory-queue worker failed to signal readiness")
+        message = "py-shared-memory-queue worker failed to signal readiness"
+        raise TimeoutError(message)
 
     outbound = make_payload(config.message_size)
     inbound = bytearray(config.message_size)
@@ -77,8 +78,8 @@ def _main() -> None:
         requests.put(None)
         process.join(timeout=5)
         del operation
-        del request_buffer
-        del response_buffer
+        request_buffer = None
+        response_buffer = None
         shm.close()
         shm.unlink()
 

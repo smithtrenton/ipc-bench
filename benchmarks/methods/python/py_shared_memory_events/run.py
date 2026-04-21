@@ -17,11 +17,9 @@ from benchmarks.methods.python.benchmark_adapter import (
 def _worker(
     name: str,
     message_size: int,
-    request: mp.Event,
-    response: mp.Event,
-    stop: mp.Event,
-    ready: mp.Event,
+    signals: tuple[mp.Event, mp.Event, mp.Event, mp.Event],
 ) -> None:
+    request, response, stop, ready = signals
     shm = shared_memory.SharedMemory(name=name)
     try:
         request_buffer = shm.buf[:message_size]
@@ -53,11 +51,12 @@ def _main() -> None:
     ready = mp.Event()
     process = mp.Process(
         target=_worker,
-        args=(shm.name, config.message_size, request, response, stop, ready),
+        args=(shm.name, config.message_size, (request, response, stop, ready)),
     )
     process.start()
     if not ready.wait(5):
-        raise TimeoutError("py-shared-memory-events worker failed to signal readiness")
+        message = "py-shared-memory-events worker failed to signal readiness"
+        raise TimeoutError(message)
 
     outbound = make_payload(config.message_size)
     inbound = bytearray(config.message_size)
@@ -79,8 +78,8 @@ def _main() -> None:
         request.set()
         process.join(timeout=5)
         del operation
-        del request_buffer
-        del response_buffer
+        request_buffer = None
+        response_buffer = None
         shm.close()
         shm.unlink()
 

@@ -54,7 +54,8 @@ def _main() -> None:
     try:
         port = ports.get(timeout=5)
     except Empty as error:
-        raise TimeoutError("py-socket-tcp-loopback worker failed to publish its port") from error
+        message = "py-socket-tcp-loopback worker failed to publish its port"
+        raise TimeoutError(message) from error
 
     stream = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     stream.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)

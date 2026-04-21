@@ -38,7 +38,8 @@ def _main() -> None:
     process.start()
     child.close()
     if not ready.wait(5):
-        raise TimeoutError("py-multiprocessing-pipe worker failed to signal readiness")
+        message = "py-multiprocessing-pipe worker failed to signal readiness"
+        raise TimeoutError(message)
 
     outbound = make_payload(config.message_size)
     inbound = bytearray(config.message_size)
