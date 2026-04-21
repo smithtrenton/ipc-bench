@@ -129,10 +129,10 @@ def run_benchmark(
         average_micros = total_micros / total_messages
         min_micros = min(batch_average_micros for batch_average_micros, _ in batches)
         max_micros = max(batch_average_micros for batch_average_micros, _ in batches)
-        variance = sum(
-            count * (batch_average_micros - average_micros) ** 2
-            for batch_average_micros, count in batches
-        ) / total_messages
+        variance = (
+            sum(count * (batch_average_micros - average_micros) ** 2 for batch_average_micros, count in batches)
+            / total_messages
+        )
         stddev_micros = variance**0.5
         message_rate = float("inf") if total_micros == 0 else total_messages / (total_micros / MICROS_PER_SECOND)
         trials.append(
@@ -150,14 +150,14 @@ def run_benchmark(
     total_messages = config.message_count * len(trials)
     total_micros = sum(float(trial["total_micros"]) for trial in trials)
     average_micros = total_micros / total_messages
-    variance = sum(
-        config.message_count
-        * (
-            float(trial["stddev_micros"]) ** 2
-            + (float(trial["average_micros"]) - average_micros) ** 2
+    variance = (
+        sum(
+            config.message_count
+            * (float(trial["stddev_micros"]) ** 2 + (float(trial["average_micros"]) - average_micros) ** 2)
+            for trial in trials
         )
-        for trial in trials
-    ) / total_messages
+        / total_messages
+    )
     summary = {
         "total_micros": total_micros,
         "average_micros": average_micros,

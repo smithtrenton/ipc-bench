@@ -439,7 +439,8 @@ impl MessageBuffer {
     }
 
     fn payload_capacity(&self) -> usize {
-        self.capacity_bytes().saturating_sub(size_of::<PORT_MESSAGE>())
+        self.capacity_bytes()
+            .saturating_sub(size_of::<PORT_MESSAGE>())
     }
 
     fn as_mut_ptr(&mut self) -> *mut PORT_MESSAGE {

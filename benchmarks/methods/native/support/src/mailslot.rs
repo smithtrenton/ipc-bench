@@ -7,18 +7,13 @@ use std::{
 use harness::{BenchmarkConfig, ManagedChild, ProcessRole, run_benchmark};
 use windows_sys::Win32::{
     Storage::FileSystem::{
-        CreateFileA, ReadFile, FILE_ATTRIBUTE_NORMAL, FILE_GENERIC_WRITE, FILE_SHARE_READ,
-        OPEN_EXISTING,
+        CreateFileA, FILE_ATTRIBUTE_NORMAL, FILE_GENERIC_WRITE, FILE_SHARE_READ, OPEN_EXISTING,
+        ReadFile,
     },
-    System::{
-        Mailslots::CreateMailslotA,
-        SystemServices::MAILSLOT_WAIT_FOREVER,
-    },
+    System::{Mailslots::CreateMailslotA, SystemServices::MAILSLOT_WAIT_FOREVER},
 };
 
-use crate::util::{
-    OwnedHandle, c_string, retry_with_backoff, unique_name, write_all_handle,
-};
+use crate::util::{OwnedHandle, c_string, retry_with_backoff, unique_name, write_all_handle};
 
 const ENV_REQUEST_SLOT: &str = "IPC_BENCH_MAILSLOT_REQUEST";
 const ENV_RESPONSE_SLOT: &str = "IPC_BENCH_MAILSLOT_RESPONSE";

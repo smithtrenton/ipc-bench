@@ -22,7 +22,7 @@ def _worker(connection: Connection, ready: mp.Event) -> None:
     while True:
         try:
             payload = connection.recv_bytes()
-        except (EOFError, BrokenPipeError):
+        except EOFError, BrokenPipeError:
             return
         response = bytearray(payload)
         if response:
