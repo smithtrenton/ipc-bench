@@ -1,3 +1,4 @@
+mod affinity;
 mod config;
 mod process;
 mod report;

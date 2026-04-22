@@ -10,6 +10,7 @@ from benchmarks.methods.python.benchmark_adapter import (
     parse_config,
     print_report,
     run_benchmark,
+    stabilize_process_pair,
     update_payload,
 )
 
@@ -36,6 +37,7 @@ def _main() -> None:
     ready = mp.Event()
     process = mp.Process(target=_worker, args=(child, ready))
     process.start()
+    stabilize_process_pair(process)
     child.close()
     if not ready.wait(5):
         message = "py-multiprocessing-pipe worker failed to signal readiness"

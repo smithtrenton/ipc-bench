@@ -1,49 +1,300 @@
 {
-  "method": "py-shared-memory-events",
-  "child_ready": true,
-  "config": {
-    "message_count": 1000,
-    "message_size": 1024,
-    "warmup_count": 100,
-    "trials": 3,
-    "output_format": "json",
-    "role": "parent"
-  },
-  "trials": [
-    {
-      "trial_index": 1,
-      "total_micros": 46755.2,
-      "average_micros": 46.755199999999995,
-      "min_micros": 41.03,
-      "max_micros": 69.28,
-      "stddev_micros": 4.867620050907837,
-      "message_rate": 21387.995345972213
-    },
-    {
-      "trial_index": 2,
-      "total_micros": 46928.2,
-      "average_micros": 46.9282,
-      "min_micros": 41.06,
-      "max_micros": 63.21,
-      "stddev_micros": 5.059206534625761,
-      "message_rate": 21309.148869975837
-    },
-    {
-      "trial_index": 3,
-      "total_micros": 46188.9,
-      "average_micros": 46.188900000000004,
-      "min_micros": 40.5,
-      "max_micros": 66.86,
-      "stddev_micros": 4.9226437805309455,
-      "message_rate": 21650.223322053567
-    }
-  ],
-  "summary": {
-    "total_micros": 139872.3,
-    "average_micros": 46.6241,
-    "min_micros": 40.5,
-    "max_micros": 69.28,
-    "stddev_micros": 4.960536952454509,
-    "message_rate": 21448.135191885744
-  }
+    "method":  "py-shared-memory-events",
+    "language":  "python",
+    "launch_count":  5,
+    "stable_affinity":  true,
+    "child_ready":  true,
+    "config":  {
+                   "message_count":  1000,
+                   "message_size":  1024,
+                   "warmup_count":  100,
+                   "trials":  3,
+                   "output_format":  "json",
+                   "role":  "parent"
+               },
+    "methodology":  {
+                        "launch_count":  5,
+                        "stable_affinity":  true,
+                        "representative_metric":  "median_average_micros",
+                        "spread_metrics":  [
+                                               "p10_average_micros",
+                                               "p90_average_micros"
+                                           ]
+                    },
+    "launches":  [
+                     {
+                         "launch_index":  1,
+                         "report":  {
+                                        "method":  "py-shared-memory-events",
+                                        "child_ready":  true,
+                                        "config":  {
+                                                       "message_count":  1000,
+                                                       "message_size":  1024,
+                                                       "warmup_count":  100,
+                                                       "trials":  3,
+                                                       "output_format":  "json",
+                                                       "role":  "parent"
+                                                   },
+                                        "trials":  [
+                                                       {
+                                                           "trial_index":  1,
+                                                           "total_micros":  51157.7,
+                                                           "average_micros":  51.1577,
+                                                           "min_micros":  42.95,
+                                                           "max_micros":  138.95999999999998,
+                                                           "stddev_micros":  10.870509634327176,
+                                                           "message_rate":  19547.39951170596
+                                                       },
+                                                       {
+                                                           "trial_index":  2,
+                                                           "total_micros":  54950.3,
+                                                           "average_micros":  54.950300000000006,
+                                                           "min_micros":  43.1,
+                                                           "max_micros":  196.82,
+                                                           "stddev_micros":  17.37871246410389,
+                                                           "message_rate":  18198.2627938337
+                                                       },
+                                                       {
+                                                           "trial_index":  3,
+                                                           "total_micros":  49445.8,
+                                                           "average_micros":  49.445800000000006,
+                                                           "min_micros":  42.68,
+                                                           "max_micros":  70.03,
+                                                           "stddev_micros":  6.473262574621858,
+                                                           "message_rate":  20224.164640879506
+                                                       }
+                                                   ],
+                                        "summary":  {
+                                                        "total_micros":  155553.8,
+                                                        "average_micros":  51.85126666666666,
+                                                        "min_micros":  42.68,
+                                                        "max_micros":  196.82,
+                                                        "stddev_micros":  12.622229956003107,
+                                                        "message_rate":  19285.93194123191
+                                                    }
+                                    }
+                     },
+                     {
+                         "launch_index":  2,
+                         "report":  {
+                                        "method":  "py-shared-memory-events",
+                                        "child_ready":  true,
+                                        "config":  {
+                                                       "message_count":  1000,
+                                                       "message_size":  1024,
+                                                       "warmup_count":  100,
+                                                       "trials":  3,
+                                                       "output_format":  "json",
+                                                       "role":  "parent"
+                                                   },
+                                        "trials":  [
+                                                       {
+                                                           "trial_index":  1,
+                                                           "total_micros":  59641.6,
+                                                           "average_micros":  59.6416,
+                                                           "min_micros":  43.0,
+                                                           "max_micros":  491.14,
+                                                           "stddev_micros":  49.616483948784605,
+                                                           "message_rate":  16766.82047429982
+                                                       },
+                                                       {
+                                                           "trial_index":  2,
+                                                           "total_micros":  62788.9,
+                                                           "average_micros":  62.7889,
+                                                           "min_micros":  42.480000000000004,
+                                                           "max_micros":  265.51,
+                                                           "stddev_micros":  37.6781209960104,
+                                                           "message_rate":  15926.381892340845
+                                                       },
+                                                       {
+                                                           "trial_index":  3,
+                                                           "total_micros":  50615.1,
+                                                           "average_micros":  50.6151,
+                                                           "min_micros":  42.839999999999996,
+                                                           "max_micros":  128.65,
+                                                           "stddev_micros":  10.046239445185448,
+                                                           "message_rate":  19756.950001086632
+                                                       }
+                                                   ],
+                                        "summary":  {
+                                                        "total_micros":  173045.6,
+                                                        "average_micros":  57.68186666666667,
+                                                        "min_micros":  42.480000000000004,
+                                                        "max_micros":  491.14,
+                                                        "stddev_micros":  36.797756922339104,
+                                                        "message_rate":  17336.47084930215
+                                                    }
+                                    }
+                     },
+                     {
+                         "launch_index":  3,
+                         "report":  {
+                                        "method":  "py-shared-memory-events",
+                                        "child_ready":  true,
+                                        "config":  {
+                                                       "message_count":  1000,
+                                                       "message_size":  1024,
+                                                       "warmup_count":  100,
+                                                       "trials":  3,
+                                                       "output_format":  "json",
+                                                       "role":  "parent"
+                                                   },
+                                        "trials":  [
+                                                       {
+                                                           "trial_index":  1,
+                                                           "total_micros":  55464.7,
+                                                           "average_micros":  55.4647,
+                                                           "min_micros":  38.04,
+                                                           "max_micros":  365.33000000000004,
+                                                           "stddev_micros":  44.45780375715832,
+                                                           "message_rate":  18029.485420456615
+                                                       },
+                                                       {
+                                                           "trial_index":  2,
+                                                           "total_micros":  48583.0,
+                                                           "average_micros":  48.583,
+                                                           "min_micros":  42.25,
+                                                           "max_micros":  90.7,
+                                                           "stddev_micros":  6.4582654792134395,
+                                                           "message_rate":  20583.331618055698
+                                                       },
+                                                       {
+                                                           "trial_index":  3,
+                                                           "total_micros":  48058.8,
+                                                           "average_micros":  48.058800000000005,
+                                                           "min_micros":  41.480000000000004,
+                                                           "max_micros":  111.33,
+                                                           "stddev_micros":  11.90785507805667,
+                                                           "message_rate":  20807.843724770486
+                                                       }
+                                                   ],
+                                        "summary":  {
+                                                        "total_micros":  152106.5,
+                                                        "average_micros":  50.70216666666666,
+                                                        "min_micros":  38.04,
+                                                        "max_micros":  365.33000000000004,
+                                                        "stddev_micros":  27.0441768157008,
+                                                        "message_rate":  19723.023013480684
+                                                    }
+                                    }
+                     },
+                     {
+                         "launch_index":  4,
+                         "report":  {
+                                        "method":  "py-shared-memory-events",
+                                        "child_ready":  true,
+                                        "config":  {
+                                                       "message_count":  1000,
+                                                       "message_size":  1024,
+                                                       "warmup_count":  100,
+                                                       "trials":  3,
+                                                       "output_format":  "json",
+                                                       "role":  "parent"
+                                                   },
+                                        "trials":  [
+                                                       {
+                                                           "trial_index":  1,
+                                                           "total_micros":  57341.2,
+                                                           "average_micros":  57.3412,
+                                                           "min_micros":  41.31,
+                                                           "max_micros":  581.02,
+                                                           "stddev_micros":  70.4471506489794,
+                                                           "message_rate":  17439.467607932867
+                                                       },
+                                                       {
+                                                           "trial_index":  2,
+                                                           "total_micros":  48041.3,
+                                                           "average_micros":  48.0413,
+                                                           "min_micros":  41.45,
+                                                           "max_micros":  105.19000000000001,
+                                                           "stddev_micros":  10.922270886129862,
+                                                           "message_rate":  20815.42339611959
+                                                       },
+                                                       {
+                                                           "trial_index":  3,
+                                                           "total_micros":  68606.0,
+                                                           "average_micros":  68.606,
+                                                           "min_micros":  41.69,
+                                                           "max_micros":  951.6299999999999,
+                                                           "stddev_micros":  99.70862813217319,
+                                                           "message_rate":  14575.984607760254
+                                                       }
+                                                   ],
+                                        "summary":  {
+                                                        "total_micros":  173988.5,
+                                                        "average_micros":  57.99616666666667,
+                                                        "min_micros":  41.31,
+                                                        "max_micros":  951.6299999999999,
+                                                        "stddev_micros":  71.2647750175748,
+                                                        "message_rate":  17242.518902111347
+                                                    }
+                                    }
+                     },
+                     {
+                         "launch_index":  5,
+                         "report":  {
+                                        "method":  "py-shared-memory-events",
+                                        "child_ready":  true,
+                                        "config":  {
+                                                       "message_count":  1000,
+                                                       "message_size":  1024,
+                                                       "warmup_count":  100,
+                                                       "trials":  3,
+                                                       "output_format":  "json",
+                                                       "role":  "parent"
+                                                   },
+                                        "trials":  [
+                                                       {
+                                                           "trial_index":  1,
+                                                           "total_micros":  49805.7,
+                                                           "average_micros":  49.805699999999995,
+                                                           "min_micros":  41.37,
+                                                           "max_micros":  111.35,
+                                                           "stddev_micros":  13.065650022482616,
+                                                           "message_rate":  20078.023198148006
+                                                       },
+                                                       {
+                                                           "trial_index":  2,
+                                                           "total_micros":  60427.4,
+                                                           "average_micros":  60.4274,
+                                                           "min_micros":  41.83,
+                                                           "max_micros":  480.77,
+                                                           "stddev_micros":  64.23000520971488,
+                                                           "message_rate":  16548.784160827705
+                                                       },
+                                                       {
+                                                           "trial_index":  3,
+                                                           "total_micros":  47900.6,
+                                                           "average_micros":  47.9006,
+                                                           "min_micros":  41.36,
+                                                           "max_micros":  93.03,
+                                                           "stddev_micros":  10.337106250784114,
+                                                           "message_rate":  20876.565220477405
+                                                       }
+                                                   ],
+                                        "summary":  {
+                                                        "total_micros":  158133.7,
+                                                        "average_micros":  52.71123333333334,
+                                                        "min_micros":  41.36,
+                                                        "max_micros":  480.77,
+                                                        "stddev_micros":  38.70479768037664,
+                                                        "message_rate":  18971.28822003153
+                                                    }
+                                    }
+                     }
+                 ],
+    "summary":  {
+                    "total_micros":  158133.7,
+                    "average_micros":  52.71123333333334,
+                    "min_micros":  41.36,
+                    "max_micros":  480.77,
+                    "stddev_micros":  36.797756922339104,
+                    "message_rate":  18971.288220031529,
+                    "mean_average_micros":  54.18854,
+                    "min_average_micros":  50.702166666666663,
+                    "max_average_micros":  57.996166666666667,
+                    "p10_average_micros":  51.161806666666664,
+                    "p90_average_micros":  57.870446666666666,
+                    "launch_stddev_average_micros":  3.0496371152719894
+                }
 }

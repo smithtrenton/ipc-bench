@@ -1,9 +1,9 @@
 use std::{
-    ffi::CString,
     io, thread,
     time::{Duration, SystemTime, UNIX_EPOCH},
 };
 
+use iceoryx2::prelude::{LogLevel, set_log_level};
 use windows_sys::Win32::{
     Foundation::{
         CloseHandle, GetLastError, HANDLE, INVALID_HANDLE_VALUE, WAIT_FAILED, WAIT_OBJECT_0,
@@ -54,9 +54,8 @@ pub fn unique_name(prefix: &str) -> String {
     format!("{prefix}-{}-{nanos}", std::process::id())
 }
 
-pub fn c_string(value: &str) -> io::Result<CString> {
-    CString::new(value)
-        .map_err(|_| io::Error::new(io::ErrorKind::InvalidInput, "name contains interior nul"))
+pub fn configure_iceoryx2_logging() {
+    set_log_level(LogLevel::Error);
 }
 
 pub fn retry_with_backoff<F, T>(attempts: usize, delay: Duration, mut action: F) -> io::Result<T>

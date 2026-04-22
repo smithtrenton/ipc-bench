@@ -41,7 +41,10 @@ impl Default for BenchmarkConfig {
 
 impl BenchmarkConfig {
     pub fn from_env() -> Result<Self, String> {
-        Self::from_args(env::args().skip(1))
+        let config = Self::from_args(env::args().skip(1))?;
+        crate::affinity::apply_child_affinity_if_configured(config.role)
+            .map_err(|error| format!("failed to apply child CPU affinity: {error}"))?;
+        Ok(config)
     }
 
     pub fn from_args<I>(args: I) -> Result<Self, String>

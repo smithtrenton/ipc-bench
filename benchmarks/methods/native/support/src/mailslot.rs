@@ -7,13 +7,13 @@ use std::{
 use harness::{BenchmarkConfig, ManagedChild, ProcessRole, run_benchmark};
 use windows_sys::Win32::{
     Storage::FileSystem::{
-        CreateFileA, FILE_ATTRIBUTE_NORMAL, FILE_GENERIC_WRITE, FILE_SHARE_READ, OPEN_EXISTING,
+        CreateFileW, FILE_ATTRIBUTE_NORMAL, FILE_GENERIC_WRITE, FILE_SHARE_READ, OPEN_EXISTING,
         ReadFile,
     },
-    System::{Mailslots::CreateMailslotA, SystemServices::MAILSLOT_WAIT_FOREVER},
+    System::{Mailslots::CreateMailslotW, SystemServices::MAILSLOT_WAIT_FOREVER},
 };
 
-use crate::util::{OwnedHandle, c_string, retry_with_backoff, unique_name, write_all_handle};
+use crate::util::{OwnedHandle, retry_with_backoff, unique_name, wide_string, write_all_handle};
 
 const ENV_REQUEST_SLOT: &str = "IPC_BENCH_MAILSLOT_REQUEST";
 const ENV_RESPONSE_SLOT: &str = "IPC_BENCH_MAILSLOT_RESPONSE";
@@ -97,10 +97,10 @@ fn run_child(config: BenchmarkConfig) -> Result<(), Box<dyn Error>> {
 }
 
 fn create_mailslot(name: &str, message_size: usize) -> io::Result<OwnedHandle> {
-    let name = c_string(name)?;
+    let name = wide_string(name);
     let handle = unsafe {
-        CreateMailslotA(
-            name.as_ptr().cast(),
+        CreateMailslotW(
+            name.as_ptr(),
             message_size as u32,
             MAILSLOT_WAIT_FOREVER,
             std::ptr::null(),
@@ -112,10 +112,10 @@ fn create_mailslot(name: &str, message_size: usize) -> io::Result<OwnedHandle> {
 fn open_writer(name: &str) -> io::Result<OwnedHandle> {
     let name = name.to_owned();
     retry_with_backoff(200, Duration::from_millis(10), || {
-        let name = c_string(&name)?;
+        let name = wide_string(&name);
         let handle = unsafe {
-            CreateFileA(
-                name.as_ptr().cast(),
+            CreateFileW(
+                name.as_ptr(),
                 FILE_GENERIC_WRITE,
                 FILE_SHARE_READ,
                 std::ptr::null(),

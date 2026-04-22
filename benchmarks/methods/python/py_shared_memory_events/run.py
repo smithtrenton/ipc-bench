@@ -10,6 +10,7 @@ from benchmarks.methods.python.benchmark_adapter import (
     parse_config,
     print_report,
     run_benchmark,
+    stabilize_process_pair,
     update_payload,
 )
 
@@ -54,6 +55,7 @@ def _main() -> None:
         args=(shm.name, config.message_size, (request, response, stop, ready)),
     )
     process.start()
+    stabilize_process_pair(process)
     if not ready.wait(5):
         message = "py-shared-memory-events worker failed to signal readiness"
         raise TimeoutError(message)

@@ -1,5 +1,5 @@
 {
-    "generated_at":  "2026-04-21T14:31:16.6814433-06:00",
+    "generated_at":  "2026-04-21T18:45:45.0231635-06:00",
     "operating_system":  {
                              "Caption":  "Microsoft Windows 11 Pro",
                              "Version":  "10.0.26200",
@@ -27,7 +27,14 @@
                                                            "warmup_count":  200
                                                        }
                                       },
-                        "note":  "High-iteration rerun to reduce noise for low-latency methods with fixed counts across the full message-size matrix; mailslot uses a lower constant count because its latency is orders of magnitude higher."
+                        "launch_count":  5,
+                        "stable_affinity":  true,
+                        "representative_metric":  "median_average_micros",
+                        "spread_metrics":  [
+                                               "p10_average_micros",
+                                               "p90_average_micros"
+                                           ],
+                        "note":  "High-iteration rerun with fixed counts across the message-size matrix. Each summary row aggregates fresh launches and uses the median launch-average latency as summary.average_micros."
                     },
     "message_sizes":  [
                           64,

@@ -34,6 +34,7 @@ impl ManagedChild {
             .stderr(Stdio::inherit());
 
         let mut child = command.spawn()?;
+        crate::affinity::apply_parent_and_child_affinity_if_configured(&child)?;
         let stdout = child
             .stdout
             .take()

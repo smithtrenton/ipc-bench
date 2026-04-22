@@ -9,23 +9,23 @@ use harness::{BenchmarkConfig, ManagedChild, ProcessRole, run_benchmark};
 use windows_sys::Win32::{
     Foundation::{ERROR_IO_PENDING, ERROR_PIPE_CONNECTED, HANDLE},
     Storage::FileSystem::{
-        CreateFileA, FILE_ATTRIBUTE_NORMAL, FILE_FLAG_OVERLAPPED, FILE_GENERIC_READ,
+        CreateFileW, FILE_ATTRIBUTE_NORMAL, FILE_FLAG_OVERLAPPED, FILE_GENERIC_READ,
         FILE_GENERIC_WRITE, FILE_SHARE_NONE, OPEN_EXISTING, PIPE_ACCESS_DUPLEX,
     },
     System::{
         IO::{GetOverlappedResult, OVERLAPPED},
         Pipes::{
-            ConnectNamedPipe, CreateNamedPipeA, DisconnectNamedPipe, PIPE_READMODE_MESSAGE,
+            ConnectNamedPipe, CreateNamedPipeW, DisconnectNamedPipe, PIPE_READMODE_MESSAGE,
             PIPE_REJECT_REMOTE_CLIENTS, PIPE_TYPE_BYTE, PIPE_TYPE_MESSAGE,
             PIPE_UNLIMITED_INSTANCES, PIPE_WAIT,
         },
-        Threading::CreateEventA,
+        Threading::CreateEventW,
     },
 };
 
 use crate::util::{
-    OwnedHandle, c_string, is_pipe_closed, read_exact_handle, reset_event, retry_with_backoff,
-    unique_name, wait_for_signal, win32_last_error, write_all_handle,
+    OwnedHandle, is_pipe_closed, read_exact_handle, reset_event, retry_with_backoff, unique_name,
+    wait_for_signal, wide_string, win32_last_error, write_all_handle,
 };
 
 const ENV_PIPE_NAME: &str = "IPC_BENCH_PIPE_NAME";
@@ -135,7 +135,7 @@ fn run_child(config: BenchmarkConfig, kind: NamedPipeKind) -> Result<(), Box<dyn
 }
 
 fn create_server(pipe_name: &str, kind: NamedPipeKind) -> io::Result<OwnedHandle> {
-    let pipe_name = c_string(pipe_name)?;
+    let pipe_name = wide_string(pipe_name);
     let (access_mode, pipe_mode) = match kind {
         NamedPipeKind::ByteSync => (
             PIPE_ACCESS_DUPLEX,
@@ -151,8 +151,8 @@ fn create_server(pipe_name: &str, kind: NamedPipeKind) -> io::Result<OwnedHandle
         ),
     };
     let handle = unsafe {
-        CreateNamedPipeA(
-            pipe_name.as_ptr().cast(),
+        CreateNamedPipeW(
+            pipe_name.as_ptr(),
             access_mode,
             pipe_mode,
             PIPE_UNLIMITED_INSTANCES,
@@ -168,14 +168,14 @@ fn create_server(pipe_name: &str, kind: NamedPipeKind) -> io::Result<OwnedHandle
 fn open_client(pipe_name: &str, kind: NamedPipeKind) -> io::Result<OwnedHandle> {
     let pipe_name = pipe_name.to_owned();
     retry_with_backoff(200, Duration::from_millis(10), || {
-        let pipe_name = c_string(&pipe_name)?;
+        let pipe_name = wide_string(&pipe_name);
         let flags = match kind {
             NamedPipeKind::Overlapped => FILE_ATTRIBUTE_NORMAL | FILE_FLAG_OVERLAPPED,
             _ => FILE_ATTRIBUTE_NORMAL,
         };
         let handle = unsafe {
-            CreateFileA(
-                pipe_name.as_ptr().cast(),
+            CreateFileW(
+                pipe_name.as_ptr(),
                 FILE_GENERIC_READ | FILE_GENERIC_WRITE,
                 FILE_SHARE_NONE,
                 std::ptr::null(),
@@ -252,7 +252,7 @@ struct OverlappedContext {
 
 impl OverlappedContext {
     fn new() -> io::Result<Self> {
-        let event = unsafe { CreateEventA(std::ptr::null(), 1, 0, std::ptr::null()) };
+        let event = unsafe { CreateEventW(std::ptr::null(), 1, 0, std::ptr::null()) };
         let event = OwnedHandle::from_handle(event)?;
         let mut overlapped = unsafe { zeroed::<OVERLAPPED>() };
         overlapped.hEvent = event.raw();

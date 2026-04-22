@@ -2,7 +2,7 @@ use std::{
     error::Error,
     io::{self, Write},
     mem::size_of,
-    sync::atomic::{AtomicU32, AtomicUsize, Ordering},
+    sync::atomic::{AtomicBool, AtomicUsize, Ordering},
 };
 
 use harness::{BenchmarkConfig, ManagedChild, ProcessRole, run_benchmark};
@@ -10,19 +10,19 @@ use windows_sys::Win32::{
     Foundation::{HANDLE, INVALID_HANDLE_VALUE},
     System::{
         Memory::{
-            CreateFileMappingA, FILE_MAP_ALL_ACCESS, MEMORY_MAPPED_VIEW_ADDRESS, MapViewOfFile,
-            OpenFileMappingA, PAGE_READWRITE, UnmapViewOfFile,
+            CreateFileMappingW, FILE_MAP_ALL_ACCESS, MEMORY_MAPPED_VIEW_ADDRESS, MapViewOfFile,
+            OpenFileMappingW, PAGE_READWRITE, UnmapViewOfFile,
         },
         Threading::{
-            CreateEventA, CreateSemaphoreA, EVENT_ALL_ACCESS, OpenEventA, OpenSemaphoreW,
+            CreateEventW, CreateSemaphoreW, EVENT_ALL_ACCESS, OpenEventW, OpenSemaphoreW,
             SEMAPHORE_ALL_ACCESS,
         },
     },
 };
 
 use crate::util::{
-    OwnedHandle, c_string, release_semaphore, set_event, slice_from_raw_parts,
-    slice_from_raw_parts_mut, unique_name, wait_for_signal, wide_string,
+    OwnedHandle, release_semaphore, set_event, slice_from_raw_parts, slice_from_raw_parts_mut,
+    unique_name, wait_for_signal, wide_string,
 };
 
 const ENV_MAPPING: &str = "IPC_BENCH_MAPPING";
@@ -93,7 +93,7 @@ fn run_mailbox_parent(
     let resp_name = format!(r"Local\{}", unique_name("ipc-bench-resp"));
 
     let mut mapping = SharedMailbox::create(&mapping_name, config.message_size)?;
-    mapping.stop_flag().store(0, Ordering::Release);
+    mapping.stop_flag().store(false, Ordering::Release);
     let request_sync = create_sync_object(mode, &req_name)?;
     let response_sync = create_sync_object(mode, &resp_name)?;
 
@@ -127,7 +127,7 @@ fn run_mailbox_parent(
         }
     });
 
-    mapping.stop_flag().store(1, Ordering::Release);
+    mapping.stop_flag().store(true, Ordering::Release);
     signal(mode, request_sync.raw())?;
     child.request_shutdown();
     let status = child.wait()?;
@@ -154,7 +154,7 @@ fn run_mailbox_child(config: BenchmarkConfig, mode: MailboxMode) -> Result<(), B
     let mut scratch = vec![0_u8; config.message_size];
     loop {
         wait(mode, request_sync.raw())?;
-        if mapping.stop_flag().load(Ordering::Acquire) != 0 {
+        if mapping.stop_flag().load(Ordering::Acquire) {
             return Ok(());
         }
         scratch.copy_from_slice(mapping.request());
@@ -175,9 +175,9 @@ fn run_mailbox_wait_parent(
     let resp_event = format!(r"Local\{}", unique_name("ipc-bench-mailbox-resp"));
 
     let mut mapping = SharedMailbox::create(&mapping_name, config.message_size)?;
-    mapping.stop_flag().store(0, Ordering::Release);
-    mapping.request_ready().store(0, Ordering::Release);
-    mapping.response_ready().store(0, Ordering::Release);
+    mapping.stop_flag().store(false, Ordering::Release);
+    mapping.request_ready().store(false, Ordering::Release);
+    mapping.response_ready().store(false, Ordering::Release);
 
     let request_event = if matches!(strategy, WaitStrategy::Hybrid) {
         Some(create_event(&req_event)?)
@@ -215,26 +215,26 @@ fn run_mailbox_wait_parent(
     };
     let report = run_benchmark(method, &config, true, || {
         mapping.request_mut().copy_from_slice(&outbound);
-        mapping.request_ready().store(1, Ordering::Release);
+        mapping.request_ready().store(true, Ordering::Release);
         if let Some(event) = &request_event {
             set_event(event.raw()).expect("request event should signal");
         }
         wait_for_mailbox_value(
             mapping.response_ready(),
-            1,
+            true,
             strategy,
             response_event.as_ref(),
         )
         .expect("response wait should succeed");
         inbound.copy_from_slice(mapping.response());
-        mapping.response_ready().store(0, Ordering::Release);
+        mapping.response_ready().store(false, Ordering::Release);
         if !outbound.is_empty() {
             outbound.copy_from_slice(&inbound);
             outbound[0] = outbound[0].wrapping_add(1);
         }
     });
 
-    mapping.stop_flag().store(1, Ordering::Release);
+    mapping.stop_flag().store(true, Ordering::Release);
     if let Some(event) = &request_event {
         set_event(event.raw())?;
     }
@@ -272,7 +272,7 @@ fn run_mailbox_wait_child(
     loop {
         if !wait_for_mailbox_value_or_stop(
             mapping.request_ready(),
-            1,
+            true,
             mapping.stop_flag(),
             strategy,
             request_event.as_ref(),
@@ -280,12 +280,12 @@ fn run_mailbox_wait_child(
             return Ok(());
         }
         scratch.copy_from_slice(mapping.request());
-        mapping.request_ready().store(0, Ordering::Release);
+        mapping.request_ready().store(false, Ordering::Release);
         if !scratch.is_empty() {
             scratch[0] = scratch[0].wrapping_add(1);
         }
         mapping.response_mut().copy_from_slice(&scratch);
-        mapping.response_ready().store(1, Ordering::Release);
+        mapping.response_ready().store(true, Ordering::Release);
         if let Some(event) = &response_event {
             set_event(event.raw())?;
         }
@@ -345,7 +345,7 @@ fn run_ring_parent(config: BenchmarkConfig, strategy: WaitStrategy) -> Result<()
         }
     });
 
-    ring.stop_flag().store(1, Ordering::Release);
+    ring.stop_flag().store(true, Ordering::Release);
     if let Some(event) = &request_event {
         set_event(event.raw())?;
     }
@@ -393,9 +393,9 @@ fn run_ring_child(config: BenchmarkConfig, strategy: WaitStrategy) -> Result<(),
 
 #[repr(C)]
 struct MailboxHeader {
-    stop: AtomicU32,
-    request_ready: AtomicU32,
-    response_ready: AtomicU32,
+    stop: AtomicBool,
+    request_ready: AtomicBool,
+    response_ready: AtomicBool,
 }
 
 struct SharedMailbox {
@@ -410,9 +410,9 @@ impl SharedMailbox {
         let handle = create_mapping(name, mapping_size)?;
         let view = map_view(handle.raw(), mapping_size)?;
         let header = unsafe { &mut *(view.cast::<MailboxHeader>()) };
-        header.stop.store(0, Ordering::Release);
-        header.request_ready.store(0, Ordering::Release);
-        header.response_ready.store(0, Ordering::Release);
+        header.stop.store(false, Ordering::Release);
+        header.request_ready.store(false, Ordering::Release);
+        header.response_ready.store(false, Ordering::Release);
         Ok(Self {
             mapping: handle,
             view,
@@ -435,15 +435,15 @@ impl SharedMailbox {
         unsafe { &*(self.view.cast::<MailboxHeader>()) }
     }
 
-    fn stop_flag(&self) -> &AtomicU32 {
+    fn stop_flag(&self) -> &AtomicBool {
         &self.header().stop
     }
 
-    fn request_ready(&self) -> &AtomicU32 {
+    fn request_ready(&self) -> &AtomicBool {
         &self.header().request_ready
     }
 
-    fn response_ready(&self) -> &AtomicU32 {
+    fn response_ready(&self) -> &AtomicBool {
         &self.header().response_ready
     }
 
@@ -493,7 +493,7 @@ impl Drop for SharedMailbox {
 
 #[repr(C)]
 struct RingHeader {
-    stop: AtomicU32,
+    stop: AtomicBool,
     request_write: AtomicUsize,
     request_read: AtomicUsize,
     response_write: AtomicUsize,
@@ -521,7 +521,7 @@ impl SharedRing {
         let handle = create_mapping(name, total_size)?;
         let view = map_view(handle.raw(), total_size)?;
         let header = unsafe { &mut *(view.cast::<RingHeader>()) };
-        header.stop.store(0, Ordering::Release);
+        header.stop.store(false, Ordering::Release);
         header.request_write.store(0, Ordering::Release);
         header.request_read.store(0, Ordering::Release);
         header.response_write.store(0, Ordering::Release);
@@ -548,7 +548,7 @@ impl SharedRing {
         unsafe { &*(self.view.cast::<RingHeader>()) }
     }
 
-    fn stop_flag(&self) -> &AtomicU32 {
+    fn stop_flag(&self) -> &AtomicBool {
         &self.header().stop
     }
 
@@ -654,7 +654,7 @@ fn push_ring(
 }
 
 fn pop_ring(
-    stop_flag: &AtomicU32,
+    stop_flag: &AtomicBool,
     queue: RingQueue<'_>,
     buffer: &mut [u8],
     strategy: WaitStrategy,
@@ -675,7 +675,7 @@ fn pop_ring(
                 .store(read.wrapping_add(1), Ordering::Release);
             return Ok(true);
         }
-        if stop_flag.load(Ordering::Acquire) != 0 {
+        if stop_flag.load(Ordering::Acquire) {
             return Ok(false);
         }
         wait_with_strategy(strategy, event, &mut spins)?;
@@ -683,8 +683,8 @@ fn pop_ring(
 }
 
 fn wait_for_mailbox_value(
-    flag: &AtomicU32,
-    target: u32,
+    flag: &AtomicBool,
+    target: bool,
     strategy: WaitStrategy,
     event: Option<&OwnedHandle>,
 ) -> io::Result<()> {
@@ -698,9 +698,9 @@ fn wait_for_mailbox_value(
 }
 
 fn wait_for_mailbox_value_or_stop(
-    flag: &AtomicU32,
-    target: u32,
-    stop_flag: &AtomicU32,
+    flag: &AtomicBool,
+    target: bool,
+    stop_flag: &AtomicBool,
     strategy: WaitStrategy,
     event: Option<&OwnedHandle>,
 ) -> io::Result<bool> {
@@ -709,7 +709,7 @@ fn wait_for_mailbox_value_or_stop(
         if flag.load(Ordering::Acquire) == target {
             return Ok(true);
         }
-        if stop_flag.load(Ordering::Acquire) != 0 {
+        if stop_flag.load(Ordering::Acquire) {
             return Ok(false);
         }
         wait_with_strategy(strategy, event, &mut spins)?;
@@ -739,23 +739,23 @@ fn wait_with_strategy(
 }
 
 fn create_mapping(name: &str, size: usize) -> io::Result<OwnedHandle> {
-    let name = c_string(name)?;
+    let name = wide_string(name);
     let handle = unsafe {
-        CreateFileMappingA(
+        CreateFileMappingW(
             INVALID_HANDLE_VALUE,
             std::ptr::null(),
             PAGE_READWRITE,
             ((size as u64) >> 32) as u32,
             size as u32,
-            name.as_ptr().cast(),
+            name.as_ptr(),
         )
     };
     OwnedHandle::from_handle(handle)
 }
 
 fn open_mapping(name: &str) -> io::Result<OwnedHandle> {
-    let name = c_string(name)?;
-    let handle = unsafe { OpenFileMappingA(FILE_MAP_ALL_ACCESS, 0, name.as_ptr().cast()) };
+    let name = wide_string(name);
+    let handle = unsafe { OpenFileMappingW(FILE_MAP_ALL_ACCESS, 0, name.as_ptr()) };
     OwnedHandle::from_handle(handle)
 }
 
@@ -769,20 +769,20 @@ fn map_view(mapping: HANDLE, size: usize) -> io::Result<*mut u8> {
 }
 
 fn create_event(name: &str) -> io::Result<OwnedHandle> {
-    let name = c_string(name)?;
-    let handle = unsafe { CreateEventA(std::ptr::null(), 0, 0, name.as_ptr().cast()) };
+    let name = wide_string(name);
+    let handle = unsafe { CreateEventW(std::ptr::null(), 0, 0, name.as_ptr()) };
     OwnedHandle::from_handle(handle)
 }
 
 fn open_event(name: &str) -> io::Result<OwnedHandle> {
-    let name = c_string(name)?;
-    let handle = unsafe { OpenEventA(EVENT_ALL_ACCESS, 0, name.as_ptr().cast()) };
+    let name = wide_string(name);
+    let handle = unsafe { OpenEventW(EVENT_ALL_ACCESS, 0, name.as_ptr()) };
     OwnedHandle::from_handle(handle)
 }
 
 fn create_semaphore(name: &str) -> io::Result<OwnedHandle> {
-    let name = c_string(name)?;
-    let handle = unsafe { CreateSemaphoreA(std::ptr::null(), 0, 1, name.as_ptr().cast()) };
+    let name = wide_string(name);
+    let handle = unsafe { CreateSemaphoreW(std::ptr::null(), 0, 1, name.as_ptr()) };
     OwnedHandle::from_handle(handle)
 }
 

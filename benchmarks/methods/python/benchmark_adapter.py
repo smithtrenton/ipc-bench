@@ -3,12 +3,14 @@
 from __future__ import annotations
 
 import argparse
+import ctypes
 import json
+import os
 import sys
 import time
 from dataclasses import dataclass
 from pathlib import Path
-from typing import TYPE_CHECKING, NoReturn
+from typing import TYPE_CHECKING, ClassVar, NoReturn
 
 if TYPE_CHECKING:
     from collections.abc import Callable
@@ -19,6 +21,135 @@ MICROS_PER_MILLISECOND = 1_000.0
 MICROS_PER_SECOND = 1_000_000.0
 TARGET_BATCHES_PER_TRIAL = 100
 MAX_BATCH_SIZE = 100
+STABLE_AFFINITY_ENV = "IPC_BENCH_STABLE_AFFINITY"
+RELATION_PROCESSOR_CORE = 0
+PROCESS_QUERY_LIMITED_INFORMATION = 0x1000
+PROCESS_SET_INFORMATION = 0x0200
+STABLE_AFFINITY_CORE_COUNT = 2
+
+
+if sys.platform == "win32":
+
+    class _SystemLogicalProcessorInformationUnion(ctypes.Union):
+        _fields_: ClassVar[list[tuple[str, object]]] = [
+            ("flags", ctypes.c_byte),
+            ("node_number", ctypes.c_uint32),
+            ("reserved", ctypes.c_ulonglong * 2),
+        ]
+
+    class _SystemLogicalProcessorInformation(ctypes.Structure):
+        _fields_: ClassVar[list[tuple[str, object]]] = [
+            ("processor_mask", ctypes.c_size_t),
+            ("relationship", ctypes.c_int),
+            ("anonymous", _SystemLogicalProcessorInformationUnion),
+        ]
+
+
+def _stable_affinity_enabled() -> bool:
+    """Return whether stable affinity is enabled for this process."""
+    value = os.environ.get(STABLE_AFFINITY_ENV)
+    if value is None:
+        return False
+    return value.strip().lower() not in {"", "0", "false", "no", "off"}
+
+
+def _resolve_stable_affinity_pair() -> tuple[int, int]:
+    """Pick one logical processor from each of the first two physical CPU cores."""
+    if sys.platform != "win32":
+        message = "stable affinity is only supported on Windows"
+        raise OSError(message)
+
+    kernel32 = ctypes.WinDLL("kernel32", use_last_error=True)
+    returned_length = ctypes.c_uint32(0)
+    kernel32.GetLogicalProcessorInformation.argtypes = [
+        ctypes.POINTER(_SystemLogicalProcessorInformation),
+        ctypes.POINTER(ctypes.c_uint32),
+    ]
+    kernel32.GetLogicalProcessorInformation.restype = ctypes.c_int
+
+    kernel32.GetLogicalProcessorInformation(None, ctypes.byref(returned_length))
+    if returned_length.value == 0:
+        raise ctypes.WinError(ctypes.get_last_error())
+
+    entry_size = ctypes.sizeof(_SystemLogicalProcessorInformation)
+    entry_count = returned_length.value // entry_size
+    buffer = (_SystemLogicalProcessorInformation * entry_count)()
+    if not kernel32.GetLogicalProcessorInformation(buffer, ctypes.byref(returned_length)):
+        raise ctypes.WinError(ctypes.get_last_error())
+
+    core_masks = [
+        int(entry.processor_mask)
+        for entry in buffer[: returned_length.value // entry_size]
+        if entry.relationship == RELATION_PROCESSOR_CORE and entry.processor_mask
+    ]
+    if len(core_masks) < STABLE_AFFINITY_CORE_COUNT:
+        message = "stable affinity requires at least two physical CPU cores with addressable logical processors"
+        raise OSError(message)
+
+    return (
+        core_masks[0] & -core_masks[0],
+        core_masks[1] & -core_masks[1],
+    )
+
+
+def _set_current_process_affinity(mask: int) -> None:
+    """Pin the current process to a single logical processor mask."""
+    if sys.platform != "win32":
+        return
+
+    kernel32 = ctypes.WinDLL("kernel32", use_last_error=True)
+    kernel32.GetCurrentProcess.argtypes = []
+    kernel32.GetCurrentProcess.restype = ctypes.c_void_p
+    kernel32.SetProcessAffinityMask.argtypes = [ctypes.c_void_p, ctypes.c_size_t]
+    kernel32.SetProcessAffinityMask.restype = ctypes.c_int
+
+    handle = kernel32.GetCurrentProcess()
+    if not kernel32.SetProcessAffinityMask(handle, mask):
+        raise ctypes.WinError(ctypes.get_last_error())
+
+
+def _set_process_affinity_by_pid(pid: int, mask: int) -> None:
+    """Pin another process to a single logical processor mask."""
+    if sys.platform != "win32":
+        return
+
+    kernel32 = ctypes.WinDLL("kernel32", use_last_error=True)
+    kernel32.OpenProcess.argtypes = [ctypes.c_uint32, ctypes.c_int, ctypes.c_uint32]
+    kernel32.OpenProcess.restype = ctypes.c_void_p
+    kernel32.SetProcessAffinityMask.argtypes = [ctypes.c_void_p, ctypes.c_size_t]
+    kernel32.SetProcessAffinityMask.restype = ctypes.c_int
+    kernel32.CloseHandle.argtypes = [ctypes.c_void_p]
+    kernel32.CloseHandle.restype = ctypes.c_int
+
+    inherit_handle = 0
+    handle = kernel32.OpenProcess(
+        PROCESS_QUERY_LIMITED_INFORMATION | PROCESS_SET_INFORMATION,
+        inherit_handle,
+        pid,
+    )
+    if not handle:
+        raise ctypes.WinError(ctypes.get_last_error())
+
+    try:
+        if not kernel32.SetProcessAffinityMask(handle, mask):
+            raise ctypes.WinError(ctypes.get_last_error())
+    finally:
+        kernel32.CloseHandle(handle)
+
+
+def stabilize_process_pair(process: object) -> None:
+    """Pin the current process and its child process to separate physical cores."""
+    if not _stable_affinity_enabled() or sys.platform != "win32":
+        return
+
+    pid = getattr(process, "pid", None)
+    if pid is None:
+        message = "child process must have a PID before affinity can be applied"
+        raise ValueError(message)
+
+    parent_mask, child_mask = _resolve_stable_affinity_pair()
+    _set_process_affinity_by_pid(int(pid), child_mask)
+    _set_current_process_affinity(parent_mask)
 
 
 @dataclass

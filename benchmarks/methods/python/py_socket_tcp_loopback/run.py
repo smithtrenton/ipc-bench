@@ -11,6 +11,7 @@ from benchmarks.methods.python.benchmark_adapter import (
     parse_config,
     print_report,
     run_benchmark,
+    stabilize_process_pair,
     update_payload,
 )
 
@@ -51,6 +52,7 @@ def _main() -> None:
     ports: mp.Queue[int] = mp.Queue(maxsize=1)
     process = mp.Process(target=_worker, args=(ports, config.message_size))
     process.start()
+    stabilize_process_pair(process)
     try:
         port = ports.get(timeout=5)
     except Empty as error:
