@@ -140,14 +140,20 @@ fn find_midl() -> Option<PathBuf> {
 }
 
 fn find_msvc_tool(name: &str) -> Option<PathBuf> {
-    let roots = [
-        Path::new(r"C:\Program Files\Microsoft Visual Studio\2022"),
-        Path::new(r"C:\Program Files (x86)\Microsoft Visual Studio\2022"),
+    let bases = [
+        Path::new(r"C:\Program Files\Microsoft Visual Studio"),
+        Path::new(r"C:\Program Files (x86)\Microsoft Visual Studio"),
     ];
 
     let mut candidates = Vec::new();
-    for root in roots {
-        if let Ok(editions) = fs::read_dir(root) {
+    for base in bases {
+        let Ok(years) = fs::read_dir(base) else {
+            continue;
+        };
+        for year in years.filter_map(Result::ok) {
+            let Ok(editions) = fs::read_dir(year.path()) else {
+                continue;
+            };
             for edition in editions.filter_map(Result::ok) {
                 let tools = edition.path().join("VC").join("Tools").join("MSVC");
                 if let Ok(versions) = fs::read_dir(&tools) {
