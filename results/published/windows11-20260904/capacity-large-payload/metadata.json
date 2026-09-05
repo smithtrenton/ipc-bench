@@ -1,0 +1,121 @@
+{
+  "schema_version": 2,
+  "started_at": "2026-09-05T01:05:11.093015+00:00",
+  "arguments": {
+    "action": "run",
+    "profile": "release",
+    "warmup": 256,
+    "trials": 1,
+    "timeout": 120,
+    "validation": "full",
+    "measurement": "batch",
+    "workload": "streaming",
+    "queue_depth": 1,
+    "ring_capacity": 64,
+    "stable_affinity": true,
+    "cpu_pair": null,
+    "topology": null,
+    "mailslot_count": null,
+    "features": []
+  },
+  "platform": "Windows-11-10.0.26200-SP0",
+  "python": "3.14.7 (main, Sep  1 2026, 14:17:30) [MSC v.1944 64 bit (AMD64)]",
+  "commit": {
+    "command": [
+      "git",
+      "rev-parse",
+      "HEAD"
+    ],
+    "exit_code": 0,
+    "stdout": "794d9fbff310e5b7d2f14d08fc1e847f807213a7",
+    "stderr": ""
+  },
+  "dirty_state": {
+    "command": [
+      "git",
+      "status",
+      "--porcelain"
+    ],
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  "rustc": {
+    "command": [
+      "rustc",
+      "-vV"
+    ],
+    "exit_code": 0,
+    "stdout": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: x86_64-pc-windows-msvc\nrelease: 1.98.1\nLLVM version: 22.1.8",
+    "stderr": ""
+  },
+  "cargo": {
+    "command": [
+      "cargo",
+      "-V"
+    ],
+    "exit_code": 0,
+    "stdout": "cargo 1.98.1 (797e8a9bc 2026-08-05)",
+    "stderr": ""
+  },
+  "lock_hashes": {
+    "Cargo.lock": "54690d084079925328aaa93433a4c52f2228c2bff8e9b58b6335a07685c3978d",
+    "uv.lock": "f53e8e0b05a8f8cb5eab126b3c93c9aad5ceb41df9e368d2abac4eb00acc8661"
+  },
+  "rustflags": "",
+  "profile": "release",
+  "power_plan": {
+    "command": [
+      "powercfg",
+      "/getactivescheme"
+    ],
+    "exit_code": 0,
+    "stdout": "Power Scheme GUID: 381b4222-f694-41f0-9685-ff5bb260df2e  (Balanced)",
+    "stderr": ""
+  },
+  "host": {
+    "command": [
+      "powershell",
+      "-NoProfile",
+      "-Command",
+      "Get-CimInstance Win32_Processor | Select-Object Name,NumberOfCores,NumberOfLogicalProcessors | ConvertTo-Json"
+    ],
+    "exit_code": 0,
+    "stdout": "{\n    \"Name\":  \"AMD Ryzen 9 7950X3D 16-Core Processor          \",\n    \"NumberOfCores\":  16,\n    \"NumberOfLogicalProcessors\":  32\n}",
+    "stderr": ""
+  },
+  "toolchain_environment": {
+    "VCToolsVersion": null,
+    "WindowsSDKVersion": null,
+    "LIBCLANG_PATH": "C:\\Users\\smith\\dev\\ipc-bench\\.venv\\Lib\\site-packages\\clang\\native"
+  },
+  "rpc_c_build_records": {
+    "target\\release\\build\\rpc-6142d6bffc2060ab\\out\\c-build-info.txt": "MSVC: C:\\Program Files (x86)\\Microsoft Visual Studio\\2022\\BuildTools\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\cl.exe\nSDK includes: C:\\Program Files (x86)\\Windows Kits\\10\\Include\\10.0.26100.0\n\"C:\\\\Program Files (x86)\\\\Microsoft Visual Studio\\\\2022\\\\BuildTools\\\\VC\\\\Tools\\\\MSVC\\\\14.44.35207\\\\bin\\\\Hostx64\\\\x64\\\\cl.exe\" \"/nologo\" \"/c\" \"/O2\" \"/MD\" \"/IC:\\\\Users\\\\smith\\\\dev\\\\ipc-bench\\\\target\\\\release\\\\build\\\\rpc-6142d6bffc2060ab\\\\out\\\\generated\" \"/IC:\\\\Users\\\\smith\\\\dev\\\\ipc-bench\\\\benchmarks\\\\methods\\\\native\\\\rpc\\\\rpc\" \"/IC:\\\\Program Files (x86)\\\\Microsoft Visual Studio\\\\2022\\\\BuildTools\\\\VC\\\\Tools\\\\MSVC\\\\14.44.35207\\\\include\" \"/IC:\\\\Program Files (x86)\\\\Windows Kits\\\\10\\\\Include\\\\10.0.26100.0\\\\shared\" \"/IC:\\\\Program Files (x86)\\\\Windows Kits\\\\10\\\\Include\\\\10.0.26100.0\\\\um\" \"/IC:\\\\Program Files (x86)\\\\Windows Kits\\\\10\\\\Include\\\\10.0.26100.0\\\\ucrt\" \"/D_M_AMD64=100\" \"/DWIN32\" \"/D_WIN32\" \"/DWIN64\" \"/D_WIN64\" \"/DIpcBenchPing=IpcBenchPingClient\" \"C:\\\\Users\\\\smith\\\\dev\\\\ipc-bench\\\\target\\\\release\\\\build\\\\rpc-6142d6bffc2060ab\\\\out\\\\generated\\\\ipc_bench_rpc_c.c\" \"/FoC:\\\\Users\\\\smith\\\\dev\\\\ipc-bench\\\\target\\\\release\\\\build\\\\rpc-6142d6bffc2060ab\\\\out\\\\ipc_bench_rpc_c.obj\"\n\"C:\\\\Program Files (x86)\\\\Microsoft Visual Studio\\\\2022\\\\BuildTools\\\\VC\\\\Tools\\\\MSVC\\\\14.44.35207\\\\bin\\\\Hostx64\\\\x64\\\\cl.exe\" \"/nologo\" \"/c\" \"/O2\" \"/MD\" \"/IC:\\\\Users\\\\smith\\\\dev\\\\ipc-bench\\\\target\\\\release\\\\build\\\\rpc-6142d6bffc2060ab\\\\out\\\\generated\" \"/IC:\\\\Users\\\\smith\\\\dev\\\\ipc-bench\\\\benchmarks\\\\methods\\\\native\\\\rpc\\\\rpc\" \"/IC:\\\\Program Files (x86)\\\\Microsoft Visual Studio\\\\2022\\\\BuildTools\\\\VC\\\\Tools\\\\MSVC\\\\14.44.35207\\\\include\" \"/IC:\\\\Program Files (x86)\\\\Windows Kits\\\\10\\\\Include\\\\10.0.26100.0\\\\shared\" \"/IC:\\\\Program Files (x86)\\\\Windows Kits\\\\10\\\\Include\\\\10.0.26100.0\\\\um\" \"/IC:\\\\Program Files (x86)\\\\Windows Kits\\\\10\\\\Include\\\\10.0.26100.0\\\\ucrt\" \"/D_M_AMD64=100\" \"/DWIN32\" \"/D_WIN32\" \"/DWIN64\" \"/D_WIN64\" \"C:\\\\Users\\\\smith\\\\dev\\\\ipc-bench\\\\target\\\\release\\\\build\\\\rpc-6142d6bffc2060ab\\\\out\\\\generated\\\\ipc_bench_rpc_s.c\" \"/FoC:\\\\Users\\\\smith\\\\dev\\\\ipc-bench\\\\target\\\\release\\\\build\\\\rpc-6142d6bffc2060ab\\\\out\\\\ipc_bench_rpc_s.obj\"\n\"C:\\\\Program Files (x86)\\\\Microsoft Visual Studio\\\\2022\\\\BuildTools\\\\VC\\\\Tools\\\\MSVC\\\\14.44.35207\\\\bin\\\\Hostx64\\\\x64\\\\cl.exe\" \"/nologo\" \"/c\" \"/O2\" \"/MD\" \"/IC:\\\\Users\\\\smith\\\\dev\\\\ipc-bench\\\\target\\\\release\\\\build\\\\rpc-6142d6bffc2060ab\\\\out\\\\generated\" \"/IC:\\\\Users\\\\smith\\\\dev\\\\ipc-bench\\\\benchmarks\\\\methods\\\\native\\\\rpc\\\\rpc\" \"/IC:\\\\Program Files (x86)\\\\Microsoft Visual Studio\\\\2022\\\\BuildTools\\\\VC\\\\Tools\\\\MSVC\\\\14.44.35207\\\\include\" \"/IC:\\\\Program Files (x86)\\\\Windows Kits\\\\10\\\\Include\\\\10.0.26100.0\\\\shared\" \"/IC:\\\\Program Files (x86)\\\\Windows Kits\\\\10\\\\Include\\\\10.0.26100.0\\\\um\" \"/IC:\\\\Program Files (x86)\\\\Windows Kits\\\\10\\\\Include\\\\10.0.26100.0\\\\ucrt\" \"/D_M_AMD64=100\" \"/DWIN32\" \"/D_WIN32\" \"/DWIN64\" \"/D_WIN64\" \"C:\\\\Users\\\\smith\\\\dev\\\\ipc-bench\\\\benchmarks\\\\methods\\\\native\\\\rpc\\\\rpc\\\\rpc_wrapper.c\" \"/FoC:\\\\Users\\\\smith\\\\dev\\\\ipc-bench\\\\target\\\\release\\\\build\\\\rpc-6142d6bffc2060ab\\\\out\\\\rpc_wrapper.obj\"\n",
+    "target\\release\\build\\rpc-672fa8d16f3cd083\\out\\c-build-info.txt": "MSVC: C:\\Program Files (x86)\\Microsoft Visual Studio\\2022\\BuildTools\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\cl.exe\nSDK includes: C:\\Program Files (x86)\\Windows Kits\\10\\Include\\10.0.26100.0\n\"C:\\\\Program Files (x86)\\\\Microsoft Visual Studio\\\\2022\\\\BuildTools\\\\VC\\\\Tools\\\\MSVC\\\\14.44.35207\\\\bin\\\\Hostx64\\\\x64\\\\cl.exe\" \"/nologo\" \"/c\" \"/O2\" \"/MD\" \"/IC:\\\\Users\\\\smith\\\\dev\\\\ipc-bench\\\\target\\\\release\\\\build\\\\rpc-672fa8d16f3cd083\\\\out\\\\generated\" \"/IC:\\\\Users\\\\smith\\\\dev\\\\ipc-bench\\\\benchmarks\\\\methods\\\\native\\\\rpc\\\\rpc\" \"/IC:\\\\Program Files (x86)\\\\Microsoft Visual Studio\\\\2022\\\\BuildTools\\\\VC\\\\Tools\\\\MSVC\\\\14.44.35207\\\\include\" \"/IC:\\\\Program Files (x86)\\\\Windows Kits\\\\10\\\\Include\\\\10.0.26100.0\\\\shared\" \"/IC:\\\\Program Files (x86)\\\\Windows Kits\\\\10\\\\Include\\\\10.0.26100.0\\\\um\" \"/IC:\\\\Program Files (x86)\\\\Windows Kits\\\\10\\\\Include\\\\10.0.26100.0\\\\ucrt\" \"/D_M_AMD64=100\" \"/DWIN32\" \"/D_WIN32\" \"/DWIN64\" \"/D_WIN64\" \"/DIpcBenchPing=IpcBenchPingClient\" \"C:\\\\Users\\\\smith\\\\dev\\\\ipc-bench\\\\target\\\\release\\\\build\\\\rpc-672fa8d16f3cd083\\\\out\\\\generated\\\\ipc_bench_rpc_c.c\" \"/FoC:\\\\Users\\\\smith\\\\dev\\\\ipc-bench\\\\target\\\\release\\\\build\\\\rpc-672fa8d16f3cd083\\\\out\\\\ipc_bench_rpc_c.obj\"\n\"C:\\\\Program Files (x86)\\\\Microsoft Visual Studio\\\\2022\\\\BuildTools\\\\VC\\\\Tools\\\\MSVC\\\\14.44.35207\\\\bin\\\\Hostx64\\\\x64\\\\cl.exe\" \"/nologo\" \"/c\" \"/O2\" \"/MD\" \"/IC:\\\\Users\\\\smith\\\\dev\\\\ipc-bench\\\\target\\\\release\\\\build\\\\rpc-672fa8d16f3cd083\\\\out\\\\generated\" \"/IC:\\\\Users\\\\smith\\\\dev\\\\ipc-bench\\\\benchmarks\\\\methods\\\\native\\\\rpc\\\\rpc\" \"/IC:\\\\Program Files (x86)\\\\Microsoft Visual Studio\\\\2022\\\\BuildTools\\\\VC\\\\Tools\\\\MSVC\\\\14.44.35207\\\\include\" \"/IC:\\\\Program Files (x86)\\\\Windows Kits\\\\10\\\\Include\\\\10.0.26100.0\\\\shared\" \"/IC:\\\\Program Files (x86)\\\\Windows Kits\\\\10\\\\Include\\\\10.0.26100.0\\\\um\" \"/IC:\\\\Program Files (x86)\\\\Windows Kits\\\\10\\\\Include\\\\10.0.26100.0\\\\ucrt\" \"/D_M_AMD64=100\" \"/DWIN32\" \"/D_WIN32\" \"/DWIN64\" \"/D_WIN64\" \"C:\\\\Users\\\\smith\\\\dev\\\\ipc-bench\\\\target\\\\release\\\\build\\\\rpc-672fa8d16f3cd083\\\\out\\\\generated\\\\ipc_bench_rpc_s.c\" \"/FoC:\\\\Users\\\\smith\\\\dev\\\\ipc-bench\\\\target\\\\release\\\\build\\\\rpc-672fa8d16f3cd083\\\\out\\\\ipc_bench_rpc_s.obj\"\n\"C:\\\\Program Files (x86)\\\\Microsoft Visual Studio\\\\2022\\\\BuildTools\\\\VC\\\\Tools\\\\MSVC\\\\14.44.35207\\\\bin\\\\Hostx64\\\\x64\\\\cl.exe\" \"/nologo\" \"/c\" \"/O2\" \"/MD\" \"/IC:\\\\Users\\\\smith\\\\dev\\\\ipc-bench\\\\target\\\\release\\\\build\\\\rpc-672fa8d16f3cd083\\\\out\\\\generated\" \"/IC:\\\\Users\\\\smith\\\\dev\\\\ipc-bench\\\\benchmarks\\\\methods\\\\native\\\\rpc\\\\rpc\" \"/IC:\\\\Program Files (x86)\\\\Microsoft Visual Studio\\\\2022\\\\BuildTools\\\\VC\\\\Tools\\\\MSVC\\\\14.44.35207\\\\include\" \"/IC:\\\\Program Files (x86)\\\\Windows Kits\\\\10\\\\Include\\\\10.0.26100.0\\\\shared\" \"/IC:\\\\Program Files (x86)\\\\Windows Kits\\\\10\\\\Include\\\\10.0.26100.0\\\\um\" \"/IC:\\\\Program Files (x86)\\\\Windows Kits\\\\10\\\\Include\\\\10.0.26100.0\\\\ucrt\" \"/D_M_AMD64=100\" \"/DWIN32\" \"/D_WIN32\" \"/DWIN64\" \"/D_WIN64\" \"C:\\\\Users\\\\smith\\\\dev\\\\ipc-bench\\\\benchmarks\\\\methods\\\\native\\\\rpc\\\\rpc\\\\rpc_wrapper.c\" \"/FoC:\\\\Users\\\\smith\\\\dev\\\\ipc-bench\\\\target\\\\release\\\\build\\\\rpc-672fa8d16f3cd083\\\\out\\\\rpc_wrapper.obj\"\n"
+  },
+  "sweep": {
+    "output": "C:\\Users\\smith\\dev\\ipc-bench\\target\\refresh-20260904\\capacity-large-payload",
+    "seconds": 0.5,
+    "launches": 5,
+    "trials": 1,
+    "sizes": [
+      65536,
+      1048576
+    ],
+    "depths": [
+      1,
+      8,
+      256
+    ],
+    "capacities": [
+      8
+    ],
+    "seed": 20260904,
+    "skip_build": true,
+    "methods": [
+      "shm-ring-spin",
+      "shm-ring-hybrid"
+    ],
+    "binary_dir": "None"
+  }
+}

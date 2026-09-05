@@ -1,5 +1,7 @@
 # Implementation verification
 
+This document records the initial schema-2 implementation campaign. The [September 4 refresh](../results/published/windows11-20260904/README.md) reruns all six campaigns from source `794d9fb`, including the fresh-host iceoryx2 fix, and records a successful GitHub CI run.
+
 Implemented on 2026-09-04 on Windows 11 build 26200, AMD Ryzen 9 7950X3D, Rust 1.98.1 and Python 3.14.7. This is a dirty working-tree implementation following the dependency refresh; retained source archives, native source hashes, executable hashes and compiler records identify the measured revisions. The original schema 1 published directories are unchanged.
 
 ## Delivered scope
