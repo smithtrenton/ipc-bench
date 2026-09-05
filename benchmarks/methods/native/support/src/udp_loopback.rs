@@ -12,7 +12,7 @@ const MAX_UDP_PAYLOAD: usize = 65_507;
 pub fn run_udp_loopback() -> Result<(), Box<dyn Error>> {
     let config = BenchmarkConfig::from_env()
         .map_err(|error| io::Error::new(io::ErrorKind::InvalidInput, error))?;
-    validate_udp_message_size(config.message_size)?;
+    validate_udp_message_size(config.wire_size())?;
 
     match config.role {
         ProcessRole::Parent => run_parent(config),
@@ -45,26 +45,27 @@ fn run_parent(config: BenchmarkConfig) -> Result<(), Box<dyn Error>> {
 
     parent_socket.connect(("127.0.0.1", child_port))?;
 
-    let mut outbound = vec![0_u8; config.message_size];
-    let mut inbound = vec![0_u8; config.message_size];
-    for (index, byte) in outbound.iter_mut().enumerate() {
-        *byte = (index % 251) as u8;
-    }
+    let mut outbound = vec![0_u8; config.wire_size()];
+    let mut inbound = vec![0_u8; config.wire_size()];
+    harness::initialize_payload(&mut outbound);
 
-    let report = run_benchmark("udp-loopback", &config, true, || {
-        parent_socket
-            .send(&outbound)
-            .expect("UDP request send should succeed");
-        parent_socket
-            .recv(&mut inbound)
-            .expect("UDP response receive should succeed");
-        if !outbound.is_empty() {
-            outbound.copy_from_slice(&inbound);
-            outbound[0] = outbound[0].wrapping_add(1);
-        }
-    });
+    let report = run_benchmark(
+        "udp-loopback",
+        &config,
+        true,
+        || -> Result<(), Box<dyn Error>> {
+            if parent_socket.send(&outbound)? != outbound.len() {
+                return Err("short UDP send".into());
+            }
+            if parent_socket.recv(&mut inbound)? != inbound.len() {
+                return Err("short UDP response".into());
+            }
+            harness::check_response_and_advance(&mut outbound, &inbound)?;
+            Ok(())
+        },
+    )?;
 
-    parent_socket.send(&[0xFF])?;
+    parent_socket.send(&[])?;
     child.request_shutdown();
     let status = child.wait()?;
     if !status.success() {
@@ -84,23 +85,22 @@ fn run_child(config: BenchmarkConfig) -> Result<(), Box<dyn Error>> {
     println!("ready:{child_port}");
     io::stdout().flush()?;
 
-    let mut buf = vec![0_u8; config.message_size];
+    let mut buf = vec![0_u8; config.wire_size()];
     loop {
         match socket.recv(&mut buf) {
             Ok(read) => {
                 if read == 0 {
-                    continue;
-                }
-                if read == 1 {
                     return Ok(());
                 }
-                if read != config.message_size {
-                    continue;
+                if read != config.wire_size() {
+                    return Err("incorrect UDP request length".into());
                 }
                 if !buf.is_empty() {
-                    buf[0] = buf[0].wrapping_add(1);
+                    harness::transform_response(&mut buf);
                 }
-                socket.send(&buf)?;
+                if socket.send(&buf)? != buf.len() {
+                    return Err("short UDP reply send".into());
+                }
             }
             Err(error)
                 if matches!(

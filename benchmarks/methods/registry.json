@@ -1,0 +1,240 @@
+{
+  "schema_version": 2,
+  "target": "x86_64-pc-windows-msvc",
+  "framing_bytes": 8,
+  "methods": [
+    {
+      "name": "af-unix",
+      "kind": "native",
+      "max_payload": 1048576,
+      "workloads": [
+        "round-trip"
+      ]
+    },
+    {
+      "name": "alpc",
+      "kind": "native",
+      "max_payload": 32719,
+      "workloads": [
+        "round-trip"
+      ]
+    },
+    {
+      "name": "anon-pipe",
+      "kind": "native",
+      "max_payload": 1048576,
+      "workloads": [
+        "round-trip"
+      ]
+    },
+    {
+      "name": "copy-roundtrip",
+      "kind": "native",
+      "max_payload": 1048576,
+      "workloads": [
+        "round-trip"
+      ]
+    },
+    {
+      "name": "iceoryx2-publish-subscribe-loan",
+      "kind": "native",
+      "max_payload": 1048576,
+      "workloads": [
+        "round-trip"
+      ]
+    },
+    {
+      "name": "iceoryx2-request-response-loan",
+      "kind": "native",
+      "max_payload": 1048576,
+      "workloads": [
+        "round-trip"
+      ]
+    },
+    {
+      "name": "mailslot",
+      "kind": "native",
+      "max_payload": 1048576,
+      "workloads": [
+        "round-trip"
+      ]
+    },
+    {
+      "name": "named-pipe-byte-sync",
+      "kind": "native",
+      "max_payload": 1048576,
+      "workloads": [
+        "round-trip"
+      ]
+    },
+    {
+      "name": "named-pipe-message-sync",
+      "kind": "native",
+      "max_payload": 1048576,
+      "workloads": [
+        "round-trip"
+      ]
+    },
+    {
+      "name": "named-pipe-overlapped",
+      "kind": "native",
+      "max_payload": 1048576,
+      "workloads": [
+        "round-trip"
+      ]
+    },
+    {
+      "name": "placeholder",
+      "kind": "native",
+      "max_payload": 1048576,
+      "workloads": [
+        "round-trip"
+      ]
+    },
+    {
+      "name": "rpc",
+      "kind": "native",
+      "max_payload": 1048576,
+      "workloads": [
+        "round-trip"
+      ]
+    },
+    {
+      "name": "shm-events",
+      "kind": "native",
+      "max_payload": 1048576,
+      "workloads": [
+        "round-trip"
+      ]
+    },
+    {
+      "name": "shm-mailbox-hybrid",
+      "kind": "native",
+      "max_payload": 1048576,
+      "workloads": [
+        "round-trip"
+      ]
+    },
+    {
+      "name": "shm-mailbox-spin",
+      "kind": "native",
+      "max_payload": 1048576,
+      "workloads": [
+        "round-trip"
+      ]
+    },
+    {
+      "name": "shm-raw-sync-busy",
+      "kind": "native",
+      "max_payload": 1048576,
+      "workloads": [
+        "round-trip"
+      ]
+    },
+    {
+      "name": "shm-raw-sync-event",
+      "kind": "native",
+      "max_payload": 1048576,
+      "workloads": [
+        "round-trip"
+      ]
+    },
+    {
+      "name": "shm-ring-hybrid",
+      "kind": "native",
+      "max_payload": 1048576,
+      "workloads": [
+        "round-trip",
+        "streaming",
+        "windowed"
+      ]
+    },
+    {
+      "name": "shm-ring-spin",
+      "kind": "native",
+      "max_payload": 1048576,
+      "workloads": [
+        "round-trip",
+        "streaming",
+        "windowed"
+      ]
+    },
+    {
+      "name": "shm-semaphores",
+      "kind": "native",
+      "max_payload": 1048576,
+      "workloads": [
+        "round-trip"
+      ]
+    },
+    {
+      "name": "tcp-loopback",
+      "kind": "native",
+      "max_payload": 1048576,
+      "workloads": [
+        "round-trip"
+      ]
+    },
+    {
+      "name": "udp-loopback",
+      "kind": "native",
+      "max_payload": 65499,
+      "workloads": [
+        "round-trip"
+      ]
+    },
+    {
+      "name": "py-multiprocessing-pipe",
+      "kind": "python",
+      "module": "benchmarks.methods.python.py_multiprocessing_pipe.run",
+      "max_payload": 1048576,
+      "workloads": [
+        "round-trip"
+      ]
+    },
+    {
+      "name": "py-multiprocessing-queue",
+      "kind": "python",
+      "module": "benchmarks.methods.python.py_multiprocessing_queue.run",
+      "max_payload": 1048576,
+      "workloads": [
+        "round-trip"
+      ]
+    },
+    {
+      "name": "py-shared-memory-events",
+      "kind": "python",
+      "module": "benchmarks.methods.python.py_shared_memory_events.run",
+      "max_payload": 1048576,
+      "workloads": [
+        "round-trip"
+      ]
+    },
+    {
+      "name": "py-shared-memory-queue",
+      "kind": "python",
+      "module": "benchmarks.methods.python.py_shared_memory_queue.run",
+      "max_payload": 1048576,
+      "workloads": [
+        "round-trip"
+      ]
+    },
+    {
+      "name": "py-socket-tcp-loopback",
+      "kind": "python",
+      "module": "benchmarks.methods.python.py_socket_tcp_loopback.run",
+      "max_payload": 1048576,
+      "workloads": [
+        "round-trip"
+      ]
+    },
+    {
+      "name": "named-pipe-iocp",
+      "kind": "native",
+      "max_payload": 1048576,
+      "workloads": [
+        "windowed"
+      ]
+    }
+  ]
+}

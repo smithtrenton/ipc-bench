@@ -12,6 +12,14 @@ from benchmarks.methods.python.benchmark_adapter import (
     stabilize_process_pair,
     update_payload,
 )
+from benchmarks.methods.python.runtime import (
+    close_queue,
+    finish_worker,
+    owned_worker,
+    transform_response,
+    worker_finished,
+    worker_started,
+)
 
 
 def _worker(
@@ -19,13 +27,15 @@ def _worker(
     responses: mp.Queue[bytearray],
     ready: mp.Event,
 ) -> None:
+    worker_started()
     ready.set()
     while True:
         payload = requests.get()
         if payload is None:
+            worker_finished()
             return
         if payload:
-            payload[0] = (payload[0] + 1) % 256
+            transform_response(payload)
         responses.put(payload)
 
 
@@ -35,24 +45,28 @@ def _main() -> None:
     responses: mp.Queue[bytearray] = mp.Queue(maxsize=1)
     ready = mp.Event()
     process = mp.Process(target=_worker, args=(requests, responses, ready))
-    process.start()
-    stabilize_process_pair(process)
-    if not ready.wait(5):
-        message = "py-multiprocessing-queue worker failed to signal readiness"
-        raise TimeoutError(message)
+    try:
+        with owned_worker(process):
+            stabilize_process_pair(process)
+            if not ready.wait(5):
+                message = "py-multiprocessing-queue worker failed to signal readiness"
+                raise TimeoutError(message)
 
-    outbound = make_payload(config.message_size)
-    inbound = bytearray(config.message_size)
+            outbound = make_payload(config.wire_size)
+            inbound = bytearray(config.wire_size)
 
-    def operation() -> None:
-        requests.put(outbound.copy())
-        inbound[:] = responses.get()
-        update_payload(outbound, inbound)
+            def operation() -> None:
+                requests.put(outbound.copy(), timeout=5)
+                inbound[:] = responses.get(timeout=5)
+                update_payload(outbound, inbound)
 
-    report = run_benchmark("py-multiprocessing-queue", config, operation, child_ready=True)
-    requests.put(None)
-    process.join(timeout=5)
-    print_report(report, config.output_format)
+            report = run_benchmark("py-multiprocessing-queue", config, operation, child_ready=True)
+            requests.put(None, timeout=5)
+            report.update(finish_worker(process))
+            print_report(report, config.output_format)
+    finally:
+        close_queue(requests)
+        close_queue(responses)
 
 
 if __name__ == "__main__":

@@ -14,6 +14,14 @@ from benchmarks.methods.python.benchmark_adapter import (
     stabilize_process_pair,
     update_payload,
 )
+from benchmarks.methods.python.runtime import (
+    close_queue,
+    finish_worker,
+    owned_worker,
+    transform_response,
+    worker_finished,
+    worker_started,
+)
 
 
 def _recv_exact_into(stream: socket.socket, buffer: bytearray) -> None:
@@ -28,6 +36,7 @@ def _recv_exact_into(stream: socket.socket, buffer: bytearray) -> None:
 
 
 def _worker(ports: mp.Queue[int], message_size: int) -> None:
+    worker_started()
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as server:
         server.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
         server.bind(("127.0.0.1", 0))
@@ -41,40 +50,48 @@ def _worker(ports: mp.Queue[int], message_size: int) -> None:
                 try:
                     _recv_exact_into(conn, scratch)
                 except EOFError:
+                    worker_finished()
                     return
                 if scratch:
-                    scratch[0] = (scratch[0] + 1) % 256
+                    transform_response(scratch)
                 conn.sendall(scratch)
 
 
 def _main() -> None:
     config = parse_config()
     ports: mp.Queue[int] = mp.Queue(maxsize=1)
-    process = mp.Process(target=_worker, args=(ports, config.message_size))
-    process.start()
-    stabilize_process_pair(process)
+    process = mp.Process(target=_worker, args=(ports, config.wire_size))
+    stream = None
     try:
-        port = ports.get(timeout=5)
-    except Empty as error:
-        message = "py-socket-tcp-loopback worker failed to publish its port"
-        raise TimeoutError(message) from error
+        with owned_worker(process):
+            stabilize_process_pair(process)
+            try:
+                port = ports.get(timeout=5)
+            except Empty as error:
+                message = "py-socket-tcp-loopback worker failed to publish its port"
+                raise TimeoutError(message) from error
 
-    stream = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    stream.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
-    stream.connect(("127.0.0.1", port))
+            stream = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            stream.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
+            stream.settimeout(5)
+            stream.connect(("127.0.0.1", port))
 
-    outbound = make_payload(config.message_size)
-    inbound = bytearray(config.message_size)
+            outbound = make_payload(config.wire_size)
+            inbound = bytearray(config.wire_size)
 
-    def operation() -> None:
-        stream.sendall(outbound)
-        _recv_exact_into(stream, inbound)
-        update_payload(outbound, inbound)
+            def operation() -> None:
+                stream.sendall(outbound)
+                _recv_exact_into(stream, inbound)
+                update_payload(outbound, inbound)
 
-    report = run_benchmark("py-socket-tcp-loopback", config, operation, child_ready=True)
-    stream.close()
-    process.join(timeout=5)
-    print_report(report, config.output_format)
+            report = run_benchmark("py-socket-tcp-loopback", config, operation, child_ready=True)
+            stream.close()
+            report.update(finish_worker(process))
+            print_report(report, config.output_format)
+    finally:
+        if stream is not None:
+            stream.close()
+        close_queue(ports)
 
 
 if __name__ == "__main__":

@@ -9,6 +9,11 @@ use std::{
 fn main() {
     println!("cargo:rerun-if-changed=rpc/ipc_bench_rpc.idl");
     println!("cargo:rerun-if-changed=rpc/rpc_wrapper.c");
+    assert_eq!(
+        env::var("TARGET").unwrap(),
+        "x86_64-pc-windows-msvc",
+        "RPC stubs support Windows x64 MSVC"
+    );
 
     let out_dir = PathBuf::from(env::var("OUT_DIR").expect("OUT_DIR missing"));
     let generated_dir = out_dir.join("generated");
@@ -64,6 +69,11 @@ fn main() {
     ];
 
     let mut objects = Vec::new();
+    let mut build_record = format!(
+        "MSVC: {}\nSDK includes: {}\n",
+        cl.display(),
+        sdk_include.display()
+    );
     for source in &generated_sources {
         let object = out_dir.join(
             source
@@ -82,6 +92,22 @@ fn main() {
         command
             .arg("/nologo")
             .arg("/c")
+            .arg(if env::var("OPT_LEVEL").as_deref() == Ok("0") {
+                "/Od"
+            } else {
+                "/O2"
+            })
+            .arg(
+                if env::var("CARGO_CFG_TARGET_FEATURE")
+                    .unwrap_or_default()
+                    .split(',')
+                    .any(|f| f == "crt-static")
+                {
+                    "/MT"
+                } else {
+                    "/MD"
+                },
+            )
             .arg(format!("/I{}", generated_dir.display()))
             .arg(format!("/I{}", rpc_dir.display()))
             .arg(format!("/I{}", msvc_include.display()))
@@ -97,6 +123,7 @@ fn main() {
             command.arg("/DIpcBenchPing=IpcBenchPingClient");
         }
         command.arg(source).arg(format!("/Fo{}", object.display()));
+        build_record.push_str(&format!("{command:?}\n"));
         run_command(&mut command, "cl");
         objects.push(object);
     }
@@ -112,6 +139,7 @@ fn main() {
     println!("cargo:rustc-link-search=native={}", out_dir.display());
     println!("cargo:rustc-link-lib=static=ipc_bench_rpc_native");
     println!("cargo:rustc-link-lib=rpcrt4");
+    fs::write(out_dir.join("c-build-info.txt"), build_record).expect("write C compiler provenance");
 }
 
 fn run_command(command: &mut Command, description: &str) {

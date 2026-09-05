@@ -9,7 +9,7 @@ use windows_sys::Win32::{
         CloseHandle, GetLastError, HANDLE, INVALID_HANDLE_VALUE, WAIT_FAILED, WAIT_OBJECT_0,
     },
     Storage::FileSystem::{ReadFile, WriteFile},
-    System::Threading::{INFINITE, ReleaseSemaphore, ResetEvent, SetEvent, WaitForSingleObject},
+    System::Threading::{ReleaseSemaphore, ResetEvent, SetEvent, WaitForSingleObject},
 };
 
 pub struct OwnedHandle(HANDLE);
@@ -137,7 +137,8 @@ pub fn read_exact_handle(handle: HANDLE, mut buf: &mut [u8]) -> io::Result<()> {
 }
 
 pub fn wait_for_signal(handle: HANDLE) -> io::Result<()> {
-    let status = unsafe { WaitForSingleObject(handle, INFINITE) };
+    harness::record_wait();
+    let status = unsafe { WaitForSingleObject(handle, 5000) };
     match status {
         WAIT_OBJECT_0 => Ok(()),
         WAIT_FAILED => Err(io::Error::last_os_error()),
@@ -146,6 +147,7 @@ pub fn wait_for_signal(handle: HANDLE) -> io::Result<()> {
 }
 
 pub fn set_event(handle: HANDLE) -> io::Result<()> {
+    harness::record_signal();
     let ok = unsafe { SetEvent(handle) };
     if ok == 0 {
         Err(io::Error::last_os_error())
@@ -164,6 +166,7 @@ pub fn reset_event(handle: HANDLE) -> io::Result<()> {
 }
 
 pub fn release_semaphore(handle: HANDLE) -> io::Result<()> {
+    harness::record_signal();
     let ok = unsafe { ReleaseSemaphore(handle, 1, std::ptr::null_mut()) };
     if ok == 0 {
         Err(io::Error::last_os_error())
@@ -191,4 +194,47 @@ pub unsafe fn slice_from_raw_parts<'a>(ptr: *const u8, len: usize) -> &'a [u8] {
 
 pub fn wide_string(value: &str) -> Vec<u16> {
     value.encode_utf16().chain(std::iter::once(0)).collect()
+}
+
+#[repr(C)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub struct LayoutHeader {
+    pub version: u64,
+    pub mapped_length: usize,
+    pub capacity: usize,
+    pub payload_size: usize,
+}
+
+impl LayoutHeader {
+    pub fn new(mapped_length: usize, capacity: usize, payload_size: usize) -> Self {
+        Self {
+            version: 2,
+            mapped_length,
+            capacity,
+            payload_size,
+        }
+    }
+    pub fn validate(self, expected: Self) -> io::Result<()> {
+        if self != expected {
+            return Err(io::Error::new(
+                io::ErrorKind::InvalidData,
+                "shared-memory layout mismatch",
+            ));
+        }
+        Ok(())
+    }
+}
+
+pub fn mapping_size(header: usize, payload: usize, capacity: usize) -> io::Result<usize> {
+    payload
+        .checked_mul(capacity)
+        .and_then(|n| n.checked_mul(2))
+        .and_then(|n| n.checked_add(header))
+        .filter(|n| *n <= 256 * 1024 * 1024)
+        .ok_or_else(|| {
+            io::Error::new(
+                io::ErrorKind::InvalidInput,
+                "mapping exceeds 256 MiB or size arithmetic overflowed",
+            )
+        })
 }

@@ -12,58 +12,86 @@ jobs:
 
     steps:
       - name: Check out repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7.0.1
 
       - name: Set up uv
-        uses: astral-sh/setup-uv@v5
+        uses: astral-sh/setup-uv@v10.0.1
+        with:
+          version: "0.12.9"
+          python-version: "3.14.7"
 
-      - name: Install Python 3.14
-        run: uv python install 3.14
+      - name: Install locked Python tools
+        run: uv sync --locked --all-groups
 
       - name: Install libclang for iceoryx2 build scripts
         shell: pwsh
         run: |
-          $venv = Join-Path $env:RUNNER_TEMP 'libclang-venv'
-          uv venv $venv | Out-Null
-          uv pip install --python "$venv\Scripts\python.exe" libclang
-          $libclangPath = & "$venv\Scripts\python.exe" -c "from pathlib import Path; import clang; print(Path(clang.__file__).resolve().parent / 'native')"
+          $libclangPath = uv run --locked --group build python -c "from pathlib import Path; import clang; print(Path(clang.__file__).resolve().parent / 'native')"
           "LIBCLANG_PATH=$libclangPath" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
 
-      - name: Install stable Rust
+      - name: Install pinned Rust
         uses: dtolnay/rust-toolchain@stable
         with:
+          toolchain: "1.98.1"
           components: rustfmt, clippy
 
       - name: Run Ruff lint
-        run: uv tool run ruff check benchmarks\methods\python
+        run: uv run --locked ruff check benchmarks\methods\python
 
       - name: Check Ruff formatting
-        run: uv tool run ruff format --check benchmarks\methods\python
+        run: uv run --locked ruff format --check benchmarks\methods\python
+
+      - name: Check measurement tooling
+        shell: pwsh
+        run: |
+          uv run --locked ruff check scripts/benchmark_suite.py scripts/experiment_suite.py scripts/throughput_suite.py scripts/publication.py scripts/package_results.py scripts/verify_transports.py scripts/verify_affinity.py tests --select E4,E7,E9,F
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          uv run --locked ruff format --check scripts/benchmark_suite.py scripts/experiment_suite.py scripts/throughput_suite.py scripts/publication.py scripts/package_results.py scripts/verify_transports.py scripts/verify_affinity.py tests
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
       - name: Check Rust formatting
         run: cargo fmt --all --check
 
       - name: Run Clippy
-        run: cargo clippy --workspace --all-targets -- -D warnings
+        run: cargo clippy --locked --workspace --all-targets -- -D warnings
 
       - name: Build workspace
-        run: cargo build --workspace
+        run: cargo build --locked --workspace
 
       - name: Run tests
-        run: cargo test --workspace
+        run: cargo test --locked --workspace
 
-      - name: Run smoke benchmark
+      - name: Run Python contract tests
+        run: uv run --locked python -m unittest discover -s tests -v
+
+      - name: Verify effective affinity
+        run: uv run --locked python scripts/verify_affinity.py --profile debug --output target/ci-affinity
+
+      - name: Run complete boundary matrix
+        run: uv run --locked --group build python scripts/benchmark_suite.py smoke --profile debug --skip-build --output target/ci-correctness --timeout 15
+
+      - name: Run fault and ring stress checks
+        run: uv run --locked python scripts/verify_transports.py --profile debug --output target/ci-faults.json
+
+      - name: Check optimization features
         shell: pwsh
         run: |
-          cargo run -p placeholder -- --message-count 32 --message-size 256 --warmup-count 8 --trials 1 --format json | Out-Null
-          cargo run -p copy-roundtrip -- --message-count 16 --message-size 128 --warmup-count 4 --trials 1 --format json | Out-Null
-          cargo run -p anon-pipe -- --message-count 16 --message-size 128 --warmup-count 4 --trials 1 --format json | Out-Null
-          cargo run -p shm-mailbox-hybrid -- --message-count 16 --message-size 128 --warmup-count 4 --trials 1 --format json | Out-Null
-          cargo run -p shm-raw-sync-event -- --message-count 16 --message-size 128 --warmup-count 4 --trials 1 --format json | Out-Null
-          cargo run -p iceoryx2-publish-subscribe-loan -- --message-count 16 --message-size 128 --warmup-count 4 --trials 1 --format json | Out-Null
-          cargo run -p iceoryx2-request-response-loan -- --message-count 16 --message-size 128 --warmup-count 4 --trials 1 --format json | Out-Null
-          cargo run -p shm-ring-hybrid -- --message-count 16 --message-size 128 --warmup-count 4 --trials 1 --format json | Out-Null
-          cargo run -p af-unix -- --message-count 16 --message-size 128 --warmup-count 4 --trials 1 --format json | Out-Null
-          cargo run -p rpc -- --message-count 16 --message-size 128 --warmup-count 4 --trials 1 --format json | Out-Null
-          cargo run -p alpc -- --message-count 16 --message-size 128 --warmup-count 4 --trials 1 --format json | Out-Null
-          uv run --python 3.14 python -m benchmarks.methods.python.py_multiprocessing_pipe.run --message-count 16 --message-size 128 --warmup-count 4 --trials 1 --format json | Out-Null
+          cargo clippy --locked --workspace --all-targets --all-features -- -D warnings
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          cargo test --locked --workspace --all-features
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          cargo build --locked --workspace --all-features
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          uv run --locked python scripts/verify_transports.py --profile debug --skip-faults --force-yield --output target/ci-feature-stress.json
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+      - name: Retain correctness evidence
+        if: always()
+        uses: actions/upload-artifact@v7.0.1
+        with:
+          name: correctness-evidence
+          path: |
+            target/ci-correctness
+            target/ci-faults.json
+            target/ci-feature-stress.json
+            target/ci-affinity

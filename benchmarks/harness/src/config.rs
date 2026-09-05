@@ -24,6 +24,12 @@ pub struct BenchmarkConfig {
     pub trials: usize,
     pub output_format: OutputFormat,
     pub role: ProcessRole,
+    pub validation: String,
+    pub measurement: String,
+    pub timeout_seconds: usize,
+    pub workload: String,
+    pub queue_depth: usize,
+    pub ring_capacity: usize,
 }
 
 impl Default for BenchmarkConfig {
@@ -35,6 +41,12 @@ impl Default for BenchmarkConfig {
             trials: 3,
             output_format: OutputFormat::Text,
             role: ProcessRole::Parent,
+            validation: "full".into(),
+            measurement: "batch".into(),
+            timeout_seconds: 120,
+            workload: "round-trip".into(),
+            queue_depth: 1,
+            ring_capacity: 64,
         }
     }
 }
@@ -42,6 +54,26 @@ impl Default for BenchmarkConfig {
 impl BenchmarkConfig {
     pub fn from_env() -> Result<Self, String> {
         let config = Self::from_args(env::args().skip(1))?;
+        if config.role == ProcessRole::Child {
+            crate::fault::worker_started();
+        }
+        if config.workload != "round-trip" {
+            let executable = env::current_exe().map_err(|e| e.to_string())?;
+            let is_iocp = executable.file_stem().unwrap_or_default() == "named-pipe-iocp";
+            if !is_iocp
+                && !executable
+                    .file_stem()
+                    .unwrap_or_default()
+                    .to_string_lossy()
+                    .starts_with("shm-ring-")
+            {
+                return Err(
+                    "streaming/windowed workloads require shm-ring methods or named-pipe-iocp"
+                        .into(),
+                );
+            }
+        }
+        crate::process::supervise(&config).map_err(|error| error.to_string())?;
         crate::affinity::apply_child_affinity_if_configured(config.role)
             .map_err(|error| format!("failed to apply child CPU affinity: {error}"))?;
         Ok(config)
@@ -59,6 +91,34 @@ impl BenchmarkConfig {
             let current = &args[index];
 
             match current.as_str() {
+                "--validation" | "--measurement" | "--workload" => {
+                    index += 1;
+                    let value = args
+                        .get(index)
+                        .ok_or_else(|| format!("missing value for {current}"))?;
+                    match (current.as_str(), value.as_str()) {
+                        ("--workload", "round-trip" | "streaming" | "windowed") => {
+                            config.workload = value.clone()
+                        }
+                        ("--validation", "full" | "sampled") => config.validation = value.clone(),
+                        ("--measurement", "batch" | "latency") => {
+                            config.measurement = value.clone()
+                        }
+                        _ => return Err(format!("invalid value `{value}` for {current}")),
+                    }
+                }
+                "--timeout-seconds" => {
+                    config.timeout_seconds =
+                        Self::parse_usize(&args, &mut index, current, "timeout")?;
+                }
+                "--queue-depth" => {
+                    config.queue_depth =
+                        Self::parse_usize(&args, &mut index, current, "queue depth")?
+                }
+                "--ring-capacity" => {
+                    config.ring_capacity =
+                        Self::parse_usize(&args, &mut index, current, "ring capacity")?
+                }
                 "-c" | "--message-count" => {
                     config.message_count =
                         Self::parse_usize(&args, &mut index, current, "message count")?;
@@ -118,8 +178,54 @@ impl BenchmarkConfig {
             index += 1;
         }
 
+        if config.message_size == 0 || config.message_size > 1024 * 1024 {
+            return Err("message size must be between 1 and 1048576 payload bytes".into());
+        }
+        if config.timeout_seconds == 0 || config.timeout_seconds > 86400 {
+            return Err("timeout must be between 1 and 86400 seconds".into());
+        }
+        if config.queue_depth == 0
+            || config.queue_depth > 256
+            || !config.ring_capacity.is_power_of_two()
+            || config.ring_capacity > 256
+        {
+            return Err(
+                "queue depth must be 1..256; ring capacity must be a power of two in 1..256".into(),
+            );
+        }
+        if config.workload == "round-trip" && config.queue_depth != 1 {
+            return Err("round-trip workload requires queue depth one".into());
+        }
+        if config.workload != "round-trip" && config.validation != "full" {
+            return Err("throughput workloads require full delivery validation".into());
+        }
+        if config
+            .message_count
+            .checked_mul(config.trials)
+            .and_then(|n| n.checked_add(config.warmup_count))
+            .filter(|n| *n <= 1_000_000_000)
+            .is_none()
+        {
+            return Err("total operation count exceeds 1000000000".into());
+        }
         if config.message_count == 0 {
             return Err("message count must be greater than zero".to_owned());
+        }
+        let batch = if config.measurement == "latency" {
+            1
+        } else {
+            crate::stats::measurement_batch_size(config.message_count)
+        };
+        if config
+            .message_count
+            .div_ceil(batch)
+            .checked_mul(config.trials)
+            .is_none_or(|n| n > 1_000_000)
+        {
+            return Err(
+                "retained measurement samples exceed 1000000; reduce count/trials or use batches"
+                    .into(),
+            );
         }
 
         if config.trials == 0 {
@@ -133,9 +239,26 @@ impl BenchmarkConfig {
         self.args_for_role(ProcessRole::Child)
     }
 
+    /// Eight sequence bytes are protocol overhead, excluded from payload byte rates.
+    pub fn wire_size(&self) -> usize {
+        self.message_size + 8
+    }
+
     pub fn args_for_role(&self, role: ProcessRole) -> Vec<OsString> {
         let mut args = Vec::with_capacity(12);
         args.extend([
+            OsString::from("--workload"),
+            OsString::from(&self.workload),
+            OsString::from("--queue-depth"),
+            OsString::from(self.queue_depth.to_string()),
+            OsString::from("--ring-capacity"),
+            OsString::from(self.ring_capacity.to_string()),
+            OsString::from("--validation"),
+            OsString::from(&self.validation),
+            OsString::from("--measurement"),
+            OsString::from(&self.measurement),
+            OsString::from("--timeout-seconds"),
+            OsString::from(self.timeout_seconds.to_string()),
             OsString::from("--message-count"),
             OsString::from(self.message_count.to_string()),
             OsString::from("--message-size"),
@@ -179,6 +302,12 @@ impl BenchmarkConfig {
             "  -t, --trials <N>         Number of benchmark trials (default: 3)",
             "      --format <FORMAT>    Output format: text | json (default: text)",
             "      --role <ROLE>        Internal process role: parent | child",
+            "      --validation <MODE>  full (default) | sampled (every 1024, plus preflight/final)",
+            "      --measurement <MODE> batch (default) | latency (every operation)",
+            "      --timeout-seconds <N> Process-tree deadline (default: 120)",
+            "      --workload <MODE>    round-trip | streaming | windowed (rings; IOCP windowed)",
+            "      --queue-depth <N>    Maximum outstanding requests, 1..256",
+            "      --ring-capacity <N>  Power-of-two slots per direction, 1..256",
         ]
         .join("\n")
     }
@@ -239,6 +368,7 @@ mod tests {
             trials: 4,
             output_format: OutputFormat::Json,
             role: ProcessRole::Parent,
+            ..BenchmarkConfig::default()
         };
 
         let child = BenchmarkConfig::from_args(
@@ -263,5 +393,20 @@ mod tests {
             .expect_err("zero message count should fail");
 
         assert!(error.contains("message count"));
+    }
+
+    #[test]
+    fn rejects_invalid_bounds_before_allocation() {
+        for args in [
+            vec!["--message-size", "0"],
+            vec!["--message-size", "18446744073709551615"],
+            vec!["--message-count", "18446744073709551615", "--trials", "2"],
+            vec!["--trials", "0"],
+            vec!["--timeout-seconds", "0"],
+            vec!["--ring-capacity", "3"],
+            vec!["--queue-depth", "0"],
+        ] {
+            assert!(BenchmarkConfig::from_args(args.into_iter().map(str::to_owned)).is_err());
+        }
     }
 }

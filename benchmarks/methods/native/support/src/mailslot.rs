@@ -10,7 +10,7 @@ use windows_sys::Win32::{
         CreateFileW, FILE_ATTRIBUTE_NORMAL, FILE_GENERIC_WRITE, FILE_SHARE_READ, OPEN_EXISTING,
         ReadFile,
     },
-    System::{Mailslots::CreateMailslotW, SystemServices::MAILSLOT_WAIT_FOREVER},
+    System::Mailslots::CreateMailslotW,
 };
 
 use crate::util::{OwnedHandle, retry_with_backoff, unique_name, wide_string, write_all_handle};
@@ -31,7 +31,7 @@ pub fn run_mailslot() -> Result<(), Box<dyn Error>> {
 fn run_parent(config: BenchmarkConfig) -> Result<(), Box<dyn Error>> {
     let request_name = format!(r"\\.\mailslot\{}", unique_name("ipc-bench-request"));
     let response_name = format!(r"\\.\mailslot\{}", unique_name("ipc-bench-response"));
-    let response_slot = create_mailslot(&response_name, config.message_size)?;
+    let response_slot = create_mailslot(&response_name, config.wire_size())?;
 
     let mut child = ManagedChild::spawn_self_with_env(
         &config.child_args(),
@@ -46,21 +46,21 @@ fn run_parent(config: BenchmarkConfig) -> Result<(), Box<dyn Error>> {
     }
 
     let request_writer = open_writer(&request_name)?;
-    let mut outbound = vec![0_u8; config.message_size];
-    let mut inbound = vec![0_u8; config.message_size];
-    for (index, byte) in outbound.iter_mut().enumerate() {
-        *byte = (index % 251) as u8;
-    }
+    let mut outbound = vec![0_u8; config.wire_size()];
+    let mut inbound = vec![0_u8; config.wire_size()];
+    harness::initialize_payload(&mut outbound);
 
-    let report = run_benchmark("mailslot", &config, true, || {
-        write_all_handle(request_writer.raw(), &outbound).expect("mailslot write should succeed");
-        read_exact_message(response_slot.raw(), &mut inbound)
-            .expect("mailslot read should succeed");
-        if !outbound.is_empty() {
-            outbound.copy_from_slice(&inbound);
-            outbound[0] = outbound[0].wrapping_add(1);
-        }
-    });
+    let report = run_benchmark(
+        "mailslot",
+        &config,
+        true,
+        || -> Result<(), Box<dyn Error>> {
+            write_all_handle(request_writer.raw(), &outbound)?;
+            read_exact_message(response_slot.raw(), &mut inbound)?;
+            harness::check_response_and_advance(&mut outbound, &inbound)?;
+            Ok(())
+        },
+    )?;
 
     write_all_handle(request_writer.raw(), &[0xFF])?;
     child.request_shutdown();
@@ -77,20 +77,23 @@ fn run_child(config: BenchmarkConfig) -> Result<(), Box<dyn Error>> {
     let request_name = std::env::var(ENV_REQUEST_SLOT)?;
     let response_name = std::env::var(ENV_RESPONSE_SLOT)?;
 
-    let request_slot = create_mailslot(&request_name, config.message_size)?;
+    let request_slot = create_mailslot(&request_name, config.wire_size())?;
     let response_writer = open_writer(&response_name)?;
 
     println!("ready");
     io::stdout().flush()?;
 
-    let mut message = vec![0_u8; config.message_size];
+    let mut message = vec![0_u8; config.wire_size()];
     loop {
         let bytes_read = read_next_message(request_slot.raw(), &mut message)?;
-        if bytes_read != config.message_size {
+        if bytes_read == 1 && message[0] == 0xFF {
             return Ok(());
         }
+        if bytes_read != config.wire_size() {
+            return Err("incorrect mailslot request length".into());
+        }
         if !message.is_empty() {
-            message[0] = message[0].wrapping_add(1);
+            harness::transform_response(&mut message);
         }
         write_all_handle(response_writer.raw(), &message)?;
     }
@@ -101,8 +104,10 @@ fn create_mailslot(name: &str, message_size: usize) -> io::Result<OwnedHandle> {
     let handle = unsafe {
         CreateMailslotW(
             name.as_ptr(),
-            message_size as u32,
-            MAILSLOT_WAIT_FOREVER,
+            u32::try_from(message_size).map_err(|_| {
+                io::Error::new(io::ErrorKind::InvalidInput, "mailslot length overflow")
+            })?,
+            5000,
             std::ptr::null(),
         )
     };

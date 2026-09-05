@@ -1,5 +1,7 @@
 # Published Results Analysis
 
+> Historical schema 1 snapshots, preserved without numerical edits. Rates below count round trips; batch spread does not establish individual-request tails, and the original copy floor was not assembly-verified. See [schema 2 evidence](results/published/windows11-schema2/README.md) and the [measurement contract](docs/measurement-contract.md) for the corrected implementation.
+
 This document analyzes the published benchmark snapshots in:
 
 - `results\published\windows11-initial`

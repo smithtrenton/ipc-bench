@@ -6,6 +6,8 @@
 
 #include "ipc_bench_rpc.h"
 
+static int inject_corruption = 0;
+
 void IpcBenchPingClient(handle_t binding, byte* request, byte* response, unsigned long length);
 
 void* __RPC_USER midl_user_allocate(size_t size) {
@@ -21,10 +23,13 @@ void IpcBenchPing(handle_t binding, byte* request, byte* response, unsigned long
     if (length > 0) {
         memcpy(response, request, length);
         response[0] = (byte)(response[0] + 1);
+        if (inject_corruption) { response[length - 1] ^= 1; }
     }
 }
 
 __declspec(dllexport) int rpc_server_start(const char* endpoint) {
+    const char* fault = getenv("IPC_BENCH_TEST_FAULT");
+    inject_corruption = fault != NULL && strcmp(fault, "corrupt") == 0;
     RPC_STATUS status = RpcServerUseProtseqEpA(
         (RPC_CSTR)"ncalrpc",
         RPC_C_PROTSEQ_MAX_REQS_DEFAULT,
@@ -95,6 +100,11 @@ __declspec(dllexport) int rpc_client_roundtrip(
     unsigned char* response,
     unsigned long length
 ) {
-    IpcBenchPingClient(binding, (byte*)request, (byte*)response, length);
-    return 0;
+    RPC_STATUS status = RPC_S_OK;
+    RpcTryExcept {
+        IpcBenchPingClient(binding, (byte*)request, (byte*)response, length);
+    } RpcExcept(1) {
+        status = RpcExceptionCode();
+    } RpcEndExcept
+    return (int)status;
 }

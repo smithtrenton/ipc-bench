@@ -1,0 +1,119 @@
+{
+  "schema_version": 2,
+  "started_at": "2026-09-04T22:53:32.425575+00:00",
+  "arguments": {
+    "action": "run",
+    "profile": "release",
+    "warmup": 256,
+    "trials": 1,
+    "timeout": 120,
+    "validation": "full",
+    "measurement": "batch",
+    "workload": "streaming",
+    "queue_depth": 1,
+    "ring_capacity": 64,
+    "stable_affinity": true,
+    "cpu_pair": null,
+    "topology": null,
+    "mailslot_count": null,
+    "features": []
+  },
+  "platform": "Windows-11-10.0.26200-SP0",
+  "python": "3.14.7 (main, Sep  1 2026, 14:17:30) [MSC v.1944 64 bit (AMD64)]",
+  "commit": {
+    "command": [
+      "git",
+      "rev-parse",
+      "HEAD"
+    ],
+    "exit_code": 0,
+    "stdout": "fb7c03d3ca8ac4a6febc14fa1334584dc5fad0cd",
+    "stderr": ""
+  },
+  "dirty_state": {
+    "command": [
+      "git",
+      "status",
+      "--porcelain"
+    ],
+    "exit_code": 0,
+    "stdout": "M .github/workflows/ci.yml\n M .gitignore\n M Cargo.toml\n M README.md\n M benchmarks/harness/Cargo.toml\n M benchmarks/harness/src/affinity.rs\n M benchmarks/harness/src/config.rs\n M benchmarks/harness/src/lib.rs\n M benchmarks/harness/src/process.rs\n M benchmarks/harness/src/report.rs\n M benchmarks/harness/src/stats.rs\n M benchmarks/methods/native/af-unix/src/main.rs\n M benchmarks/methods/native/alpc/src/main.rs\n M benchmarks/methods/native/anon-pipe/src/main.rs\n M benchmarks/methods/native/copy-roundtrip/src/main.rs\n M benchmarks/methods/native/iceoryx2-publish-subscribe-loan/src/main.rs\n M benchmarks/methods/native/iceoryx2-request-response-loan/src/main.rs\n M benchmarks/methods/native/mailslot/src/main.rs\n M benchmarks/methods/native/named-pipe-byte-sync/src/main.rs\n M benchmarks/methods/native/named-pipe-message-sync/src/main.rs\n M benchmarks/methods/native/named-pipe-overlapped/src/main.rs\n M benchmarks/methods/native/placeholder/src/main.rs\n M benchmarks/methods/native/rpc/build.rs\n M benchmarks/methods/native/rpc/rpc/rpc_wrapper.c\n M benchmarks/methods/native/rpc/src/main.rs\n M benchmarks/methods/native/shm-events/src/main.rs\n M benchmarks/methods/native/shm-mailbox-hybrid/src/main.rs\n M benchmarks/methods/native/shm-mailbox-spin/src/main.rs\n M benchmarks/methods/native/shm-raw-sync-busy/src/main.rs\n M benchmarks/methods/native/shm-raw-sync-event/src/main.rs\n M benchmarks/methods/native/shm-ring-hybrid/src/main.rs\n M benchmarks/methods/native/shm-ring-spin/src/main.rs\n M benchmarks/methods/native/shm-semaphores/src/main.rs\n M benchmarks/methods/native/support/Cargo.toml\n M benchmarks/methods/native/support/src/af_unix.rs\n M benchmarks/methods/native/support/src/alpc.rs\n M benchmarks/methods/native/support/src/anon_pipe.rs\n M benchmarks/methods/native/support/src/copy_roundtrip.rs\n M benchmarks/methods/native/support/src/iceoryx2_publish_subscribe.rs\n M benchmarks/methods/native/support/src/iceoryx2_request_response.rs\n M benchmarks/methods/native/support/src/lib.rs\n M benchmarks/methods/native/support/src/mailslot.rs\n M benchmarks/methods/native/support/src/named_pipe.rs\n M benchmarks/methods/native/support/src/raw_sync_shared_memory.rs\n M benchmarks/methods/native/support/src/shared_memory.rs\n M benchmarks/methods/native/support/src/tcp_loopback.rs\n M benchmarks/methods/native/support/src/udp_loopback.rs\n M benchmarks/methods/native/support/src/util.rs\n M benchmarks/methods/native/tcp-loopback/src/main.rs\n M benchmarks/methods/native/udp-loopback/src/main.rs\n M benchmarks/methods/python/benchmark_adapter.py\n M benchmarks/methods/python/py_multiprocessing_pipe/run.py\n M benchmarks/methods/python/py_multiprocessing_queue/run.py\n M benchmarks/methods/python/py_shared_memory_events/run.py\n M benchmarks/methods/python/py_shared_memory_queue/run.py\n M benchmarks/methods/python/py_socket_tcp_loopback/run.py\n M pyproject.toml\n M scripts/run-benchmarks.ps1\n M scripts/run-high-iteration-benchmarks.ps1\n?? .github/dependabot.yml\n?? .python-version\n?? Cargo.lock\n?? PLAN.md\n?? benchmarks/harness/src/fault.rs\n?? benchmarks/harness/src/payload.rs\n?? benchmarks/harness/src/resources.rs\n?? benchmarks/harness/src/throughput.rs\n?? benchmarks/methods/native/named-pipe-iocp/\n?? benchmarks/methods/native/support/src/pipe_iocp.rs\n?? benchmarks/methods/python/runtime.py\n?? benchmarks/methods/registry.json\n?? rust-toolchain.toml\n?? scripts/benchmark_suite.py\n?? scripts/experiment_suite.py\n?? scripts/publication.py\n?? scripts/throughput_suite.py\n?? scripts/verify_transports.py\n?? tests/\n?? uv.lock",
+    "stderr": ""
+  },
+  "rustc": {
+    "command": [
+      "rustc",
+      "-vV"
+    ],
+    "exit_code": 0,
+    "stdout": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: x86_64-pc-windows-msvc\nrelease: 1.98.1\nLLVM version: 22.1.8",
+    "stderr": ""
+  },
+  "cargo": {
+    "command": [
+      "cargo",
+      "-V"
+    ],
+    "exit_code": 0,
+    "stdout": "cargo 1.98.1 (797e8a9bc 2026-08-05)",
+    "stderr": ""
+  },
+  "lock_hashes": {
+    "Cargo.lock": "54690d084079925328aaa93433a4c52f2228c2bff8e9b58b6335a07685c3978d",
+    "uv.lock": "78b37cb6b3b9bd8faff553f12d8742172a9b7137dec3e198d57d1742cfed69e8"
+  },
+  "rustflags": "",
+  "profile": "release",
+  "power_plan": {
+    "command": [
+      "powercfg",
+      "/getactivescheme"
+    ],
+    "exit_code": 0,
+    "stdout": "Power Scheme GUID: 381b4222-f694-41f0-9685-ff5bb260df2e  (Balanced)",
+    "stderr": ""
+  },
+  "host": {
+    "command": [
+      "powershell",
+      "-NoProfile",
+      "-Command",
+      "Get-CimInstance Win32_Processor | Select-Object Name,NumberOfCores,NumberOfLogicalProcessors | ConvertTo-Json"
+    ],
+    "exit_code": 0,
+    "stdout": "{\n    \"Name\":  \"AMD Ryzen 9 7950X3D 16-Core Processor          \",\n    \"NumberOfCores\":  16,\n    \"NumberOfLogicalProcessors\":  32\n}",
+    "stderr": ""
+  },
+  "toolchain_environment": {
+    "VCToolsVersion": null,
+    "WindowsSDKVersion": null,
+    "LIBCLANG_PATH": "C:\\Users\\smith\\dev\\ipc-bench\\.venv\\Lib\\site-packages\\clang\\native"
+  },
+  "rpc_c_build_records": {
+    "target\\release\\build\\rpc-6142d6bffc2060ab\\out\\c-build-info.txt": "MSVC: C:\\Program Files (x86)\\Microsoft Visual Studio\\2022\\BuildTools\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\cl.exe\nSDK includes: C:\\Program Files (x86)\\Windows Kits\\10\\Include\\10.0.26100.0\n\"C:\\\\Program Files (x86)\\\\Microsoft Visual Studio\\\\2022\\\\BuildTools\\\\VC\\\\Tools\\\\MSVC\\\\14.44.35207\\\\bin\\\\Hostx64\\\\x64\\\\cl.exe\" \"/nologo\" \"/c\" \"/O2\" \"/MD\" \"/IC:\\\\Users\\\\smith\\\\dev\\\\ipc-bench\\\\target\\\\release\\\\build\\\\rpc-6142d6bffc2060ab\\\\out\\\\generated\" \"/IC:\\\\Users\\\\smith\\\\dev\\\\ipc-bench\\\\benchmarks\\\\methods\\\\native\\\\rpc\\\\rpc\" \"/IC:\\\\Program Files (x86)\\\\Microsoft Visual Studio\\\\2022\\\\BuildTools\\\\VC\\\\Tools\\\\MSVC\\\\14.44.35207\\\\include\" \"/IC:\\\\Program Files (x86)\\\\Windows Kits\\\\10\\\\Include\\\\10.0.26100.0\\\\shared\" \"/IC:\\\\Program Files (x86)\\\\Windows Kits\\\\10\\\\Include\\\\10.0.26100.0\\\\um\" \"/IC:\\\\Program Files (x86)\\\\Windows Kits\\\\10\\\\Include\\\\10.0.26100.0\\\\ucrt\" \"/D_M_AMD64=100\" \"/DWIN32\" \"/D_WIN32\" \"/DWIN64\" \"/D_WIN64\" \"/DIpcBenchPing=IpcBenchPingClient\" \"C:\\\\Users\\\\smith\\\\dev\\\\ipc-bench\\\\target\\\\release\\\\build\\\\rpc-6142d6bffc2060ab\\\\out\\\\generated\\\\ipc_bench_rpc_c.c\" \"/FoC:\\\\Users\\\\smith\\\\dev\\\\ipc-bench\\\\target\\\\release\\\\build\\\\rpc-6142d6bffc2060ab\\\\out\\\\ipc_bench_rpc_c.obj\"\n\"C:\\\\Program Files (x86)\\\\Microsoft Visual Studio\\\\2022\\\\BuildTools\\\\VC\\\\Tools\\\\MSVC\\\\14.44.35207\\\\bin\\\\Hostx64\\\\x64\\\\cl.exe\" \"/nologo\" \"/c\" \"/O2\" \"/MD\" \"/IC:\\\\Users\\\\smith\\\\dev\\\\ipc-bench\\\\target\\\\release\\\\build\\\\rpc-6142d6bffc2060ab\\\\out\\\\generated\" \"/IC:\\\\Users\\\\smith\\\\dev\\\\ipc-bench\\\\benchmarks\\\\methods\\\\native\\\\rpc\\\\rpc\" \"/IC:\\\\Program Files (x86)\\\\Microsoft Visual Studio\\\\2022\\\\BuildTools\\\\VC\\\\Tools\\\\MSVC\\\\14.44.35207\\\\include\" \"/IC:\\\\Program Files (x86)\\\\Windows Kits\\\\10\\\\Include\\\\10.0.26100.0\\\\shared\" \"/IC:\\\\Program Files (x86)\\\\Windows Kits\\\\10\\\\Include\\\\10.0.26100.0\\\\um\" \"/IC:\\\\Program Files (x86)\\\\Windows Kits\\\\10\\\\Include\\\\10.0.26100.0\\\\ucrt\" \"/D_M_AMD64=100\" \"/DWIN32\" \"/D_WIN32\" \"/DWIN64\" \"/D_WIN64\" \"C:\\\\Users\\\\smith\\\\dev\\\\ipc-bench\\\\target\\\\release\\\\build\\\\rpc-6142d6bffc2060ab\\\\out\\\\generated\\\\ipc_bench_rpc_s.c\" \"/FoC:\\\\Users\\\\smith\\\\dev\\\\ipc-bench\\\\target\\\\release\\\\build\\\\rpc-6142d6bffc2060ab\\\\out\\\\ipc_bench_rpc_s.obj\"\n\"C:\\\\Program Files (x86)\\\\Microsoft Visual Studio\\\\2022\\\\BuildTools\\\\VC\\\\Tools\\\\MSVC\\\\14.44.35207\\\\bin\\\\Hostx64\\\\x64\\\\cl.exe\" \"/nologo\" \"/c\" \"/O2\" \"/MD\" \"/IC:\\\\Users\\\\smith\\\\dev\\\\ipc-bench\\\\target\\\\release\\\\build\\\\rpc-6142d6bffc2060ab\\\\out\\\\generated\" \"/IC:\\\\Users\\\\smith\\\\dev\\\\ipc-bench\\\\benchmarks\\\\methods\\\\native\\\\rpc\\\\rpc\" \"/IC:\\\\Program Files (x86)\\\\Microsoft Visual Studio\\\\2022\\\\BuildTools\\\\VC\\\\Tools\\\\MSVC\\\\14.44.35207\\\\include\" \"/IC:\\\\Program Files (x86)\\\\Windows Kits\\\\10\\\\Include\\\\10.0.26100.0\\\\shared\" \"/IC:\\\\Program Files (x86)\\\\Windows Kits\\\\10\\\\Include\\\\10.0.26100.0\\\\um\" \"/IC:\\\\Program Files (x86)\\\\Windows Kits\\\\10\\\\Include\\\\10.0.26100.0\\\\ucrt\" \"/D_M_AMD64=100\" \"/DWIN32\" \"/D_WIN32\" \"/DWIN64\" \"/D_WIN64\" \"C:\\\\Users\\\\smith\\\\dev\\\\ipc-bench\\\\benchmarks\\\\methods\\\\native\\\\rpc\\\\rpc\\\\rpc_wrapper.c\" \"/FoC:\\\\Users\\\\smith\\\\dev\\\\ipc-bench\\\\target\\\\release\\\\build\\\\rpc-6142d6bffc2060ab\\\\out\\\\rpc_wrapper.obj\"\n",
+    "target\\release\\build\\rpc-672fa8d16f3cd083\\out\\c-build-info.txt": "MSVC: C:\\Program Files (x86)\\Microsoft Visual Studio\\2022\\BuildTools\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\cl.exe\nSDK includes: C:\\Program Files (x86)\\Windows Kits\\10\\Include\\10.0.26100.0\n\"C:\\\\Program Files (x86)\\\\Microsoft Visual Studio\\\\2022\\\\BuildTools\\\\VC\\\\Tools\\\\MSVC\\\\14.44.35207\\\\bin\\\\Hostx64\\\\x64\\\\cl.exe\" \"/nologo\" \"/c\" \"/O2\" \"/MD\" \"/IC:\\\\Users\\\\smith\\\\dev\\\\ipc-bench\\\\target\\\\release\\\\build\\\\rpc-672fa8d16f3cd083\\\\out\\\\generated\" \"/IC:\\\\Users\\\\smith\\\\dev\\\\ipc-bench\\\\benchmarks\\\\methods\\\\native\\\\rpc\\\\rpc\" \"/IC:\\\\Program Files (x86)\\\\Microsoft Visual Studio\\\\2022\\\\BuildTools\\\\VC\\\\Tools\\\\MSVC\\\\14.44.35207\\\\include\" \"/IC:\\\\Program Files (x86)\\\\Windows Kits\\\\10\\\\Include\\\\10.0.26100.0\\\\shared\" \"/IC:\\\\Program Files (x86)\\\\Windows Kits\\\\10\\\\Include\\\\10.0.26100.0\\\\um\" \"/IC:\\\\Program Files (x86)\\\\Windows Kits\\\\10\\\\Include\\\\10.0.26100.0\\\\ucrt\" \"/D_M_AMD64=100\" \"/DWIN32\" \"/D_WIN32\" \"/DWIN64\" \"/D_WIN64\" \"/DIpcBenchPing=IpcBenchPingClient\" \"C:\\\\Users\\\\smith\\\\dev\\\\ipc-bench\\\\target\\\\release\\\\build\\\\rpc-672fa8d16f3cd083\\\\out\\\\generated\\\\ipc_bench_rpc_c.c\" \"/FoC:\\\\Users\\\\smith\\\\dev\\\\ipc-bench\\\\target\\\\release\\\\build\\\\rpc-672fa8d16f3cd083\\\\out\\\\ipc_bench_rpc_c.obj\"\n\"C:\\\\Program Files (x86)\\\\Microsoft Visual Studio\\\\2022\\\\BuildTools\\\\VC\\\\Tools\\\\MSVC\\\\14.44.35207\\\\bin\\\\Hostx64\\\\x64\\\\cl.exe\" \"/nologo\" \"/c\" \"/O2\" \"/MD\" \"/IC:\\\\Users\\\\smith\\\\dev\\\\ipc-bench\\\\target\\\\release\\\\build\\\\rpc-672fa8d16f3cd083\\\\out\\\\generated\" \"/IC:\\\\Users\\\\smith\\\\dev\\\\ipc-bench\\\\benchmarks\\\\methods\\\\native\\\\rpc\\\\rpc\" \"/IC:\\\\Program Files (x86)\\\\Microsoft Visual Studio\\\\2022\\\\BuildTools\\\\VC\\\\Tools\\\\MSVC\\\\14.44.35207\\\\include\" \"/IC:\\\\Program Files (x86)\\\\Windows Kits\\\\10\\\\Include\\\\10.0.26100.0\\\\shared\" \"/IC:\\\\Program Files (x86)\\\\Windows Kits\\\\10\\\\Include\\\\10.0.26100.0\\\\um\" \"/IC:\\\\Program Files (x86)\\\\Windows Kits\\\\10\\\\Include\\\\10.0.26100.0\\\\ucrt\" \"/D_M_AMD64=100\" \"/DWIN32\" \"/D_WIN32\" \"/DWIN64\" \"/D_WIN64\" \"C:\\\\Users\\\\smith\\\\dev\\\\ipc-bench\\\\target\\\\release\\\\build\\\\rpc-672fa8d16f3cd083\\\\out\\\\generated\\\\ipc_bench_rpc_s.c\" \"/FoC:\\\\Users\\\\smith\\\\dev\\\\ipc-bench\\\\target\\\\release\\\\build\\\\rpc-672fa8d16f3cd083\\\\out\\\\ipc_bench_rpc_s.obj\"\n\"C:\\\\Program Files (x86)\\\\Microsoft Visual Studio\\\\2022\\\\BuildTools\\\\VC\\\\Tools\\\\MSVC\\\\14.44.35207\\\\bin\\\\Hostx64\\\\x64\\\\cl.exe\" \"/nologo\" \"/c\" \"/O2\" \"/MD\" \"/IC:\\\\Users\\\\smith\\\\dev\\\\ipc-bench\\\\target\\\\release\\\\build\\\\rpc-672fa8d16f3cd083\\\\out\\\\generated\" \"/IC:\\\\Users\\\\smith\\\\dev\\\\ipc-bench\\\\benchmarks\\\\methods\\\\native\\\\rpc\\\\rpc\" \"/IC:\\\\Program Files (x86)\\\\Microsoft Visual Studio\\\\2022\\\\BuildTools\\\\VC\\\\Tools\\\\MSVC\\\\14.44.35207\\\\include\" \"/IC:\\\\Program Files (x86)\\\\Windows Kits\\\\10\\\\Include\\\\10.0.26100.0\\\\shared\" \"/IC:\\\\Program Files (x86)\\\\Windows Kits\\\\10\\\\Include\\\\10.0.26100.0\\\\um\" \"/IC:\\\\Program Files (x86)\\\\Windows Kits\\\\10\\\\Include\\\\10.0.26100.0\\\\ucrt\" \"/D_M_AMD64=100\" \"/DWIN32\" \"/D_WIN32\" \"/DWIN64\" \"/D_WIN64\" \"C:\\\\Users\\\\smith\\\\dev\\\\ipc-bench\\\\benchmarks\\\\methods\\\\native\\\\rpc\\\\rpc\\\\rpc_wrapper.c\" \"/FoC:\\\\Users\\\\smith\\\\dev\\\\ipc-bench\\\\target\\\\release\\\\build\\\\rpc-672fa8d16f3cd083\\\\out\\\\rpc_wrapper.obj\"\n"
+  },
+  "sweep": {
+    "output": "target\\sustained-throughput",
+    "seconds": 1.0,
+    "launches": 5,
+    "trials": 1,
+    "sizes": [
+      64,
+      65536
+    ],
+    "depths": [
+      1,
+      2,
+      8,
+      64,
+      256
+    ],
+    "capacities": [
+      64
+    ],
+    "seed": 20260904,
+    "skip_build": true,
+    "binary_dir": "None"
+  }
+}

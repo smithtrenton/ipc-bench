@@ -10,6 +10,7 @@ fn main() {
         eprintln!("{error}");
         std::process::exit(1);
     }
+    harness::worker_finished();
 }
 
 fn run() -> Result<(), Box<dyn Error>> {
@@ -35,16 +36,23 @@ fn run_parent(config: BenchmarkConfig) -> Result<(), Box<dyn Error>> {
         *byte = (index % 251) as u8;
     }
 
-    let report = run_benchmark("placeholder", &config, true, || {
-        if outbound.is_empty() {
-            std::hint::spin_loop();
-            return;
-        }
+    let report = run_benchmark(
+        "placeholder",
+        &config,
+        true,
+        || -> Result<(), Box<dyn Error>> {
+            if outbound.is_empty() {
+                std::hint::spin_loop();
+                return Ok(());
+            }
 
-        inbound.copy_from_slice(&outbound);
-        outbound.copy_from_slice(&inbound);
-        outbound[0] = outbound[0].wrapping_add(1);
-    });
+            inbound.copy_from_slice(&outbound);
+            outbound.copy_from_slice(&inbound);
+            outbound[0] = outbound[0].wrapping_add(1);
+            std::hint::black_box(&outbound);
+            Ok(())
+        },
+    )?;
 
     child.request_shutdown();
     let status = child.wait()?;

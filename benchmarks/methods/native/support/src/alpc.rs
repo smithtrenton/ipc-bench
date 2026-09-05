@@ -36,7 +36,7 @@ macro_rules! trace {
 pub fn run_alpc() -> Result<(), Box<dyn Error>> {
     let config = BenchmarkConfig::from_env()
         .map_err(|error| io::Error::new(io::ErrorKind::InvalidInput, error))?;
-    validate_alpc_message_size(config.message_size)?;
+    validate_alpc_message_size(config.wire_size())?;
 
     match config.role {
         ProcessRole::Parent => run_parent(config),
@@ -70,29 +70,23 @@ fn run_parent(config: BenchmarkConfig) -> Result<(), Box<dyn Error>> {
     }
 
     trace!("connecting client port");
-    let client = connect_port(&port_name, config.message_size)?;
+    let client = connect_port(&port_name, config.wire_size())?;
     trace!("waiting for connection reply");
     let mut connection_reply = MessageBuffer::new(0);
     receive_connection_reply(client.raw(), &mut connection_reply)?;
     trace!("connection established");
-    let mut outbound = vec![0_u8; config.message_size];
-    let mut inbound = vec![0_u8; config.message_size];
-    let mut outbound_message = MessageBuffer::new(config.message_size);
-    let mut inbound_message = MessageBuffer::new(config.message_size);
-    for (index, byte) in outbound.iter_mut().enumerate() {
-        *byte = (index % 251) as u8;
-    }
+    let mut outbound = vec![0_u8; config.wire_size()];
+    let mut inbound = vec![0_u8; config.wire_size()];
+    let mut outbound_message = MessageBuffer::new(config.wire_size());
+    let mut inbound_message = MessageBuffer::new(config.wire_size());
+    harness::initialize_payload(&mut outbound);
 
-    let report = run_benchmark("alpc", &config, true, || {
-        send_datagram(client.raw(), &outbound, &mut outbound_message)
-            .expect("ALPC send should succeed");
-        receive_datagram(client.raw(), &mut inbound, &mut inbound_message)
-            .expect("ALPC receive should succeed");
-        if !outbound.is_empty() {
-            outbound.copy_from_slice(&inbound);
-            outbound[0] = outbound[0].wrapping_add(1);
-        }
-    });
+    let report = run_benchmark("alpc", &config, true, || -> Result<(), Box<dyn Error>> {
+        send_datagram(client.raw(), &outbound, &mut outbound_message)?;
+        receive_datagram(client.raw(), &mut inbound, &mut inbound_message)?;
+        harness::check_response_and_advance(&mut outbound, &inbound)?;
+        Ok(())
+    })?;
 
     send_datagram(client.raw(), &[], &mut outbound_message)?;
 
@@ -111,7 +105,7 @@ fn run_parent(config: BenchmarkConfig) -> Result<(), Box<dyn Error>> {
 fn run_child(config: BenchmarkConfig) -> Result<(), Box<dyn Error>> {
     let port_name = std::env::var(ENV_ALPC_PORT_NAME)?;
     trace!("creating connection port");
-    let connection_port = create_connection_port(&port_name, config.message_size)?;
+    let connection_port = create_connection_port(&port_name, config.wire_size())?;
 
     println!("ready");
     io::stdout().flush()?;
@@ -120,24 +114,24 @@ fn run_child(config: BenchmarkConfig) -> Result<(), Box<dyn Error>> {
     let mut connection_request = MessageBuffer::new(0);
     let communication_port = accept_connection(
         connection_port.raw(),
-        config.message_size,
+        config.wire_size(),
         &mut connection_request,
     )?;
     trace!("connection accepted");
-    let mut inbound_message = MessageBuffer::new(config.message_size);
-    let mut outbound_message = MessageBuffer::new(config.message_size);
-    let mut response = vec![0_u8; config.message_size];
+    let mut inbound_message = MessageBuffer::new(config.wire_size());
+    let mut outbound_message = MessageBuffer::new(config.wire_size());
+    let mut response = vec![0_u8; config.wire_size()];
     loop {
         receive_message(connection_port.raw(), &mut inbound_message)?;
         match inbound_message.kind() {
             LPC_DATAGRAM => {
                 let payload = inbound_message.payload();
-                if payload.len() != config.message_size {
+                if payload.len() != config.wire_size() {
                     break;
                 }
                 if !response.is_empty() {
                     response.copy_from_slice(payload);
-                    response[0] = response[0].wrapping_add(1);
+                    harness::transform_response(&mut response);
                 }
                 send_datagram(communication_port.raw(), &response, &mut outbound_message)?;
             }
@@ -324,6 +318,7 @@ fn receive_message(
         },
         "NtAlpcSendWaitReceivePort(receive)",
     )?;
+    message.validate_received_length(buffer_length)?;
     trace!(
         "received message type {} ({} bytes)",
         message.kind(),
@@ -480,6 +475,30 @@ impl MessageBuffer {
 
     fn kind(&self) -> u32 {
         unsafe { (*self.as_ptr()).u2.s.Type as u32 & 0xff }
+    }
+
+    fn validate_received_length(&self, returned: usize) -> io::Result<()> {
+        if returned < size_of::<PORT_MESSAGE>() || returned > self.capacity_bytes() {
+            return Err(io::Error::new(
+                io::ErrorKind::InvalidData,
+                "invalid ALPC returned buffer length",
+            ));
+        }
+        let header = unsafe { &*self.as_ptr() };
+        let data = unsafe { header.u1.s.DataLength };
+        let total = unsafe { header.u1.s.TotalLength };
+        if data < 0
+            || total < 0
+            || total as usize != size_of::<PORT_MESSAGE>() + data as usize
+            || total as usize > returned
+            || data as usize > self.payload_capacity()
+        {
+            return Err(io::Error::new(
+                io::ErrorKind::InvalidData,
+                "invalid ALPC header lengths",
+            ));
+        }
+        Ok(())
     }
 
     fn payload(&self) -> &[u8] {

@@ -2,6 +2,10 @@
 
 Windows 11 IPC benchmark suite inspired by [`goldsborough/ipc-bench`](https://github.com/goldsborough/ipc-bench), rebuilt around a Rust workspace and Windows-native IPC primitives.
 
+The implementation now uses validated frames, bounded process supervision, schema 2 measurements, isolated optimization features, and streaming/windowed throughput modes. See the [measurement contract and commands](docs/measurement-contract.md) and [implementation verification](docs/implementation-verification.md).
+
+**Historical results below retain their original values and toolchains.** Their `message_rate` is completed round trips per second, not saturated throughput; their batch-average spread is not individual-message tail latency. The original copy-only value was not protected against optimization and should not be treated as a verified copy floor. Fresh schema 2 evidence is published separately under [windows11-schema2](results/published/windows11-schema2/README.md).
+
 ## Scope
 
 This suite measures **same-machine, low-level, programmable IPC** on Windows 11. It intentionally excludes GUI- and app-integration-oriented mechanisms such as Clipboard, DDE, OLE/COM automation, and `WM_COPYDATA`.
@@ -9,7 +13,7 @@ This suite measures **same-machine, low-level, programmable IPC** on Windows 11.
 Each benchmark follows the same basic contract:
 
 - parent/child process topology
-- ping-pong round trips
+- validated ping-pong round trips; separately labeled streaming/windowed delivery workloads
 - configurable message count, message size, warmups, and trials
 - comparable JSON output across Rust and Python methods
 
@@ -96,9 +100,10 @@ Each cell shows median launch-average round-trip latency in microseconds on the 
 | **Core native** | `anon-pipe`, `named-pipe-byte-sync`, `named-pipe-message-sync`, `named-pipe-overlapped`, `tcp-loopback`, `shm-events`, `shm-semaphores`, `shm-mailbox-spin`, `shm-mailbox-hybrid`, `shm-ring-spin`, `shm-ring-hybrid` |
 | **Extensions** | `shm-raw-sync-event`, `shm-raw-sync-busy`, `iceoryx2-request-response-loan`, `iceoryx2-publish-subscribe-loan`, `af-unix`, `udp-loopback`, `mailslot`, `rpc` |
 | **Experimental** | `alpc` |
+| **Concurrent throughput** | `named-pipe-iocp` (windowed); both `shm-ring-*` methods (streaming and windowed) |
 | **Python baselines** | `py-multiprocessing-pipe`, `py-multiprocessing-queue`, `py-socket-tcp-loopback`, `py-shared-memory-events`, `py-shared-memory-queue` |
 
-`copy-roundtrip` is intentionally **not IPC**. It exists as a byte-movement floor for the shared-memory request/response shape, so the main apples-to-apples IPC comparison surface remains the core native table. Extension and experimental methods are documented separately where semantics or API stability differ.
+`copy-roundtrip` is a synthetic copy/sequence/validation baseline. Its guarded frame copies remain observable in release assembly; its timing includes the selected validation policy. Extension and experimental methods are documented separately where semantics or API stability differ.
 
 The published snapshots include the `iceoryx2-*` and `shm-raw-sync-*` extension methods.
 
@@ -106,10 +111,19 @@ The `placeholder` benchmark is a harness smoke target only. It is **not** part o
 
 ## Building
 
+The current toolchain is pinned to Rust **1.98.1** and Python **3.14.7**. Install **uv 0.12.9 or later** and the Visual Studio C++ build tools with a Windows SDK (including MIDL). `Cargo.lock` and `uv.lock` are tracked so builds use the same resolved dependencies.
+
+Install the locked Python development/build tools and configure libclang in the current PowerShell session:
+
+```powershell
+uv sync --locked --all-groups
+$env:LIBCLANG_PATH = uv run --locked --group build python -c "from pathlib import Path; import clang; print(Path(clang.__file__).resolve().parent / 'native')"
+```
+
 Use the release profile for any serious measurement:
 
 ```powershell
-cargo build --release --workspace
+cargo build --locked --release --workspace
 ```
 
 The `iceoryx2-*` extension methods require `libclang` during build because upstream `iceoryx2` uses `bindgen` in one of its Windows dependencies. If LLVM is not installed system-wide, set `LIBCLANG_PATH` to a directory containing `libclang.dll` before running Cargo.
@@ -117,10 +131,10 @@ The `iceoryx2-*` extension methods require `libclang` during build because upstr
 For correctness checks:
 
 ```powershell
-cargo test --workspace
+cargo test --locked --workspace
 ```
 
-Python baselines target **Python 3.14** and are expected to run through **uv**. The PowerShell runners use `uv run --python 3.14 ...` for Python baselines automatically, and the Python methods implement the same CLI and JSON contract as the Rust harness.
+Python baselines target **Python 3.14.7** and run through the locked **uv** environment and `.python-version` pin. Python methods implement the same round-trip CLI and JSON contract as the Rust harness.
 
 ## Running one benchmark
 
@@ -155,79 +169,26 @@ uv run --python 3.14 python -m benchmarks.methods.python.py_multiprocessing_pipe
 - `-w`, `--warmup-count <N>` - warmup iterations before timing
 - `-t`, `--trials <N>` - number of benchmark trials
 - `--format <text|json>` - output format
+- `--validation <full|sampled>` - validation policy (default full)
+- `--measurement <batch|latency>` - batch averages or individual round-trip samples
+- `--timeout-seconds <N>` - whole process-tree deadline (default 120)
+- Native throughput methods: `--workload <streaming|windowed>`, `--queue-depth <1..256>`, and `--ring-capacity <power-of-two>`
 
-## Running and refreshing results
+## Running and regenerating results
 
-### Run the current matrix
-
-```powershell
-powershell -ExecutionPolicy Bypass -File .\scripts\run-benchmarks.ps1 -StableAffinity -LaunchCount 5
-```
-
-For the lower-noise rerun:
+Both PowerShell runners build once in release mode and call the shared registry-driven runner. They create a fresh result directory, retain each launch and its diagnostics, and fail if any case fails. Use five launches and explicit placement for comparisons:
 
 ```powershell
-powershell -ExecutionPolicy Bypass -File .\scripts\run-high-iteration-benchmarks.ps1 -StableAffinity -LaunchCount 5
+powershell -ExecutionPolicy Bypass -File scripts/run-benchmarks.ps1 -OutputDir results/round-trip-v2 -StableAffinity -LaunchCount 5
+powershell -ExecutionPolicy Bypass -File scripts/run-high-iteration-benchmarks.ps1 -OutputDir results/high-v2 -StableAffinity -LaunchCount 5
+uv run --locked python scripts/benchmark_suite.py publish --output results/round-trip-v2
 ```
 
-### Recreate the published snapshots
+The [contract guide](docs/measurement-contract.md#running-and-regenerating) covers full-validation gates, duration calibration, latency distributions, feature A/B campaigns, throughput depth/capacity sweeps, and topology/spin-budget controls. It also defines every metric and its limits.
 
-To reproduce the checked-in published directories exactly, remove the old output first and rerun both scripts:
+New series contain `metadata.json`, `source.zip`, source hashes, saved `order.json`, a failure-retaining `manifest.json`, and `cases/*/{report.json,result.json,stdout.txt,stderr.txt}`. `publish` recomputes and validates `summary-v2.json`, `throughput-v2.json`, `comparison.md`, `comparison.svg`, and `saturation.svg` from retained reports. Summaries separate incompatible configuration, executable and affinity groups. CPU cost and sampled latency under load accompany delivery rates.
 
-```powershell
-Remove-Item -Recurse -Force .\results\published\windows11-initial -ErrorAction SilentlyContinue
-Remove-Item -Recurse -Force .\results\published\windows11-high-iterations -ErrorAction SilentlyContinue
-powershell -ExecutionPolicy Bypass -File .\scripts\run-benchmarks.ps1 -OutputDir results\published\windows11-initial -StableAffinity -LaunchCount 5
-powershell -ExecutionPolicy Bypass -File .\scripts\run-high-iteration-benchmarks.ps1 -OutputDir results\published\windows11-high-iterations -StableAffinity -LaunchCount 5
-```
-
-### Regenerate derived artifacts
-
-To regenerate the published charts from those summary files:
-
-```powershell
-uv run --python 3.14 python .\scripts\generate-published-charts.py
-```
-
-To generate a fresh markdown table from a published summary without editing the docs:
-
-```powershell
-uv run --python 3.14 python .\scripts\generate-published-tables.py .\results\published\windows11-high-iterations\summary.json
-```
-
-Add `-o .\some-table.md` if you want the generated table written to a separate file instead of stdout.
-
-### Refresh the markdown docs
-
-After regenerating results and charts, refresh the published markdown:
-
-1. Confirm both `run-status.json` files report the expected completion state before touching the docs.
-2. Update the published machine/toolchain metadata in this README if `metadata.json` changed.
-3. Refresh the `## Published charts` section in this README if the chart file names or selected chart set changed.
-4. Regenerate the `## High-iteration results` table in this README from `results\published\windows11-high-iterations\summary.json` with `scripts\generate-published-tables.py`, then paste the new table text into place.
-5. Refresh `RESULTS.md` from the new published summaries:
-   - `## Charts` from `results\published\charts\*.svg`
-   - `## Baseline full-matrix results` from `results\published\windows11-initial\summary.json` via `scripts\generate-published-tables.py`
-   - `## High-iteration full-matrix results` from `results\published\windows11-high-iterations\summary.json` via `scripts\generate-published-tables.py`
-   - `## Stability and spread`, plus the surrounding narrative, from the updated `p10_average_micros`, `p90_average_micros`, and `launch_stddev_average_micros` fields
-6. Recheck the headline observations and leader callouts in both markdown files so they still match the new numbers.
-
-Charts and markdown table text are generated automatically, but the published tables and narrative in `README.md` and `RESULTS.md` are still pasted and maintained manually from those generated outputs.
-
-Both scripts build Rust benchmarks in the **release** profile automatically.
-Python benchmark execution in those scripts requires `uv`; pass `-SkipPython` if you want a Rust-only run.
-When `-StableAffinity` is enabled, the scripts pin the benchmark parent and child to different physical CPU cores on Windows.
-When `-LaunchCount` is greater than `1`, each per-method result file stores all launch reports, `summary.average_micros` becomes the median launch-average latency, and `summary.json` / `summary.csv` also include `p10_average_micros`, `p90_average_micros`, and `launch_stddev_average_micros`.
-
-Each run writes:
-
-- `metadata.json` - machine and toolchain metadata
-- `run-status.json` - overall run state, including failure details for partial or failed runs
-- `manifest.json` - list of generated result files
-- `summary.json` - flattened summary rows across all benchmark outputs
-- `summary.csv` - CSV form of the same summary data
-- one JSON report per method and message size, including per-launch reports when launch aggregation is enabled
-- `results\published\charts\*.svg` - generated visual summaries for the published snapshots
+The original `windows11-initial` and `windows11-high-iterations` directories are preserved. Their existing chart/table generators still read the legacy summaries; new executions must use fresh directories and the schema 2 publisher. Do not overwrite the historical snapshots with current binaries.
 
 ## Adding a new method
 
@@ -236,7 +197,7 @@ When adding a benchmark, keep the benchmark contract stable:
 1. Add one executable per method under `benchmarks\methods\native\...` or `benchmarks\methods\python\...`.
 2. Preserve the shared CLI, warmup behavior, trial behavior, and JSON schema.
 3. Keep message semantics aligned with the existing ping-pong contract unless the method must live in the extension or experimental tier.
-4. Update `scripts\run-benchmarks.ps1`, `README.md`, and CI smoke coverage when the new method becomes part of the supported matrix.
+4. Add the method, payload limit and supported workloads to `benchmarks/methods/registry.json`; runners and CI boundary coverage consume that registry.
 5. Document any method-specific caveats clearly, especially if the transport is one-way, framework-heavy, or lower-stability.
 
 ## Workspace layout
@@ -249,4 +210,4 @@ When adding a benchmark, keep the benchmark contract stable:
 
 ## GitHub Actions
 
-The Windows CI job builds the workspace, runs tests, and executes smoke runs across native Rust, the copy baseline, Python, and the experimental ALPC benchmark.
+Windows CI checks locked builds, lint/formatting, shared statistics fixtures, every registered payload boundary, fault cleanup, ring backpressure/wraparound, IOCP depth, and forced hybrid wake races. It checks both control and optimization-feature builds and retains correctness artifacts. Performance measurements run on a local Windows host; CI does not establish rankings.

@@ -1,0 +1,54 @@
+{
+  "date": "2026-09-04",
+  "correctness": {
+    "final-all-features-faults.json": {
+      "passed": 189,
+      "failed": 0
+    },
+    "final-iocp-faults.json": {
+      "passed": 9,
+      "failed": 0
+    },
+    "final-feature-stress.json": {
+      "passed": 85,
+      "failed": 0
+    },
+    "final-default-boundaries": {
+      "passed": 392,
+      "failed": 0
+    },
+    "final-all-features-boundaries": {
+      "passed": 392,
+      "failed": 0
+    },
+    "final-affinity": {
+      "passed": 20,
+      "failed": 0
+    }
+  },
+  "native_unit_tests": 13,
+  "python_contract_tests": 11,
+  "default_and_feature_clippy": "passed",
+  "package_regeneration": "byte-identical summaries/tables/charts for all six series",
+  "github_hosted_ci_executed": false,
+  "assembly": [
+    {
+      "source": "target\\release\\deps\\support-debba195c3aaea87.s",
+      "source_sha256": "dce98efe85a5c09163a61be901743ae65bf8b28876746b43fc59c5ce5b823938",
+      "first_line": 195422,
+      "last_line": 195568,
+      "excerpt": "copy-operation.s",
+      "memcpy_calls": 4,
+      "command": "cargo rustc --locked -p support --release -- --emit=asm"
+    },
+    {
+      "source": "target\\release\\deps\\harness-079f0637c7809879.s",
+      "source_sha256": "093d11637babbd8b1932dc2e2a457ecb932e8d8c9c0811e5e4fbac367ba04576",
+      "first_line": 43824,
+      "last_line": 43960,
+      "excerpt": "response-validation.s",
+      "memcpy_calls": 1,
+      "command": "cargo rustc --locked -p harness --release -- --emit=asm"
+    }
+  ]
+}

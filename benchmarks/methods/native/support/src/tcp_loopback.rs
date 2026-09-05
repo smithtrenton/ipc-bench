@@ -23,25 +23,22 @@ fn run_parent(config: BenchmarkConfig) -> Result<(), Box<dyn Error>> {
     let mut stream = TcpStream::connect(("127.0.0.1", port))?;
     stream.set_nodelay(true)?;
 
-    let mut outbound = vec![0_u8; config.message_size];
-    let mut inbound = vec![0_u8; config.message_size];
-    for (index, byte) in outbound.iter_mut().enumerate() {
-        *byte = (index % 251) as u8;
-    }
+    let mut outbound = vec![0_u8; config.wire_size()];
+    let mut inbound = vec![0_u8; config.wire_size()];
+    harness::initialize_payload(&mut outbound);
 
-    let report = run_benchmark("tcp-loopback", &config, true, || {
-        stream
-            .write_all(&outbound)
-            .expect("parent should write full request");
-        stream.flush().expect("parent should flush request");
-        stream
-            .read_exact(&mut inbound)
-            .expect("parent should read full response");
-        if !outbound.is_empty() {
-            outbound.copy_from_slice(&inbound);
-            outbound[0] = outbound[0].wrapping_add(1);
-        }
-    });
+    let report = run_benchmark(
+        "tcp-loopback",
+        &config,
+        true,
+        || -> Result<(), Box<dyn Error>> {
+            stream.write_all(&outbound)?;
+            stream.flush()?;
+            stream.read_exact(&mut inbound)?;
+            harness::check_response_and_advance(&mut outbound, &inbound)?;
+            Ok(())
+        },
+    )?;
 
     drop(stream);
     child.request_shutdown();
@@ -62,13 +59,13 @@ fn run_child(config: BenchmarkConfig) -> Result<(), Box<dyn Error>> {
 
     let (mut stream, _) = listener.accept()?;
     stream.set_nodelay(true)?;
-    let mut buf = vec![0_u8; config.message_size];
+    let mut buf = vec![0_u8; config.wire_size()];
 
     loop {
         match stream.read_exact(&mut buf) {
             Ok(()) => {
                 if !buf.is_empty() {
-                    buf[0] = buf[0].wrapping_add(1);
+                    harness::transform_response(&mut buf);
                 }
                 stream.write_all(&buf)?;
                 stream.flush()?;

@@ -4,15 +4,22 @@ edition.workspace = true
 license.workspace = true
 version.workspace = true
 
+[features]
+padded-layout = ["harness/padded-layout"]
+copy-elision = ["harness/copy-elision"]
+borrowed-response = ["harness/borrowed-response"]
+conditional-wake = ["harness/conditional-wake"]
+cached-cursors = ["harness/cached-cursors"]
+
 [dependencies]
 harness = { path = "../../../harness" }
-iceoryx2 = "0.8.1"
-ntapi = "0.4"
+iceoryx2 = "0.9.3"
+ntapi = "0.4.3"
 raw_sync = "0.1.5"
 shared_memory = "0.12.4"
-socket2 = { version = "0.6", features = ["all"] }
-winapi = { version = "0.3", features = ["ntdef", "winnt"] }
-windows-sys = { version = "0.61", features = [
+socket2 = { version = "0.6.5", features = ["all"] }
+winapi = { version = "0.3.9", features = ["ntdef", "winnt"] }
+windows-sys = { version = "0.61.2", features = [
     "Win32_Foundation",
     "Win32_Networking_WinSock",
     "Win32_Security",

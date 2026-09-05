@@ -54,7 +54,7 @@ fn run_parent(config: BenchmarkConfig) -> Result<(), Box<dyn Error>> {
     let service = create_service(&node, &service_id)?;
     let client = service
         .client_builder()
-        .initial_max_slice_len(config.message_size.max(1))
+        .initial_max_slice_len(config.wire_size().max(1))
         .allocation_strategy(AllocationStrategy::PowerOfTwo)
         .create()?;
 
@@ -69,17 +69,19 @@ fn run_parent(config: BenchmarkConfig) -> Result<(), Box<dyn Error>> {
     wait_for_participants(&service)?;
     client.update_connections()?;
 
-    let mut outbound = vec![0_u8; config.message_size];
-    let mut inbound = vec![0_u8; config.message_size];
-    for (index, byte) in outbound.iter_mut().enumerate() {
-        *byte = (index % 251) as u8;
-    }
-    run_round_trip(&client, config.message_size, &mut outbound, &mut inbound)?;
+    let mut outbound = vec![0_u8; config.wire_size()];
+    let mut inbound = vec![0_u8; config.wire_size()];
+    harness::initialize_payload(&mut outbound);
 
-    let report = run_benchmark(method_name(), &config, true, || {
-        run_round_trip(&client, config.message_size, &mut outbound, &mut inbound)
-            .expect("loaned request/response round trip should succeed");
-    });
+    let report = run_benchmark(
+        method_name(),
+        &config,
+        true,
+        || -> Result<(), Box<dyn Error>> {
+            run_round_trip(&client, config.wire_size(), &mut outbound, &mut inbound)?;
+            Ok(())
+        },
+    )?;
 
     child.request_shutdown();
     let status = child.wait()?;
@@ -98,7 +100,7 @@ fn run_child(config: BenchmarkConfig) -> Result<(), Box<dyn Error>> {
     let service = open_service(&node, &service_id)?;
     let server = service
         .server_builder()
-        .initial_max_slice_len(config.message_size.max(1))
+        .initial_max_slice_len(config.wire_size().max(1))
         .allocation_strategy(AllocationStrategy::PowerOfTwo)
         .create()?;
     wait_for_participants(&service)?;
@@ -114,27 +116,35 @@ fn run_child(config: BenchmarkConfig) -> Result<(), Box<dyn Error>> {
     println!("ready");
     io::stdout().flush()?;
 
-    let mut scratch = vec![0_u8; config.message_size];
+    let mut scratch = vec![0_u8; config.wire_size()];
     loop {
         if let Some(active_request) = server.receive()? {
-            if active_request.payload().len() != config.message_size {
+            if active_request.payload().len() != config.wire_size() {
                 return Err(format!(
                     "received request payload with {} bytes, expected {}",
                     active_request.payload().len(),
-                    config.message_size
+                    config.wire_size()
                 )
                 .into());
             }
 
-            scratch.copy_from_slice(active_request.payload());
-            if !scratch.is_empty() {
-                scratch[0] = scratch[0].wrapping_add(1);
+            if !cfg!(feature = "borrowed-response") {
+                scratch.copy_from_slice(active_request.payload());
+                if !scratch.is_empty() {
+                    harness::transform_response(&mut scratch);
+                }
             }
 
             let response = active_request
-                .loan_slice_uninit(config.message_size)
+                .loan_slice_uninit(config.wire_size())
                 .expect("loaned response allocation should succeed");
-            let response = response.write_from_slice(scratch.as_slice());
+            let response = if cfg!(feature = "borrowed-response") {
+                let mut response = response.write_from_slice(active_request.payload());
+                harness::transform_response(response.payload_mut());
+                response
+            } else {
+                response.write_from_slice(scratch.as_slice())
+            };
             response
                 .send()
                 .expect("loaned response send should succeed");
@@ -182,10 +192,7 @@ fn run_round_trip(
     let request = request.write_from_slice(outbound);
     let pending_response = request.send()?;
     wait_for_response(&pending_response, inbound)?;
-    if !outbound.is_empty() {
-        outbound.copy_from_slice(inbound);
-        outbound[0] = outbound[0].wrapping_add(1);
-    }
+    harness::check_response_and_advance(outbound, inbound)?;
     Ok(())
 }
 

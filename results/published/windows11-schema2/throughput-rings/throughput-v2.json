@@ -1,0 +1,4082 @@
+[
+  {
+    "group_id": "b742c3323fa6",
+    "identity": {
+      "build_features": {
+        "borrowed_response": false,
+        "cached_cursors": false,
+        "conditional_wake": false,
+        "copy_elision": false,
+        "padded_layout": false
+      },
+      "config": {
+        "measurement": "batch",
+        "message_count": 10180614,
+        "message_size": 64,
+        "queue_depth": 8,
+        "ring_capacity": 64,
+        "trials": 1,
+        "validation": "full",
+        "warmup_count": 256,
+        "workload": "windowed"
+      },
+      "effective_child_affinity": 4,
+      "effective_parent_affinity": 1,
+      "effective_processor_group": 0,
+      "executable_sha256": "b2ea31c94184bbd21cbd316daf6d2c50134721345ccc9d3f7e8bdc3c8f16d36a",
+      "measurement_batch_size": null,
+      "method": "shm-ring-spin",
+      "queue_depth": 8,
+      "ring_capacity": 64,
+      "sampling_unit": null,
+      "spin_budget": 256,
+      "validation_policy": "full-payload-every-delivery;exact-sequence",
+      "variant": null,
+      "workload": "windowed"
+    },
+    "sources": [
+      "cases\\00109\\report.json",
+      "cases\\00153\\report.json",
+      "cases\\00161\\report.json",
+      "cases\\00225\\report.json",
+      "cases\\00246\\report.json"
+    ],
+    "launches": 5,
+    "rate_unit": "validated-deliveries/s",
+    "launch_rate": {
+      "values": [
+        8434737.955622368,
+        8700615.022885168,
+        8737847.678632075,
+        8812918.647902803,
+        8996379.219935482
+      ],
+      "median": 8737847.678632075,
+      "p10": 8434737.955622368,
+      "p90": 8996379.219935482
+    },
+    "launch_process_cpu_seconds": {
+      "values": [
+        2.265625,
+        2.3125,
+        2.3125,
+        2.359375,
+        2.390625
+      ],
+      "median": 2.3125,
+      "p10": 2.265625,
+      "p90": 2.390625
+    },
+    "launch_timed_seconds": {
+      "values": [
+        1.1316346,
+        1.1551921,
+        1.1651169000000001,
+        1.1701028,
+        1.2069864
+      ],
+      "median": 1.1651169000000001,
+      "p10": 1.1316346,
+      "p90": 1.2069864
+    },
+    "cpu_time_scope": "process-lifetime-through-shutdown;includes-startup-and-warmup",
+    "minimum_trial_seconds": 1.1316346,
+    "latency_sampling_policy": "send-to-validated-delivery-observation;every-16th-sequence;first-65536-samples-per-trial",
+    "launch_payload_bytes_per_second": {
+      "values": [
+        539823229.1598315,
+        556839361.4646508,
+        559222251.4324528,
+        564026793.4657794,
+        575768270.0758709
+      ],
+      "median": 559222251.4324528,
+      "p10": 539823229.1598315,
+      "p90": 575768270.0758709
+    },
+    "byte_count_direction": "responses",
+    "pooled_observed_latency_percentiles_micros": [
+      0.8999999999999999,
+      1.4,
+      1.7
+    ]
+  },
+  {
+    "group_id": "9e9baaa6d980",
+    "identity": {
+      "build_features": {
+        "borrowed_response": false,
+        "cached_cursors": false,
+        "conditional_wake": false,
+        "copy_elision": false,
+        "padded_layout": false
+      },
+      "config": {
+        "measurement": "batch",
+        "message_count": 10583,
+        "message_size": 65536,
+        "queue_depth": 1,
+        "ring_capacity": 64,
+        "trials": 1,
+        "validation": "full",
+        "warmup_count": 256,
+        "workload": "windowed"
+      },
+      "effective_child_affinity": 4,
+      "effective_parent_affinity": 1,
+      "effective_processor_group": 0,
+      "executable_sha256": "2a91cee0f0fea225eb4d1528bcd09fa39c7e8aac9dae3855715a4d0918b11eb2",
+      "measurement_batch_size": null,
+      "method": "shm-ring-hybrid",
+      "queue_depth": 1,
+      "ring_capacity": 64,
+      "sampling_unit": null,
+      "spin_budget": 256,
+      "validation_policy": "full-payload-every-delivery;exact-sequence",
+      "variant": null,
+      "workload": "windowed"
+    },
+    "sources": [
+      "cases\\00002\\report.json",
+      "cases\\00034\\report.json",
+      "cases\\00037\\report.json",
+      "cases\\00065\\report.json",
+      "cases\\00071\\report.json"
+    ],
+    "launches": 5,
+    "rate_unit": "validated-deliveries/s",
+    "launch_rate": {
+      "values": [
+        10641.712455962033,
+        11436.714110893008,
+        11782.573170135658,
+        11789.259330842844,
+        11899.19895442662
+      ],
+      "median": 11782.573170135658,
+      "p10": 10641.712455962033,
+      "p90": 11899.19895442662
+    },
+    "launch_process_cpu_seconds": {
+      "values": [
+        0.984375,
+        1.0,
+        1.015625,
+        1.046875,
+        1.0625
+      ],
+      "median": 1.015625,
+      "p10": 0.984375,
+      "p90": 1.0625
+    },
+    "launch_timed_seconds": {
+      "values": [
+        0.8893876,
+        0.8976815,
+        0.8981909,
+        0.9253532,
+        0.9944828
+      ],
+      "median": 0.8981909,
+      "p10": 0.8893876,
+      "p90": 0.9944828
+    },
+    "cpu_time_scope": "process-lifetime-through-shutdown;includes-startup-and-warmup",
+    "minimum_trial_seconds": 0.8893876,
+    "latency_sampling_policy": "send-to-validated-delivery-observation;every-16th-sequence;first-65536-samples-per-trial",
+    "launch_payload_bytes_per_second": {
+      "values": [
+        697415267.5139278,
+        749516495.9714842,
+        772182715.2780105,
+        772620899.5061166,
+        779825902.677303
+      ],
+      "median": 772182715.2780105,
+      "p10": 697415267.5139278,
+      "p90": 779825902.677303
+    },
+    "byte_count_direction": "responses",
+    "pooled_observed_latency_percentiles_micros": [
+      73.5,
+      122.0,
+      228.29999999999998
+    ]
+  },
+  {
+    "group_id": "3159746ef3ac",
+    "identity": {
+      "build_features": {
+        "borrowed_response": false,
+        "cached_cursors": false,
+        "conditional_wake": false,
+        "copy_elision": false,
+        "padded_layout": false
+      },
+      "config": {
+        "measurement": "batch",
+        "message_count": 11167,
+        "message_size": 65536,
+        "queue_depth": 2,
+        "ring_capacity": 64,
+        "trials": 1,
+        "validation": "full",
+        "warmup_count": 256,
+        "workload": "windowed"
+      },
+      "effective_child_affinity": 4,
+      "effective_parent_affinity": 1,
+      "effective_processor_group": 0,
+      "executable_sha256": "2a91cee0f0fea225eb4d1528bcd09fa39c7e8aac9dae3855715a4d0918b11eb2",
+      "measurement_batch_size": null,
+      "method": "shm-ring-hybrid",
+      "queue_depth": 2,
+      "ring_capacity": 64,
+      "sampling_unit": null,
+      "spin_budget": 256,
+      "validation_policy": "full-payload-every-delivery;exact-sequence",
+      "variant": null,
+      "workload": "windowed"
+    },
+    "sources": [
+      "cases\\00019\\report.json",
+      "cases\\00033\\report.json",
+      "cases\\00066\\report.json",
+      "cases\\00079\\report.json",
+      "cases\\00207\\report.json"
+    ],
+    "launches": 5,
+    "rate_unit": "validated-deliveries/s",
+    "launch_rate": {
+      "values": [
+        13025.37446056147,
+        13525.741968765189,
+        14215.204731663347,
+        14317.228342547796,
+        14330.736510281506
+      ],
+      "median": 14215.204731663347,
+      "p10": 13025.37446056147,
+      "p90": 14330.736510281506
+    },
+    "launch_process_cpu_seconds": {
+      "values": [
+        0.828125,
+        0.828125,
+        0.84375,
+        0.9375,
+        1.015625
+      ],
+      "median": 0.84375,
+      "p10": 0.828125,
+      "p90": 1.015625
+    },
+    "launch_timed_seconds": {
+      "values": [
+        0.7792342,
+        0.7799694,
+        0.7855673,
+        0.8256109,
+        0.8573266
+      ],
+      "median": 0.7855673,
+      "p10": 0.7792342,
+      "p90": 0.8573266
+    },
+    "cpu_time_scope": "process-lifetime-through-shutdown;includes-startup-and-warmup",
+    "minimum_trial_seconds": 0.7792342,
+    "latency_sampling_policy": "send-to-validated-delivery-observation;every-16th-sequence;first-65536-samples-per-trial",
+    "launch_payload_bytes_per_second": {
+      "values": [
+        853630940.6473565,
+        886423025.6649954,
+        931607657.2942891,
+        938293876.6572124,
+        939179147.9378088
+      ],
+      "median": 931607657.2942891,
+      "p10": 853630940.6473565,
+      "p90": 939179147.9378088
+    },
+    "byte_count_direction": "responses",
+    "pooled_observed_latency_percentiles_micros": [
+      126.6,
+      178.5,
+      346.6
+    ]
+  },
+  {
+    "group_id": "96fd7a247eec",
+    "identity": {
+      "build_features": {
+        "borrowed_response": false,
+        "cached_cursors": false,
+        "conditional_wake": false,
+        "copy_elision": false,
+        "padded_layout": false
+      },
+      "config": {
+        "measurement": "batch",
+        "message_count": 13721944,
+        "message_size": 64,
+        "queue_depth": 256,
+        "ring_capacity": 64,
+        "trials": 1,
+        "validation": "full",
+        "warmup_count": 256,
+        "workload": "streaming"
+      },
+      "effective_child_affinity": 4,
+      "effective_parent_affinity": 1,
+      "effective_processor_group": 0,
+      "executable_sha256": "b2ea31c94184bbd21cbd316daf6d2c50134721345ccc9d3f7e8bdc3c8f16d36a",
+      "measurement_batch_size": null,
+      "method": "shm-ring-spin",
+      "queue_depth": 256,
+      "ring_capacity": 64,
+      "sampling_unit": null,
+      "spin_budget": 256,
+      "validation_policy": "full-payload-every-delivery;exact-sequence",
+      "variant": null,
+      "workload": "streaming"
+    },
+    "sources": [
+      "cases\\00006\\report.json",
+      "cases\\00035\\report.json",
+      "cases\\00087\\report.json",
+      "cases\\00130\\report.json",
+      "cases\\00143\\report.json"
+    ],
+    "launches": 5,
+    "rate_unit": "validated-deliveries/s",
+    "launch_rate": {
+      "values": [
+        10536058.120702624,
+        11667501.216963947,
+        11679301.846923748,
+        11695274.551142361,
+        11802361.840972977
+      ],
+      "median": 11679301.846923748,
+      "p10": 10536058.120702624,
+      "p90": 11802361.840972977
+    },
+    "launch_process_cpu_seconds": {
+      "values": [
+        2.34375,
+        2.34375,
+        2.34375,
+        2.375,
+        2.53125
+      ],
+      "median": 2.34375,
+      "p10": 2.34375,
+      "p90": 2.53125
+    },
+    "launch_timed_seconds": {
+      "values": [
+        1.1626439,
+        1.1732896,
+        1.1748942,
+        1.1760825,
+        1.3023793000000001
+      ],
+      "median": 1.1748942,
+      "p10": 1.1626439,
+      "p90": 1.3023793000000001
+    },
+    "cpu_time_scope": "process-lifetime-through-shutdown;includes-startup-and-warmup",
+    "minimum_trial_seconds": 1.1626439,
+    "latency_sampling_policy": "send-to-validated-delivery-observation;every-16th-sequence;first-65536-samples-per-trial",
+    "launch_payload_bytes_per_second": {
+      "values": [
+        674307719.724968,
+        746720077.8856926,
+        747475318.2031199,
+        748497571.2731111,
+        755351157.8222705
+      ],
+      "median": 747475318.2031199,
+      "p10": 674307719.724968,
+      "p90": 755351157.8222705
+    },
+    "byte_count_direction": "requests",
+    "pooled_observed_latency_percentiles_micros": [
+      5.5,
+      6.2,
+      8.1
+    ]
+  },
+  {
+    "group_id": "1113f6209529",
+    "identity": {
+      "build_features": {
+        "borrowed_response": false,
+        "cached_cursors": false,
+        "conditional_wake": false,
+        "copy_elision": false,
+        "padded_layout": false
+      },
+      "config": {
+        "measurement": "batch",
+        "message_count": 14263494,
+        "message_size": 64,
+        "queue_depth": 2,
+        "ring_capacity": 64,
+        "trials": 1,
+        "validation": "full",
+        "warmup_count": 256,
+        "workload": "streaming"
+      },
+      "effective_child_affinity": 4,
+      "effective_parent_affinity": 1,
+      "effective_processor_group": 0,
+      "executable_sha256": "b2ea31c94184bbd21cbd316daf6d2c50134721345ccc9d3f7e8bdc3c8f16d36a",
+      "measurement_batch_size": null,
+      "method": "shm-ring-spin",
+      "queue_depth": 2,
+      "ring_capacity": 64,
+      "sampling_unit": null,
+      "spin_budget": 256,
+      "validation_policy": "full-payload-every-delivery;exact-sequence",
+      "variant": null,
+      "workload": "streaming"
+    },
+    "sources": [
+      "cases\\00046\\report.json",
+      "cases\\00051\\report.json",
+      "cases\\00193\\report.json",
+      "cases\\00216\\report.json",
+      "cases\\00224\\report.json"
+    ],
+    "launches": 5,
+    "rate_unit": "validated-deliveries/s",
+    "launch_rate": {
+      "values": [
+        12364305.729226487,
+        12397285.920202592,
+        12415090.614923913,
+        12471699.848767405,
+        12526595.149074318
+      ],
+      "median": 12415090.614923913,
+      "p10": 12364305.729226487,
+      "p90": 12526595.149074318
+    },
+    "launch_process_cpu_seconds": {
+      "values": [
+        2.234375,
+        2.265625,
+        2.296875,
+        2.3125,
+        2.3125
+      ],
+      "median": 2.296875,
+      "p10": 2.234375,
+      "p90": 2.3125
+    },
+    "launch_timed_seconds": {
+      "values": [
+        1.1386569,
+        1.1436688,
+        1.1488836,
+        1.1505336,
+        1.1536025
+      ],
+      "median": 1.1488836,
+      "p10": 1.1386569,
+      "p90": 1.1536025
+    },
+    "cpu_time_scope": "process-lifetime-through-shutdown;includes-startup-and-warmup",
+    "minimum_trial_seconds": 1.1386569,
+    "latency_sampling_policy": "send-to-validated-delivery-observation;every-16th-sequence;first-65536-samples-per-trial",
+    "launch_payload_bytes_per_second": {
+      "values": [
+        791315566.6704952,
+        793426298.8929659,
+        794565799.3551304,
+        798188790.321114,
+        801702089.5407563
+      ],
+      "median": 794565799.3551304,
+      "p10": 791315566.6704952,
+      "p90": 801702089.5407563
+    },
+    "byte_count_direction": "requests",
+    "pooled_observed_latency_percentiles_micros": [
+      0.19999999999999998,
+      0.19999999999999998,
+      0.3
+    ]
+  },
+  {
+    "group_id": "e0f69013627e",
+    "identity": {
+      "build_features": {
+        "borrowed_response": false,
+        "cached_cursors": false,
+        "conditional_wake": false,
+        "copy_elision": false,
+        "padded_layout": false
+      },
+      "config": {
+        "measurement": "batch",
+        "message_count": 14893,
+        "message_size": 65536,
+        "queue_depth": 8,
+        "ring_capacity": 64,
+        "trials": 1,
+        "validation": "full",
+        "warmup_count": 256,
+        "workload": "windowed"
+      },
+      "effective_child_affinity": 4,
+      "effective_parent_affinity": 1,
+      "effective_processor_group": 0,
+      "executable_sha256": "2a91cee0f0fea225eb4d1528bcd09fa39c7e8aac9dae3855715a4d0918b11eb2",
+      "measurement_batch_size": null,
+      "method": "shm-ring-hybrid",
+      "queue_depth": 8,
+      "ring_capacity": 64,
+      "sampling_unit": null,
+      "spin_budget": 256,
+      "validation_policy": "full-payload-every-delivery;exact-sequence",
+      "variant": null,
+      "workload": "windowed"
+    },
+    "sources": [
+      "cases\\00039\\report.json",
+      "cases\\00044\\report.json",
+      "cases\\00049\\report.json",
+      "cases\\00214\\report.json",
+      "cases\\00217\\report.json"
+    ],
+    "launches": 5,
+    "rate_unit": "validated-deliveries/s",
+    "launch_rate": {
+      "values": [
+        12034.14649676485,
+        13903.923542891127,
+        14261.137485868612,
+        14272.948847008709,
+        14468.037566575753
+      ],
+      "median": 14261.137485868612,
+      "p10": 12034.14649676485,
+      "p90": 14468.037566575753
+    },
+    "launch_process_cpu_seconds": {
+      "values": [
+        1.140625,
+        1.140625,
+        1.171875,
+        1.203125,
+        1.4375
+      ],
+      "median": 1.171875,
+      "p10": 1.140625,
+      "p90": 1.4375
+    },
+    "launch_timed_seconds": {
+      "values": [
+        1.0293725,
+        1.0434424,
+        1.0443066,
+        1.0711365,
+        1.2375618
+      ],
+      "median": 1.0443066,
+      "p10": 1.0293725,
+      "p90": 1.2375618
+    },
+    "cpu_time_scope": "process-lifetime-through-shutdown;includes-startup-and-warmup",
+    "minimum_trial_seconds": 1.0293725,
+    "latency_sampling_policy": "send-to-validated-delivery-observation;every-16th-sequence;first-65536-samples-per-trial",
+    "launch_payload_bytes_per_second": {
+      "values": [
+        788669824.8119812,
+        911207533.3069129,
+        934617906.2738854,
+        935391975.6375628,
+        948177309.9631085
+      ],
+      "median": 934617906.2738854,
+      "p10": 788669824.8119812,
+      "p90": 948177309.9631085
+    },
+    "byte_count_direction": "responses",
+    "pooled_observed_latency_percentiles_micros": [
+      512.3000000000001,
+      671.8,
+      842.1999999999999
+    ]
+  },
+  {
+    "group_id": "8d4161c7e401",
+    "identity": {
+      "build_features": {
+        "borrowed_response": false,
+        "cached_cursors": false,
+        "conditional_wake": false,
+        "copy_elision": false,
+        "padded_layout": false
+      },
+      "config": {
+        "measurement": "batch",
+        "message_count": 15114392,
+        "message_size": 64,
+        "queue_depth": 8,
+        "ring_capacity": 64,
+        "trials": 1,
+        "validation": "full",
+        "warmup_count": 256,
+        "workload": "streaming"
+      },
+      "effective_child_affinity": 4,
+      "effective_parent_affinity": 1,
+      "effective_processor_group": 0,
+      "executable_sha256": "b2ea31c94184bbd21cbd316daf6d2c50134721345ccc9d3f7e8bdc3c8f16d36a",
+      "measurement_batch_size": null,
+      "method": "shm-ring-spin",
+      "queue_depth": 8,
+      "ring_capacity": 64,
+      "sampling_unit": null,
+      "spin_budget": 256,
+      "validation_policy": "full-payload-every-delivery;exact-sequence",
+      "variant": null,
+      "workload": "streaming"
+    },
+    "sources": [
+      "cases\\00126\\report.json",
+      "cases\\00129\\report.json",
+      "cases\\00132\\report.json",
+      "cases\\00179\\report.json",
+      "cases\\00221\\report.json"
+    ],
+    "launches": 5,
+    "rate_unit": "validated-deliveries/s",
+    "launch_rate": {
+      "values": [
+        14890042.244497925,
+        15028347.19811718,
+        15078279.520548288,
+        15099796.536667658,
+        15139020.157993024
+      ],
+      "median": 15078279.520548288,
+      "p10": 14890042.244497925,
+      "p90": 15139020.157993024
+    },
+    "launch_process_cpu_seconds": {
+      "values": [
+        1.96875,
+        1.984375,
+        2.0,
+        2.015625,
+        2.046875
+      ],
+      "median": 2.0,
+      "p10": 1.96875,
+      "p90": 2.046875
+    },
+    "launch_timed_seconds": {
+      "values": [
+        0.9983732,
+        1.0009666,
+        1.002395,
+        1.0057255,
+        1.0150671
+      ],
+      "median": 1.002395,
+      "p10": 0.9983732,
+      "p90": 1.0150671
+    },
+    "cpu_time_scope": "process-lifetime-through-shutdown;includes-startup-and-warmup",
+    "minimum_trial_seconds": 0.9983732,
+    "latency_sampling_policy": "send-to-validated-delivery-observation;every-16th-sequence;first-65536-samples-per-trial",
+    "launch_payload_bytes_per_second": {
+      "values": [
+        952962703.6478672,
+        961814220.6794995,
+        965009889.3150904,
+        966386978.3467301,
+        968897290.1115535
+      ],
+      "median": 965009889.3150904,
+      "p10": 952962703.6478672,
+      "p90": 968897290.1115535
+    },
+    "byte_count_direction": "requests",
+    "pooled_observed_latency_percentiles_micros": [
+      0.5,
+      0.6,
+      0.7
+    ]
+  },
+  {
+    "group_id": "7d0a37066a10",
+    "identity": {
+      "build_features": {
+        "borrowed_response": false,
+        "cached_cursors": false,
+        "conditional_wake": false,
+        "copy_elision": false,
+        "padded_layout": false
+      },
+      "config": {
+        "measurement": "batch",
+        "message_count": 15845262,
+        "message_size": 64,
+        "queue_depth": 64,
+        "ring_capacity": 64,
+        "trials": 1,
+        "validation": "full",
+        "warmup_count": 256,
+        "workload": "streaming"
+      },
+      "effective_child_affinity": 4,
+      "effective_parent_affinity": 1,
+      "effective_processor_group": 0,
+      "executable_sha256": "b2ea31c94184bbd21cbd316daf6d2c50134721345ccc9d3f7e8bdc3c8f16d36a",
+      "measurement_batch_size": null,
+      "method": "shm-ring-spin",
+      "queue_depth": 64,
+      "ring_capacity": 64,
+      "sampling_unit": null,
+      "spin_budget": 256,
+      "validation_policy": "full-payload-every-delivery;exact-sequence",
+      "variant": null,
+      "workload": "streaming"
+    },
+    "sources": [
+      "cases\\00068\\report.json",
+      "cases\\00201\\report.json",
+      "cases\\00222\\report.json",
+      "cases\\00238\\report.json",
+      "cases\\00249\\report.json"
+    ],
+    "launches": 5,
+    "rate_unit": "validated-deliveries/s",
+    "launch_rate": {
+      "values": [
+        15074240.238033017,
+        15117552.891717274,
+        15175762.012741107,
+        15176539.651011448,
+        15212160.771783823
+      ],
+      "median": 15175762.012741107,
+      "p10": 15074240.238033017,
+      "p90": 15212160.771783823
+    },
+    "launch_process_cpu_seconds": {
+      "values": [
+        2.078125,
+        2.078125,
+        2.078125,
+        2.09375,
+        2.09375
+      ],
+      "median": 2.078125,
+      "p10": 2.078125,
+      "p90": 2.09375
+    },
+    "launch_timed_seconds": {
+      "values": [
+        1.0416181,
+        1.0440629,
+        1.0441164,
+        1.0481367,
+        1.0511483
+      ],
+      "median": 1.0441164,
+      "p10": 1.0416181,
+      "p90": 1.0511483
+    },
+    "cpu_time_scope": "process-lifetime-through-shutdown;includes-startup-and-warmup",
+    "minimum_trial_seconds": 1.0416181,
+    "latency_sampling_policy": "send-to-validated-delivery-observation;every-16th-sequence;first-65536-samples-per-trial",
+    "launch_payload_bytes_per_second": {
+      "values": [
+        964751375.2341131,
+        967523385.0699055,
+        971248768.8154309,
+        971298537.6647327,
+        973578289.3941647
+      ],
+      "median": 971248768.8154309,
+      "p10": 964751375.2341131,
+      "p90": 973578289.3941647
+    },
+    "byte_count_direction": "requests",
+    "pooled_observed_latency_percentiles_micros": [
+      4.1,
+      4.6,
+      6.6000000000000005
+    ]
+  },
+  {
+    "group_id": "a5d6f884a13d",
+    "identity": {
+      "build_features": {
+        "borrowed_response": false,
+        "cached_cursors": false,
+        "conditional_wake": false,
+        "copy_elision": false,
+        "padded_layout": false
+      },
+      "config": {
+        "measurement": "batch",
+        "message_count": 16815,
+        "message_size": 65536,
+        "queue_depth": 1,
+        "ring_capacity": 64,
+        "trials": 1,
+        "validation": "full",
+        "warmup_count": 256,
+        "workload": "windowed"
+      },
+      "effective_child_affinity": 4,
+      "effective_parent_affinity": 1,
+      "effective_processor_group": 0,
+      "executable_sha256": "b2ea31c94184bbd21cbd316daf6d2c50134721345ccc9d3f7e8bdc3c8f16d36a",
+      "measurement_batch_size": null,
+      "method": "shm-ring-spin",
+      "queue_depth": 1,
+      "ring_capacity": 64,
+      "sampling_unit": null,
+      "spin_budget": 256,
+      "validation_policy": "full-payload-every-delivery;exact-sequence",
+      "variant": null,
+      "workload": "windowed"
+    },
+    "sources": [
+      "cases\\00017\\report.json",
+      "cases\\00023\\report.json",
+      "cases\\00045\\report.json",
+      "cases\\00167\\report.json",
+      "cases\\00227\\report.json"
+    ],
+    "launches": 5,
+    "rate_unit": "validated-deliveries/s",
+    "launch_rate": {
+      "values": [
+        14204.665449083686,
+        14274.140232413392,
+        14289.229991083996,
+        14334.004555170191,
+        14686.618224263393
+      ],
+      "median": 14289.229991083996,
+      "p10": 14204.665449083686,
+      "p90": 14686.618224263393
+    },
+    "launch_process_cpu_seconds": {
+      "values": [
+        2.296875,
+        2.390625,
+        2.390625,
+        2.40625,
+        2.421875
+      ],
+      "median": 2.390625,
+      "p10": 2.296875,
+      "p90": 2.421875
+    },
+    "launch_timed_seconds": {
+      "values": [
+        1.1449198,
+        1.1730846,
+        1.1767604,
+        1.1780044,
+        1.183766
+      ],
+      "median": 1.1767604,
+      "p10": 1.1449198,
+      "p90": 1.183766
+    },
+    "cpu_time_scope": "process-lifetime-through-shutdown;includes-startup-and-warmup",
+    "minimum_trial_seconds": 1.1449198,
+    "latency_sampling_policy": "send-to-validated-delivery-observation;every-16th-sequence;first-65536-samples-per-trial",
+    "launch_payload_bytes_per_second": {
+      "values": [
+        930916954.8711485,
+        935470054.2714441,
+        936458976.6956807,
+        939393322.5276337,
+        962502211.9453257
+      ],
+      "median": 936458976.6956807,
+      "p10": 930916954.8711485,
+      "p90": 962502211.9453257
+    },
+    "byte_count_direction": "responses",
+    "pooled_observed_latency_percentiles_micros": [
+      65.9,
+      87.89999999999999,
+      110.60000000000001
+    ]
+  },
+  {
+    "group_id": "f6037688815a",
+    "identity": {
+      "build_features": {
+        "borrowed_response": false,
+        "cached_cursors": false,
+        "conditional_wake": false,
+        "copy_elision": false,
+        "padded_layout": false
+      },
+      "config": {
+        "measurement": "batch",
+        "message_count": 17283,
+        "message_size": 65536,
+        "queue_depth": 64,
+        "ring_capacity": 64,
+        "trials": 1,
+        "validation": "full",
+        "warmup_count": 256,
+        "workload": "windowed"
+      },
+      "effective_child_affinity": 4,
+      "effective_parent_affinity": 1,
+      "effective_processor_group": 0,
+      "executable_sha256": "b2ea31c94184bbd21cbd316daf6d2c50134721345ccc9d3f7e8bdc3c8f16d36a",
+      "measurement_batch_size": null,
+      "method": "shm-ring-spin",
+      "queue_depth": 64,
+      "ring_capacity": 64,
+      "sampling_unit": null,
+      "spin_budget": 256,
+      "validation_policy": "full-payload-every-delivery;exact-sequence",
+      "variant": null,
+      "workload": "windowed"
+    },
+    "sources": [
+      "cases\\00040\\report.json",
+      "cases\\00047\\report.json",
+      "cases\\00101\\report.json",
+      "cases\\00169\\report.json",
+      "cases\\00175\\report.json"
+    ],
+    "launches": 5,
+    "rate_unit": "validated-deliveries/s",
+    "launch_rate": {
+      "values": [
+        14720.999873002309,
+        14858.724761532212,
+        14970.446296523112,
+        14979.286151167631,
+        15065.718016621717
+      ],
+      "median": 14970.446296523112,
+      "p10": 14720.999873002309,
+      "p90": 15065.718016621717
+    },
+    "launch_process_cpu_seconds": {
+      "values": [
+        2.3125,
+        2.34375,
+        2.34375,
+        2.359375,
+        2.359375
+      ],
+      "median": 2.34375,
+      "p10": 2.3125,
+      "p90": 2.359375
+    },
+    "launch_timed_seconds": {
+      "values": [
+        1.147174,
+        1.1537933,
+        1.1544746,
+        1.163155,
+        1.1740371
+      ],
+      "median": 1.1544746,
+      "p10": 1.147174,
+      "p90": 1.1740371
+    },
+    "cpu_time_scope": "process-lifetime-through-shutdown;includes-startup-and-warmup",
+    "minimum_trial_seconds": 1.147174,
+    "latency_sampling_policy": "send-to-validated-delivery-observation;every-16th-sequence;first-65536-samples-per-trial",
+    "launch_payload_bytes_per_second": {
+      "values": [
+        964755447.6770793,
+        973781385.971775,
+        981103168.4889387,
+        981682497.2029219,
+        987346895.9373208
+      ],
+      "median": 981103168.4889387,
+      "p10": 964755447.6770793,
+      "p90": 987346895.9373208
+    },
+    "byte_count_direction": "responses",
+    "pooled_observed_latency_percentiles_micros": [
+      193.9,
+      248.50000000000003,
+      317.0
+    ]
+  },
+  {
+    "group_id": "e7ff2ac8648a",
+    "identity": {
+      "build_features": {
+        "borrowed_response": false,
+        "cached_cursors": false,
+        "conditional_wake": false,
+        "copy_elision": false,
+        "padded_layout": false
+      },
+      "config": {
+        "measurement": "batch",
+        "message_count": 17397,
+        "message_size": 65536,
+        "queue_depth": 8,
+        "ring_capacity": 64,
+        "trials": 1,
+        "validation": "full",
+        "warmup_count": 256,
+        "workload": "windowed"
+      },
+      "effective_child_affinity": 4,
+      "effective_parent_affinity": 1,
+      "effective_processor_group": 0,
+      "executable_sha256": "b2ea31c94184bbd21cbd316daf6d2c50134721345ccc9d3f7e8bdc3c8f16d36a",
+      "measurement_batch_size": null,
+      "method": "shm-ring-spin",
+      "queue_depth": 8,
+      "ring_capacity": 64,
+      "sampling_unit": null,
+      "spin_budget": 256,
+      "validation_policy": "full-payload-every-delivery;exact-sequence",
+      "variant": null,
+      "workload": "windowed"
+    },
+    "sources": [
+      "cases\\00030\\report.json",
+      "cases\\00031\\report.json",
+      "cases\\00090\\report.json",
+      "cases\\00138\\report.json",
+      "cases\\00219\\report.json"
+    ],
+    "launches": 5,
+    "rate_unit": "validated-deliveries/s",
+    "launch_rate": {
+      "values": [
+        14416.935760149658,
+        14789.751655101327,
+        15041.793567659754,
+        15065.306375524737,
+        15425.080807225502
+      ],
+      "median": 15041.793567659754,
+      "p10": 14416.935760149658,
+      "p90": 15425.080807225502
+    },
+    "launch_process_cpu_seconds": {
+      "values": [
+        2.296875,
+        2.34375,
+        2.34375,
+        2.40625,
+        2.4375
+      ],
+      "median": 2.34375,
+      "p10": 2.296875,
+      "p90": 2.4375
+    },
+    "launch_timed_seconds": {
+      "values": [
+        1.1278385,
+        1.1547724,
+        1.1565775,
+        1.1762875,
+        1.2067058
+      ],
+      "median": 1.1565775,
+      "p10": 1.1278385,
+      "p90": 1.2067058
+    },
+    "cpu_time_scope": "process-lifetime-through-shutdown;includes-startup-and-warmup",
+    "minimum_trial_seconds": 1.1278385,
+    "latency_sampling_policy": "send-to-validated-delivery-observation;every-16th-sequence;first-65536-samples-per-trial",
+    "launch_payload_bytes_per_second": {
+      "values": [
+        944828301.977168,
+        969261164.4687206,
+        985778983.2501496,
+        987319918.6263891,
+        1010898095.7823305
+      ],
+      "median": 985778983.2501496,
+      "p10": 944828301.977168,
+      "p90": 1010898095.7823305
+    },
+    "byte_count_direction": "responses",
+    "pooled_observed_latency_percentiles_micros": [
+      192.7,
+      275.7,
+      517.3000000000001
+    ]
+  },
+  {
+    "group_id": "73c18ecfc1b4",
+    "identity": {
+      "build_features": {
+        "borrowed_response": false,
+        "cached_cursors": false,
+        "conditional_wake": false,
+        "copy_elision": false,
+        "padded_layout": false
+      },
+      "config": {
+        "measurement": "batch",
+        "message_count": 17451,
+        "message_size": 65536,
+        "queue_depth": 64,
+        "ring_capacity": 64,
+        "trials": 1,
+        "validation": "full",
+        "warmup_count": 256,
+        "workload": "windowed"
+      },
+      "effective_child_affinity": 4,
+      "effective_parent_affinity": 1,
+      "effective_processor_group": 0,
+      "executable_sha256": "2a91cee0f0fea225eb4d1528bcd09fa39c7e8aac9dae3855715a4d0918b11eb2",
+      "measurement_batch_size": null,
+      "method": "shm-ring-hybrid",
+      "queue_depth": 64,
+      "ring_capacity": 64,
+      "sampling_unit": null,
+      "spin_budget": 256,
+      "validation_policy": "full-payload-every-delivery;exact-sequence",
+      "variant": null,
+      "workload": "windowed"
+    },
+    "sources": [
+      "cases\\00000\\report.json",
+      "cases\\00016\\report.json",
+      "cases\\00103\\report.json",
+      "cases\\00168\\report.json",
+      "cases\\00180\\report.json"
+    ],
+    "launches": 5,
+    "rate_unit": "validated-deliveries/s",
+    "launch_rate": {
+      "values": [
+        14414.709992241282,
+        14791.690682362196,
+        14937.008808136086,
+        14992.575878490976,
+        15052.553258402077
+      ],
+      "median": 14937.008808136086,
+      "p10": 14414.709992241282,
+      "p90": 15052.553258402077
+    },
+    "launch_process_cpu_seconds": {
+      "values": [
+        1.3125,
+        1.3125,
+        1.34375,
+        1.359375,
+        1.359375
+      ],
+      "median": 1.34375,
+      "p10": 1.3125,
+      "p90": 1.359375
+    },
+    "launch_timed_seconds": {
+      "values": [
+        1.1593382,
+        1.1639761,
+        1.1683062,
+        1.179784,
+        1.2106383
+      ],
+      "median": 1.1683062,
+      "p10": 1.1593382,
+      "p90": 1.2106383
+    },
+    "cpu_time_scope": "process-lifetime-through-shutdown;includes-startup-and-warmup",
+    "minimum_trial_seconds": 1.1593382,
+    "latency_sampling_policy": "send-to-validated-delivery-observation;every-16th-sequence;first-65536-samples-per-trial",
+    "launch_payload_bytes_per_second": {
+      "values": [
+        944682434.0515246,
+        969388240.5592889,
+        978911809.2500066,
+        982553452.7727846,
+        986484130.3426385
+      ],
+      "median": 978911809.2500066,
+      "p10": 944682434.0515246,
+      "p90": 986484130.3426385
+    },
+    "byte_count_direction": "responses",
+    "pooled_observed_latency_percentiles_micros": [
+      4234.1,
+      4528.5,
+      5786.0
+    ]
+  },
+  {
+    "group_id": "6f15f463589e",
+    "identity": {
+      "build_features": {
+        "borrowed_response": false,
+        "cached_cursors": false,
+        "conditional_wake": false,
+        "copy_elision": false,
+        "padded_layout": false
+      },
+      "config": {
+        "measurement": "batch",
+        "message_count": 17577,
+        "message_size": 65536,
+        "queue_depth": 256,
+        "ring_capacity": 64,
+        "trials": 1,
+        "validation": "full",
+        "warmup_count": 256,
+        "workload": "windowed"
+      },
+      "effective_child_affinity": 4,
+      "effective_parent_affinity": 1,
+      "effective_processor_group": 0,
+      "executable_sha256": "2a91cee0f0fea225eb4d1528bcd09fa39c7e8aac9dae3855715a4d0918b11eb2",
+      "measurement_batch_size": null,
+      "method": "shm-ring-hybrid",
+      "queue_depth": 256,
+      "ring_capacity": 64,
+      "sampling_unit": null,
+      "spin_budget": 256,
+      "validation_policy": "full-payload-every-delivery;exact-sequence",
+      "variant": null,
+      "workload": "windowed"
+    },
+    "sources": [
+      "cases\\00072\\report.json",
+      "cases\\00147\\report.json",
+      "cases\\00187\\report.json",
+      "cases\\00236\\report.json",
+      "cases\\00240\\report.json"
+    ],
+    "launches": 5,
+    "rate_unit": "validated-deliveries/s",
+    "launch_rate": {
+      "values": [
+        14658.517097141592,
+        14755.66393519966,
+        14955.056978026865,
+        15105.115776239414,
+        15107.612407615537
+      ],
+      "median": 14955.056978026865,
+      "p10": 14658.517097141592,
+      "p90": 15107.612407615537
+    },
+    "launch_process_cpu_seconds": {
+      "values": [
+        1.328125,
+        1.359375,
+        1.359375,
+        1.375,
+        1.453125
+      ],
+      "median": 1.359375,
+      "p10": 1.328125,
+      "p90": 1.453125
+    },
+    "launch_timed_seconds": {
+      "values": [
+        1.1634532,
+        1.1636454999999999,
+        1.1753215,
+        1.1912036,
+        1.1990981
+      ],
+      "median": 1.1753215,
+      "p10": 1.1634532,
+      "p90": 1.1990981
+    },
+    "cpu_time_scope": "process-lifetime-through-shutdown;includes-startup-and-warmup",
+    "minimum_trial_seconds": 1.1634532,
+    "latency_sampling_policy": "send-to-validated-delivery-observation;every-16th-sequence;first-65536-samples-per-trial",
+    "launch_payload_bytes_per_second": {
+      "values": [
+        960660576.4782714,
+        967027191.6572449,
+        980094614.1119686,
+        989928867.5116262,
+        990092486.7454919
+      ],
+      "median": 980094614.1119686,
+      "p10": 960660576.4782714,
+      "p90": 990092486.7454919
+    },
+    "byte_count_direction": "responses",
+    "pooled_observed_latency_percentiles_micros": [
+      4319.7,
+      4602.9,
+      4976.0
+    ]
+  },
+  {
+    "group_id": "6787db447c86",
+    "identity": {
+      "build_features": {
+        "borrowed_response": false,
+        "cached_cursors": false,
+        "conditional_wake": false,
+        "copy_elision": false,
+        "padded_layout": false
+      },
+      "config": {
+        "measurement": "batch",
+        "message_count": 17800,
+        "message_size": 65536,
+        "queue_depth": 256,
+        "ring_capacity": 64,
+        "trials": 1,
+        "validation": "full",
+        "warmup_count": 256,
+        "workload": "windowed"
+      },
+      "effective_child_affinity": 4,
+      "effective_parent_affinity": 1,
+      "effective_processor_group": 0,
+      "executable_sha256": "b2ea31c94184bbd21cbd316daf6d2c50134721345ccc9d3f7e8bdc3c8f16d36a",
+      "measurement_batch_size": null,
+      "method": "shm-ring-spin",
+      "queue_depth": 256,
+      "ring_capacity": 64,
+      "sampling_unit": null,
+      "spin_budget": 256,
+      "validation_policy": "full-payload-every-delivery;exact-sequence",
+      "variant": null,
+      "workload": "windowed"
+    },
+    "sources": [
+      "cases\\00060\\report.json",
+      "cases\\00111\\report.json",
+      "cases\\00152\\report.json",
+      "cases\\00194\\report.json",
+      "cases\\00199\\report.json"
+    ],
+    "launches": 5,
+    "rate_unit": "validated-deliveries/s",
+    "launch_rate": {
+      "values": [
+        14618.481850949467,
+        14924.917602716134,
+        15098.68645669031,
+        15121.582193232582,
+        15125.586127084325
+      ],
+      "median": 15098.68645669031,
+      "p10": 14618.481850949467,
+      "p90": 15125.586127084325
+    },
+    "launch_process_cpu_seconds": {
+      "values": [
+        2.390625,
+        2.390625,
+        2.40625,
+        2.40625,
+        2.46875
+      ],
+      "median": 2.40625,
+      "p10": 2.390625,
+      "p90": 2.46875
+    },
+    "launch_timed_seconds": {
+      "values": [
+        1.1768139,
+        1.1771255,
+        1.1789105,
+        1.1926364,
+        1.2176367
+      ],
+      "median": 1.1789105,
+      "p10": 1.1768139,
+      "p90": 1.2176367
+    },
+    "cpu_time_scope": "process-lifetime-through-shutdown;includes-startup-and-warmup",
+    "minimum_trial_seconds": 1.1768139,
+    "latency_sampling_policy": "send-to-validated-delivery-observation;every-16th-sequence;first-65536-samples-per-trial",
+    "launch_payload_bytes_per_second": {
+      "values": [
+        958036826.5838243,
+        978119400.0116045,
+        989507515.6256561,
+        991008010.6156905,
+        991270412.4245983
+      ],
+      "median": 989507515.6256561,
+      "p10": 958036826.5838243,
+      "p90": 991270412.4245983
+    },
+    "byte_count_direction": "responses",
+    "pooled_observed_latency_percentiles_micros": [
+      192.9,
+      244.7,
+      314.3
+    ]
+  },
+  {
+    "group_id": "480ec2ef1142",
+    "identity": {
+      "build_features": {
+        "borrowed_response": false,
+        "cached_cursors": false,
+        "conditional_wake": false,
+        "copy_elision": false,
+        "padded_layout": false
+      },
+      "config": {
+        "measurement": "batch",
+        "message_count": 18195,
+        "message_size": 65536,
+        "queue_depth": 2,
+        "ring_capacity": 64,
+        "trials": 1,
+        "validation": "full",
+        "warmup_count": 256,
+        "workload": "windowed"
+      },
+      "effective_child_affinity": 4,
+      "effective_parent_affinity": 1,
+      "effective_processor_group": 0,
+      "executable_sha256": "b2ea31c94184bbd21cbd316daf6d2c50134721345ccc9d3f7e8bdc3c8f16d36a",
+      "measurement_batch_size": null,
+      "method": "shm-ring-spin",
+      "queue_depth": 2,
+      "ring_capacity": 64,
+      "sampling_unit": null,
+      "spin_budget": 256,
+      "validation_policy": "full-payload-every-delivery;exact-sequence",
+      "variant": null,
+      "workload": "windowed"
+    },
+    "sources": [
+      "cases\\00028\\report.json",
+      "cases\\00070\\report.json",
+      "cases\\00206\\report.json",
+      "cases\\00228\\report.json",
+      "cases\\00234\\report.json"
+    ],
+    "launches": 5,
+    "rate_unit": "validated-deliveries/s",
+    "launch_rate": {
+      "values": [
+        14695.991665244454,
+        15027.996922874123,
+        15180.932181824099,
+        15435.947815552514,
+        15514.647592390173
+      ],
+      "median": 15180.932181824099,
+      "p10": 14695.991665244454,
+      "p90": 15514.647592390173
+    },
+    "launch_process_cpu_seconds": {
+      "values": [
+        2.390625,
+        2.390625,
+        2.4375,
+        2.484375,
+        2.515625
+      ],
+      "median": 2.4375,
+      "p10": 2.390625,
+      "p90": 2.515625
+    },
+    "launch_timed_seconds": {
+      "values": [
+        1.1727627,
+        1.178742,
+        1.198543,
+        1.2107402,
+        1.2380927
+      ],
+      "median": 1.198543,
+      "p10": 1.1727627,
+      "p90": 1.2380927
+    },
+    "cpu_time_scope": "process-lifetime-through-shutdown;includes-startup-and-warmup",
+    "minimum_trial_seconds": 1.1727627,
+    "latency_sampling_policy": "send-to-validated-delivery-observation;every-16th-sequence;first-65536-samples-per-trial",
+    "launch_payload_bytes_per_second": {
+      "values": [
+        963116509.7734605,
+        984874806.3374785,
+        994897571.4680241,
+        1011610276.0400496,
+        1016767944.6148823
+      ],
+      "median": 994897571.4680241,
+      "p10": 963116509.7734605,
+      "p90": 1016767944.6148823
+    },
+    "byte_count_direction": "responses",
+    "pooled_observed_latency_percentiles_micros": [
+      126.4,
+      163.20000000000002,
+      216.0
+    ]
+  },
+  {
+    "group_id": "4efef51f596a",
+    "identity": {
+      "build_features": {
+        "borrowed_response": false,
+        "cached_cursors": false,
+        "conditional_wake": false,
+        "copy_elision": false,
+        "padded_layout": false
+      },
+      "config": {
+        "measurement": "batch",
+        "message_count": 2026971,
+        "message_size": 64,
+        "queue_depth": 8,
+        "ring_capacity": 64,
+        "trials": 1,
+        "validation": "full",
+        "warmup_count": 256,
+        "workload": "streaming"
+      },
+      "effective_child_affinity": 4,
+      "effective_parent_affinity": 1,
+      "effective_processor_group": 0,
+      "executable_sha256": "2a91cee0f0fea225eb4d1528bcd09fa39c7e8aac9dae3855715a4d0918b11eb2",
+      "measurement_batch_size": null,
+      "method": "shm-ring-hybrid",
+      "queue_depth": 8,
+      "ring_capacity": 64,
+      "sampling_unit": null,
+      "spin_budget": 256,
+      "validation_policy": "full-payload-every-delivery;exact-sequence",
+      "variant": null,
+      "workload": "streaming"
+    },
+    "sources": [
+      "cases\\00050\\report.json",
+      "cases\\00064\\report.json",
+      "cases\\00088\\report.json",
+      "cases\\00106\\report.json",
+      "cases\\00230\\report.json"
+    ],
+    "launches": 5,
+    "rate_unit": "validated-deliveries/s",
+    "launch_rate": {
+      "values": [
+        3298412.8337595677,
+        3556236.7143622083,
+        3562764.9701546053,
+        3603660.318776495,
+        3627646.389795913
+      ],
+      "median": 3562764.9701546053,
+      "p10": 3298412.8337595677,
+      "p90": 3627646.389795913
+    },
+    "launch_process_cpu_seconds": {
+      "values": [
+        1.109375,
+        1.109375,
+        1.125,
+        1.140625,
+        1.25
+      ],
+      "median": 1.125,
+      "p10": 1.109375,
+      "p90": 1.25
+    },
+    "launch_timed_seconds": {
+      "values": [
+        0.5587565,
+        0.5624756,
+        0.568932,
+        0.5699764,
+        0.6145292
+      ],
+      "median": 0.568932,
+      "p10": 0.5587565,
+      "p90": 0.6145292
+    },
+    "cpu_time_scope": "process-lifetime-through-shutdown;includes-startup-and-warmup",
+    "minimum_trial_seconds": 0.5587565,
+    "latency_sampling_policy": "send-to-validated-delivery-observation;every-16th-sequence;first-65536-samples-per-trial",
+    "launch_payload_bytes_per_second": {
+      "values": [
+        211098421.36061233,
+        227599149.71918133,
+        228016958.08989474,
+        230634260.40169567,
+        232169368.94693843
+      ],
+      "median": 228016958.08989474,
+      "p10": 211098421.36061233,
+      "p90": 232169368.94693843
+    },
+    "byte_count_direction": "requests",
+    "pooled_observed_latency_percentiles_micros": [
+      0.3,
+      0.39999999999999997,
+      0.39999999999999997
+    ]
+  },
+  {
+    "group_id": "338ac6951485",
+    "identity": {
+      "build_features": {
+        "borrowed_response": false,
+        "cached_cursors": false,
+        "conditional_wake": false,
+        "copy_elision": false,
+        "padded_layout": false
+      },
+      "config": {
+        "measurement": "batch",
+        "message_count": 2245512,
+        "message_size": 64,
+        "queue_depth": 64,
+        "ring_capacity": 64,
+        "trials": 1,
+        "validation": "full",
+        "warmup_count": 256,
+        "workload": "windowed"
+      },
+      "effective_child_affinity": 4,
+      "effective_parent_affinity": 1,
+      "effective_processor_group": 0,
+      "executable_sha256": "2a91cee0f0fea225eb4d1528bcd09fa39c7e8aac9dae3855715a4d0918b11eb2",
+      "measurement_batch_size": null,
+      "method": "shm-ring-hybrid",
+      "queue_depth": 64,
+      "ring_capacity": 64,
+      "sampling_unit": null,
+      "spin_budget": 256,
+      "validation_policy": "full-payload-every-delivery;exact-sequence",
+      "variant": null,
+      "workload": "windowed"
+    },
+    "sources": [
+      "cases\\00027\\report.json",
+      "cases\\00150\\report.json",
+      "cases\\00154\\report.json",
+      "cases\\00158\\report.json",
+      "cases\\00177\\report.json"
+    ],
+    "launches": 5,
+    "rate_unit": "validated-deliveries/s",
+    "launch_rate": {
+      "values": [
+        2549336.001143477,
+        2585355.12089277,
+        2594663.099442835,
+        2597458.541232048,
+        2597459.7430593367
+      ],
+      "median": 2594663.099442835,
+      "p10": 2549336.001143477,
+      "p90": 2597459.7430593367
+    },
+    "launch_process_cpu_seconds": {
+      "values": [
+        1.71875,
+        1.734375,
+        1.734375,
+        1.75,
+        1.765625
+      ],
+      "median": 1.734375,
+      "p10": 1.71875,
+      "p90": 1.765625
+    },
+    "launch_timed_seconds": {
+      "values": [
+        0.8645031,
+        0.8645035,
+        0.8654349,
+        0.8685507,
+        0.8808223
+      ],
+      "median": 0.8654349,
+      "p10": 0.8645031,
+      "p90": 0.8808223
+    },
+    "cpu_time_scope": "process-lifetime-through-shutdown;includes-startup-and-warmup",
+    "minimum_trial_seconds": 0.8645031,
+    "latency_sampling_policy": "send-to-validated-delivery-observation;every-16th-sequence;first-65536-samples-per-trial",
+    "launch_payload_bytes_per_second": {
+      "values": [
+        163157504.07318252,
+        165462727.7371373,
+        166058438.36434144,
+        166237346.63885108,
+        166237423.55579755
+      ],
+      "median": 166058438.36434144,
+      "p10": 163157504.07318252,
+      "p90": 166237423.55579755
+    },
+    "byte_count_direction": "responses",
+    "pooled_observed_latency_percentiles_micros": [
+      23.5,
+      29.5,
+      34.8
+    ]
+  },
+  {
+    "group_id": "f4e955df4b44",
+    "identity": {
+      "build_features": {
+        "borrowed_response": false,
+        "cached_cursors": false,
+        "conditional_wake": false,
+        "copy_elision": false,
+        "padded_layout": false
+      },
+      "config": {
+        "measurement": "batch",
+        "message_count": 2255093,
+        "message_size": 64,
+        "queue_depth": 256,
+        "ring_capacity": 64,
+        "trials": 1,
+        "validation": "full",
+        "warmup_count": 256,
+        "workload": "windowed"
+      },
+      "effective_child_affinity": 4,
+      "effective_parent_affinity": 1,
+      "effective_processor_group": 0,
+      "executable_sha256": "2a91cee0f0fea225eb4d1528bcd09fa39c7e8aac9dae3855715a4d0918b11eb2",
+      "measurement_batch_size": null,
+      "method": "shm-ring-hybrid",
+      "queue_depth": 256,
+      "ring_capacity": 64,
+      "sampling_unit": null,
+      "spin_budget": 256,
+      "validation_policy": "full-payload-every-delivery;exact-sequence",
+      "variant": null,
+      "workload": "windowed"
+    },
+    "sources": [
+      "cases\\00003\\report.json",
+      "cases\\00055\\report.json",
+      "cases\\00172\\report.json",
+      "cases\\00200\\report.json",
+      "cases\\00231\\report.json"
+    ],
+    "launches": 5,
+    "rate_unit": "validated-deliveries/s",
+    "launch_rate": {
+      "values": [
+        2534371.060226985,
+        2578980.1543367337,
+        2619779.3899825164,
+        2634050.100253302,
+        2663748.5156563483
+      ],
+      "median": 2619779.3899825164,
+      "p10": 2534371.060226985,
+      "p90": 2663748.5156563483
+    },
+    "launch_process_cpu_seconds": {
+      "values": [
+        1.6875,
+        1.71875,
+        1.734375,
+        1.765625,
+        1.765625
+      ],
+      "median": 1.734375,
+      "p10": 1.6875,
+      "p90": 1.765625
+    },
+    "launch_timed_seconds": {
+      "values": [
+        0.8465863,
+        0.8561314,
+        0.860795,
+        0.8744127,
+        0.8898038
+      ],
+      "median": 0.860795,
+      "p10": 0.8465863,
+      "p90": 0.8898038
+    },
+    "cpu_time_scope": "process-lifetime-through-shutdown;includes-startup-and-warmup",
+    "minimum_trial_seconds": 0.8465863,
+    "latency_sampling_policy": "send-to-validated-delivery-observation;every-16th-sequence;first-65536-samples-per-trial",
+    "launch_payload_bytes_per_second": {
+      "values": [
+        162199747.85452703,
+        165054729.87755096,
+        167665880.95888105,
+        168579206.41621134,
+        170479905.0020063
+      ],
+      "median": 167665880.95888105,
+      "p10": 162199747.85452703,
+      "p90": 170479905.0020063
+    },
+    "byte_count_direction": "responses",
+    "pooled_observed_latency_percentiles_micros": [
+      23.3,
+      30.599999999999998,
+      37.1
+    ]
+  },
+  {
+    "group_id": "ea4ebf8344a6",
+    "identity": {
+      "build_features": {
+        "borrowed_response": false,
+        "cached_cursors": false,
+        "conditional_wake": false,
+        "copy_elision": false,
+        "padded_layout": false
+      },
+      "config": {
+        "measurement": "batch",
+        "message_count": 25390,
+        "message_size": 65536,
+        "queue_depth": 1,
+        "ring_capacity": 64,
+        "trials": 1,
+        "validation": "full",
+        "warmup_count": 256,
+        "workload": "streaming"
+      },
+      "effective_child_affinity": 4,
+      "effective_parent_affinity": 1,
+      "effective_processor_group": 0,
+      "executable_sha256": "b2ea31c94184bbd21cbd316daf6d2c50134721345ccc9d3f7e8bdc3c8f16d36a",
+      "measurement_batch_size": null,
+      "method": "shm-ring-spin",
+      "queue_depth": 1,
+      "ring_capacity": 64,
+      "sampling_unit": null,
+      "spin_budget": 256,
+      "validation_policy": "full-payload-every-delivery;exact-sequence",
+      "variant": null,
+      "workload": "streaming"
+    },
+    "sources": [
+      "cases\\00038\\report.json",
+      "cases\\00056\\report.json",
+      "cases\\00085\\report.json",
+      "cases\\00139\\report.json",
+      "cases\\00210\\report.json"
+    ],
+    "launches": 5,
+    "rate_unit": "validated-deliveries/s",
+    "launch_rate": {
+      "values": [
+        20567.759263734166,
+        21635.272088897025,
+        21662.244065150884,
+        21729.450285987466,
+        21732.945159022845
+      ],
+      "median": 21662.244065150884,
+      "p10": 20567.759263734166,
+      "p90": 21732.945159022845
+    },
+    "launch_process_cpu_seconds": {
+      "values": [
+        2.359375,
+        2.359375,
+        2.359375,
+        2.375,
+        2.484375
+      ],
+      "median": 2.359375,
+      "p10": 2.359375,
+      "p90": 2.484375
+    },
+    "launch_timed_seconds": {
+      "values": [
+        1.1682724,
+        1.1684603,
+        1.1720854,
+        1.1735465999999999,
+        1.2344563
+      ],
+      "median": 1.1720854,
+      "p10": 1.1682724,
+      "p90": 1.2344563
+    },
+    "cpu_time_scope": "process-lifetime-through-shutdown;includes-startup-and-warmup",
+    "minimum_trial_seconds": 1.1682724,
+    "latency_sampling_policy": "send-to-validated-delivery-observation;every-16th-sequence;first-65536-samples-per-trial",
+    "launch_payload_bytes_per_second": {
+      "values": [
+        1347928671.1080823,
+        1417889191.6179554,
+        1419656827.0537283,
+        1424061253.9424746,
+        1424290293.9417212
+      ],
+      "median": 1419656827.0537283,
+      "p10": 1347928671.1080823,
+      "p90": 1424290293.9417212
+    },
+    "byte_count_direction": "requests",
+    "pooled_observed_latency_percentiles_micros": [
+      45.599999999999994,
+      49.7,
+      67.0
+    ]
+  },
+  {
+    "group_id": "93079d82636a",
+    "identity": {
+      "build_features": {
+        "borrowed_response": false,
+        "cached_cursors": false,
+        "conditional_wake": false,
+        "copy_elision": false,
+        "padded_layout": false
+      },
+      "config": {
+        "measurement": "batch",
+        "message_count": 25425,
+        "message_size": 65536,
+        "queue_depth": 1,
+        "ring_capacity": 64,
+        "trials": 1,
+        "validation": "full",
+        "warmup_count": 256,
+        "workload": "streaming"
+      },
+      "effective_child_affinity": 4,
+      "effective_parent_affinity": 1,
+      "effective_processor_group": 0,
+      "executable_sha256": "2a91cee0f0fea225eb4d1528bcd09fa39c7e8aac9dae3855715a4d0918b11eb2",
+      "measurement_batch_size": null,
+      "method": "shm-ring-hybrid",
+      "queue_depth": 1,
+      "ring_capacity": 64,
+      "sampling_unit": null,
+      "spin_budget": 256,
+      "validation_policy": "full-payload-every-delivery;exact-sequence",
+      "variant": null,
+      "workload": "streaming"
+    },
+    "sources": [
+      "cases\\00015\\report.json",
+      "cases\\00029\\report.json",
+      "cases\\00078\\report.json",
+      "cases\\00117\\report.json",
+      "cases\\00127\\report.json"
+    ],
+    "launches": 5,
+    "rate_unit": "validated-deliveries/s",
+    "launch_rate": {
+      "values": [
+        20118.97933114147,
+        20688.229239738295,
+        21455.980471640003,
+        21513.086217849675,
+        21653.06249674246
+      ],
+      "median": 21455.980471640003,
+      "p10": 20118.97933114147,
+      "p90": 21653.06249674246
+    },
+    "launch_process_cpu_seconds": {
+      "values": [
+        2.375,
+        2.390625,
+        2.390625,
+        2.5,
+        2.546875
+      ],
+      "median": 2.390625,
+      "p10": 2.375,
+      "p90": 2.546875
+    },
+    "launch_timed_seconds": {
+      "values": [
+        1.1741988,
+        1.1818388,
+        1.1849843,
+        1.2289596999999999,
+        1.2637321
+      ],
+      "median": 1.1849843,
+      "p10": 1.1741988,
+      "p90": 1.2637321
+    },
+    "cpu_time_scope": "process-lifetime-through-shutdown;includes-startup-and-warmup",
+    "minimum_trial_seconds": 1.1741988,
+    "latency_sampling_policy": "send-to-validated-delivery-observation;every-16th-sequence;first-65536-samples-per-trial",
+    "launch_payload_bytes_per_second": {
+      "values": [
+        1318517429.4456873,
+        1355823791.455489,
+        1406139136.1893992,
+        1409881618.3729963,
+        1419055103.7865138
+      ],
+      "median": 1406139136.1893992,
+      "p10": 1318517429.4456873,
+      "p90": 1419055103.7865138
+    },
+    "byte_count_direction": "requests",
+    "pooled_observed_latency_percentiles_micros": [
+      45.5,
+      50.5,
+      89.5
+    ]
+  },
+  {
+    "group_id": "225b492f7427",
+    "identity": {
+      "build_features": {
+        "borrowed_response": false,
+        "cached_cursors": false,
+        "conditional_wake": false,
+        "copy_elision": false,
+        "padded_layout": false
+      },
+      "config": {
+        "measurement": "batch",
+        "message_count": 26552,
+        "message_size": 65536,
+        "queue_depth": 2,
+        "ring_capacity": 64,
+        "trials": 1,
+        "validation": "full",
+        "warmup_count": 256,
+        "workload": "streaming"
+      },
+      "effective_child_affinity": 4,
+      "effective_parent_affinity": 1,
+      "effective_processor_group": 0,
+      "executable_sha256": "2a91cee0f0fea225eb4d1528bcd09fa39c7e8aac9dae3855715a4d0918b11eb2",
+      "measurement_batch_size": null,
+      "method": "shm-ring-hybrid",
+      "queue_depth": 2,
+      "ring_capacity": 64,
+      "sampling_unit": null,
+      "spin_budget": 256,
+      "validation_policy": "full-payload-every-delivery;exact-sequence",
+      "variant": null,
+      "workload": "streaming"
+    },
+    "sources": [
+      "cases\\00010\\report.json",
+      "cases\\00077\\report.json",
+      "cases\\00151\\report.json",
+      "cases\\00173\\report.json",
+      "cases\\00178\\report.json"
+    ],
+    "launches": 5,
+    "rate_unit": "validated-deliveries/s",
+    "launch_rate": {
+      "values": [
+        22227.896210659375,
+        22366.546008731475,
+        22445.561988619982,
+        22447.647448165266,
+        22466.530986373953
+      ],
+      "median": 22445.561988619982,
+      "p10": 22227.896210659375,
+      "p90": 22466.530986373953
+    },
+    "launch_process_cpu_seconds": {
+      "values": [
+        2.375,
+        2.40625,
+        2.40625,
+        2.421875,
+        2.4375
+      ],
+      "median": 2.40625,
+      "p10": 2.375,
+      "p90": 2.4375
+    },
+    "launch_timed_seconds": {
+      "values": [
+        1.1818469,
+        1.1828411,
+        1.182951,
+        1.1871301,
+        1.1945350000000001
+      ],
+      "median": 1.182951,
+      "p10": 1.1818469,
+      "p90": 1.1945350000000001
+    },
+    "cpu_time_scope": "process-lifetime-through-shutdown;includes-startup-and-warmup",
+    "minimum_trial_seconds": 1.1818469,
+    "latency_sampling_policy": "send-to-validated-delivery-observation;every-16th-sequence;first-65536-samples-per-trial",
+    "launch_payload_bytes_per_second": {
+      "values": [
+        1456727406.0617728,
+        1465813959.228226,
+        1470992350.4861991,
+        1471129023.1629589,
+        1472366574.7230034
+      ],
+      "median": 1470992350.4861991,
+      "p10": 1456727406.0617728,
+      "p90": 1472366574.7230034
+    },
+    "byte_count_direction": "requests",
+    "pooled_observed_latency_percentiles_micros": [
+      88.1,
+      92.5,
+      122.3
+    ]
+  },
+  {
+    "group_id": "dd72a7a2facd",
+    "identity": {
+      "build_features": {
+        "borrowed_response": false,
+        "cached_cursors": false,
+        "conditional_wake": false,
+        "copy_elision": false,
+        "padded_layout": false
+      },
+      "config": {
+        "measurement": "batch",
+        "message_count": 26909,
+        "message_size": 65536,
+        "queue_depth": 64,
+        "ring_capacity": 64,
+        "trials": 1,
+        "validation": "full",
+        "warmup_count": 256,
+        "workload": "streaming"
+      },
+      "effective_child_affinity": 4,
+      "effective_parent_affinity": 1,
+      "effective_processor_group": 0,
+      "executable_sha256": "2a91cee0f0fea225eb4d1528bcd09fa39c7e8aac9dae3855715a4d0918b11eb2",
+      "measurement_batch_size": null,
+      "method": "shm-ring-hybrid",
+      "queue_depth": 64,
+      "ring_capacity": 64,
+      "sampling_unit": null,
+      "spin_budget": 256,
+      "validation_policy": "full-payload-every-delivery;exact-sequence",
+      "variant": null,
+      "workload": "streaming"
+    },
+    "sources": [
+      "cases\\00059\\report.json",
+      "cases\\00093\\report.json",
+      "cases\\00176\\report.json",
+      "cases\\00191\\report.json",
+      "cases\\00226\\report.json"
+    ],
+    "launches": 5,
+    "rate_unit": "validated-deliveries/s",
+    "launch_rate": {
+      "values": [
+        21585.50503937195,
+        22537.707882695035,
+        22619.588602397078,
+        22645.5876744179,
+        22723.691430696585
+      ],
+      "median": 22619.588602397078,
+      "p10": 21585.50503937195,
+      "p90": 22723.691430696585
+    },
+    "launch_process_cpu_seconds": {
+      "values": [
+        2.40625,
+        2.40625,
+        2.421875,
+        2.4375,
+        2.484375
+      ],
+      "median": 2.421875,
+      "p10": 2.40625,
+      "p90": 2.484375
+    },
+    "launch_timed_seconds": {
+      "values": [
+        1.1841826,
+        1.1882668,
+        1.1896326,
+        1.1939546,
+        1.2466236
+      ],
+      "median": 1.1896326,
+      "p10": 1.1841826,
+      "p90": 1.2466236
+    },
+    "cpu_time_scope": "process-lifetime-through-shutdown;includes-startup-and-warmup",
+    "minimum_trial_seconds": 1.1841826,
+    "latency_sampling_policy": "send-to-validated-delivery-observation;every-16th-sequence;first-65536-samples-per-trial",
+    "launch_payload_bytes_per_second": {
+      "values": [
+        1414627658.2602801,
+        1477031223.8003018,
+        1482397358.646695,
+        1484101233.8306515,
+        1489219841.6021314
+      ],
+      "median": 1482397358.646695,
+      "p10": 1414627658.2602801,
+      "p90": 1489219841.6021314
+    },
+    "byte_count_direction": "requests",
+    "pooled_observed_latency_percentiles_micros": [
+      2823.5,
+      2941.5,
+      3426.7999999999997
+    ]
+  },
+  {
+    "group_id": "14ee379e3bda",
+    "identity": {
+      "build_features": {
+        "borrowed_response": false,
+        "cached_cursors": false,
+        "conditional_wake": false,
+        "copy_elision": false,
+        "padded_layout": false
+      },
+      "config": {
+        "measurement": "batch",
+        "message_count": 26967,
+        "message_size": 65536,
+        "queue_depth": 2,
+        "ring_capacity": 64,
+        "trials": 1,
+        "validation": "full",
+        "warmup_count": 256,
+        "workload": "streaming"
+      },
+      "effective_child_affinity": 4,
+      "effective_parent_affinity": 1,
+      "effective_processor_group": 0,
+      "executable_sha256": "b2ea31c94184bbd21cbd316daf6d2c50134721345ccc9d3f7e8bdc3c8f16d36a",
+      "measurement_batch_size": null,
+      "method": "shm-ring-spin",
+      "queue_depth": 2,
+      "ring_capacity": 64,
+      "sampling_unit": null,
+      "spin_budget": 256,
+      "validation_policy": "full-payload-every-delivery;exact-sequence",
+      "variant": null,
+      "workload": "streaming"
+    },
+    "sources": [
+      "cases\\00073\\report.json",
+      "cases\\00105\\report.json",
+      "cases\\00108\\report.json",
+      "cases\\00155\\report.json",
+      "cases\\00170\\report.json"
+    ],
+    "launches": 5,
+    "rate_unit": "validated-deliveries/s",
+    "launch_rate": {
+      "values": [
+        22303.497109279197,
+        22451.64429342177,
+        22488.699359772156,
+        22537.149691987273,
+        22576.413587640513
+      ],
+      "median": 22488.699359772156,
+      "p10": 22303.497109279197,
+      "p90": 22576.413587640513
+    },
+    "launch_process_cpu_seconds": {
+      "values": [
+        2.40625,
+        2.421875,
+        2.4375,
+        2.4375,
+        2.4375
+      ],
+      "median": 2.4375,
+      "p10": 2.40625,
+      "p90": 2.4375
+    },
+    "launch_timed_seconds": {
+      "values": [
+        1.1944767,
+        1.1965577,
+        1.1991356,
+        1.2011147,
+        1.2090929
+      ],
+      "median": 1.1991356,
+      "p10": 1.1944767,
+      "p90": 1.2090929
+    },
+    "cpu_time_scope": "process-lifetime-through-shutdown;includes-startup-and-warmup",
+    "minimum_trial_seconds": 1.1944767,
+    "latency_sampling_policy": "send-to-validated-delivery-observation;every-16th-sequence;first-65536-samples-per-trial",
+    "launch_payload_bytes_per_second": {
+      "values": [
+        1461681986.5537214,
+        1471390960.4136891,
+        1473819401.242028,
+        1476994642.214078,
+        1479567840.8796086
+      ],
+      "median": 1473819401.242028,
+      "p10": 1461681986.5537214,
+      "p90": 1479567840.8796086
+    },
+    "byte_count_direction": "requests",
+    "pooled_observed_latency_percentiles_micros": [
+      88.2,
+      92.39999999999999,
+      101.39999999999999
+    ]
+  },
+  {
+    "group_id": "7d305e55eee0",
+    "identity": {
+      "build_features": {
+        "borrowed_response": false,
+        "cached_cursors": false,
+        "conditional_wake": false,
+        "copy_elision": false,
+        "padded_layout": false
+      },
+      "config": {
+        "measurement": "batch",
+        "message_count": 26987,
+        "message_size": 65536,
+        "queue_depth": 256,
+        "ring_capacity": 64,
+        "trials": 1,
+        "validation": "full",
+        "warmup_count": 256,
+        "workload": "streaming"
+      },
+      "effective_child_affinity": 4,
+      "effective_parent_affinity": 1,
+      "effective_processor_group": 0,
+      "executable_sha256": "2a91cee0f0fea225eb4d1528bcd09fa39c7e8aac9dae3855715a4d0918b11eb2",
+      "measurement_batch_size": null,
+      "method": "shm-ring-hybrid",
+      "queue_depth": 256,
+      "ring_capacity": 64,
+      "sampling_unit": null,
+      "spin_budget": 256,
+      "validation_policy": "full-payload-every-delivery;exact-sequence",
+      "variant": null,
+      "workload": "streaming"
+    },
+    "sources": [
+      "cases\\00092\\report.json",
+      "cases\\00144\\report.json",
+      "cases\\00156\\report.json",
+      "cases\\00205\\report.json",
+      "cases\\00208\\report.json"
+    ],
+    "launches": 5,
+    "rate_unit": "validated-deliveries/s",
+    "launch_rate": {
+      "values": [
+        22132.018593946388,
+        22376.57519912308,
+        22548.310886120962,
+        22572.900842341332,
+        22618.29830138566
+      ],
+      "median": 22548.310886120962,
+      "p10": 22132.018593946388,
+      "p90": 22618.29830138566
+    },
+    "launch_process_cpu_seconds": {
+      "values": [
+        2.421875,
+        2.421875,
+        2.4375,
+        2.4375,
+        2.484375
+      ],
+      "median": 2.4375,
+      "p10": 2.421875,
+      "p90": 2.484375
+    },
+    "launch_timed_seconds": {
+      "values": [
+        1.193149,
+        1.1955486,
+        1.1968524,
+        1.206038,
+        1.2193646
+      ],
+      "median": 1.1968524,
+      "p10": 1.193149,
+      "p90": 1.2193646
+    },
+    "cpu_time_scope": "process-lifetime-through-shutdown;includes-startup-and-warmup",
+    "minimum_trial_seconds": 1.193149,
+    "latency_sampling_policy": "send-to-validated-delivery-observation;every-16th-sequence;first-65536-samples-per-trial",
+    "launch_payload_bytes_per_second": {
+      "values": [
+        1450443970.5728705,
+        1466471232.24973,
+        1477726102.2328234,
+        1479337629.6036816,
+        1482312797.4796107
+      ],
+      "median": 1477726102.2328234,
+      "p10": 1450443970.5728705,
+      "p90": 1482312797.4796107
+    },
+    "byte_count_direction": "requests",
+    "pooled_observed_latency_percentiles_micros": [
+      2870.9,
+      2939.1,
+      3148.7
+    ]
+  },
+  {
+    "group_id": "5847889b0954",
+    "identity": {
+      "build_features": {
+        "borrowed_response": false,
+        "cached_cursors": false,
+        "conditional_wake": false,
+        "copy_elision": false,
+        "padded_layout": false
+      },
+      "config": {
+        "measurement": "batch",
+        "message_count": 27089,
+        "message_size": 65536,
+        "queue_depth": 8,
+        "ring_capacity": 64,
+        "trials": 1,
+        "validation": "full",
+        "warmup_count": 256,
+        "workload": "streaming"
+      },
+      "effective_child_affinity": 4,
+      "effective_parent_affinity": 1,
+      "effective_processor_group": 0,
+      "executable_sha256": "2a91cee0f0fea225eb4d1528bcd09fa39c7e8aac9dae3855715a4d0918b11eb2",
+      "measurement_batch_size": null,
+      "method": "shm-ring-hybrid",
+      "queue_depth": 8,
+      "ring_capacity": 64,
+      "sampling_unit": null,
+      "spin_budget": 256,
+      "validation_policy": "full-payload-every-delivery;exact-sequence",
+      "variant": null,
+      "workload": "streaming"
+    },
+    "sources": [
+      "cases\\00113\\report.json",
+      "cases\\00137\\report.json",
+      "cases\\00190\\report.json",
+      "cases\\00239\\report.json",
+      "cases\\00244\\report.json"
+    ],
+    "launches": 5,
+    "rate_unit": "validated-deliveries/s",
+    "launch_rate": {
+      "values": [
+        22199.54199564286,
+        22401.423688250645,
+        22520.678179267725,
+        22525.785034709617,
+        22629.212225404965
+      ],
+      "median": 22520.678179267725,
+      "p10": 22199.54199564286,
+      "p90": 22629.212225404965
+    },
+    "launch_process_cpu_seconds": {
+      "values": [
+        2.40625,
+        2.40625,
+        2.4375,
+        2.453125,
+        2.484375
+      ],
+      "median": 2.4375,
+      "p10": 2.40625,
+      "p90": 2.484375
+    },
+    "launch_timed_seconds": {
+      "values": [
+        1.197081,
+        1.2025774,
+        1.2028501,
+        1.2092535,
+        1.2202504
+      ],
+      "median": 1.2028501,
+      "p10": 1.197081,
+      "p90": 1.2202504
+    },
+    "cpu_time_scope": "process-lifetime-through-shutdown;includes-startup-and-warmup",
+    "minimum_trial_seconds": 1.197081,
+    "latency_sampling_policy": "send-to-validated-delivery-observation;every-16th-sequence;first-65536-samples-per-trial",
+    "launch_payload_bytes_per_second": {
+      "values": [
+        1454869184.2264504,
+        1468099702.8331943,
+        1475915165.1564896,
+        1476249848.0347295,
+        1483028052.4041398
+      ],
+      "median": 1475915165.1564896,
+      "p10": 1454869184.2264504,
+      "p90": 1483028052.4041398
+    },
+    "byte_count_direction": "requests",
+    "pooled_observed_latency_percentiles_micros": [
+      354.7,
+      366.70000000000005,
+      399.1
+    ]
+  },
+  {
+    "group_id": "ec3313e89c9b",
+    "identity": {
+      "build_features": {
+        "borrowed_response": false,
+        "cached_cursors": false,
+        "conditional_wake": false,
+        "copy_elision": false,
+        "padded_layout": false
+      },
+      "config": {
+        "measurement": "batch",
+        "message_count": 27123,
+        "message_size": 65536,
+        "queue_depth": 8,
+        "ring_capacity": 64,
+        "trials": 1,
+        "validation": "full",
+        "warmup_count": 256,
+        "workload": "streaming"
+      },
+      "effective_child_affinity": 4,
+      "effective_parent_affinity": 1,
+      "effective_processor_group": 0,
+      "executable_sha256": "b2ea31c94184bbd21cbd316daf6d2c50134721345ccc9d3f7e8bdc3c8f16d36a",
+      "measurement_batch_size": null,
+      "method": "shm-ring-spin",
+      "queue_depth": 8,
+      "ring_capacity": 64,
+      "sampling_unit": null,
+      "spin_budget": 256,
+      "validation_policy": "full-payload-every-delivery;exact-sequence",
+      "variant": null,
+      "workload": "streaming"
+    },
+    "sources": [
+      "cases\\00009\\report.json",
+      "cases\\00058\\report.json",
+      "cases\\00089\\report.json",
+      "cases\\00095\\report.json",
+      "cases\\00122\\report.json"
+    ],
+    "launches": 5,
+    "rate_unit": "validated-deliveries/s",
+    "launch_rate": {
+      "values": [
+        22262.057485896923,
+        22334.28754092108,
+        22558.454617359606,
+        22582.046311553313,
+        22593.652702162708
+      ],
+      "median": 22558.454617359606,
+      "p10": 22262.057485896923,
+      "p90": 22593.652702162708
+    },
+    "launch_process_cpu_seconds": {
+      "values": [
+        2.40625,
+        2.421875,
+        2.4375,
+        2.4375,
+        2.4375
+      ],
+      "median": 2.4375,
+      "p10": 2.40625,
+      "p90": 2.4375
+    },
+    "launch_timed_seconds": {
+      "values": [
+        1.2004699,
+        1.2010869,
+        1.202343,
+        1.2144108,
+        1.218351
+      ],
+      "median": 1.202343,
+      "p10": 1.2004699,
+      "p90": 1.218351
+    },
+    "cpu_time_scope": "process-lifetime-through-shutdown;includes-startup-and-warmup",
+    "minimum_trial_seconds": 1.2004699,
+    "latency_sampling_policy": "send-to-validated-delivery-observation;every-16th-sequence;first-65536-samples-per-trial",
+    "launch_payload_bytes_per_second": {
+      "values": [
+        1458966199.3957407,
+        1463699868.2818038,
+        1478390881.8032792,
+        1479936987.073958,
+        1480697623.4889352
+      ],
+      "median": 1478390881.8032792,
+      "p10": 1458966199.3957407,
+      "p90": 1480697623.4889352
+    },
+    "byte_count_direction": "requests",
+    "pooled_observed_latency_percentiles_micros": [
+      354.5,
+      364.5,
+      388.1
+    ]
+  },
+  {
+    "group_id": "1257fa34338f",
+    "identity": {
+      "build_features": {
+        "borrowed_response": false,
+        "cached_cursors": false,
+        "conditional_wake": false,
+        "copy_elision": false,
+        "padded_layout": false
+      },
+      "config": {
+        "measurement": "batch",
+        "message_count": 27144,
+        "message_size": 65536,
+        "queue_depth": 256,
+        "ring_capacity": 64,
+        "trials": 1,
+        "validation": "full",
+        "warmup_count": 256,
+        "workload": "streaming"
+      },
+      "effective_child_affinity": 4,
+      "effective_parent_affinity": 1,
+      "effective_processor_group": 0,
+      "executable_sha256": "b2ea31c94184bbd21cbd316daf6d2c50134721345ccc9d3f7e8bdc3c8f16d36a",
+      "measurement_batch_size": null,
+      "method": "shm-ring-spin",
+      "queue_depth": 256,
+      "ring_capacity": 64,
+      "sampling_unit": null,
+      "spin_budget": 256,
+      "validation_policy": "full-payload-every-delivery;exact-sequence",
+      "variant": null,
+      "workload": "streaming"
+    },
+    "sources": [
+      "cases\\00067\\report.json",
+      "cases\\00074\\report.json",
+      "cases\\00114\\report.json",
+      "cases\\00135\\report.json",
+      "cases\\00209\\report.json"
+    ],
+    "launches": 5,
+    "rate_unit": "validated-deliveries/s",
+    "launch_rate": {
+      "values": [
+        22542.777835958106,
+        22574.476686555172,
+        22585.68481620258,
+        22599.83153367549,
+        22628.58188968166
+      ],
+      "median": 22585.68481620258,
+      "p10": 22542.777835958106,
+      "p90": 22628.58188968166
+    },
+    "launch_process_cpu_seconds": {
+      "values": [
+        2.390625,
+        2.421875,
+        2.421875,
+        2.4375,
+        2.4375
+      ],
+      "median": 2.421875,
+      "p10": 2.390625,
+      "p90": 2.4375
+    },
+    "launch_timed_seconds": {
+      "values": [
+        1.1995449,
+        1.2010709,
+        1.2018232,
+        1.2024199,
+        1.2041107
+      ],
+      "median": 1.2018232,
+      "p10": 1.1995449,
+      "p90": 1.2041107
+    },
+    "cpu_time_scope": "process-lifetime-through-shutdown;includes-startup-and-warmup",
+    "minimum_trial_seconds": 1.1995449,
+    "latency_sampling_policy": "send-to-validated-delivery-observation;every-16th-sequence;first-65536-samples-per-trial",
+    "launch_payload_bytes_per_second": {
+      "values": [
+        1477363488.2573504,
+        1479440904.1300797,
+        1480175440.1146524,
+        1481102559.3909569,
+        1482986742.7221773
+      ],
+      "median": 1480175440.1146524,
+      "p10": 1477363488.2573504,
+      "p90": 1482986742.7221773
+    },
+    "byte_count_direction": "requests",
+    "pooled_observed_latency_percentiles_micros": [
+      2866.6,
+      2909.8,
+      2970.8999999999996
+    ]
+  },
+  {
+    "group_id": "1b9e53dbca33",
+    "identity": {
+      "build_features": {
+        "borrowed_response": false,
+        "cached_cursors": false,
+        "conditional_wake": false,
+        "copy_elision": false,
+        "padded_layout": false
+      },
+      "config": {
+        "measurement": "batch",
+        "message_count": 27149,
+        "message_size": 65536,
+        "queue_depth": 64,
+        "ring_capacity": 64,
+        "trials": 1,
+        "validation": "full",
+        "warmup_count": 256,
+        "workload": "streaming"
+      },
+      "effective_child_affinity": 4,
+      "effective_parent_affinity": 1,
+      "effective_processor_group": 0,
+      "executable_sha256": "b2ea31c94184bbd21cbd316daf6d2c50134721345ccc9d3f7e8bdc3c8f16d36a",
+      "measurement_batch_size": null,
+      "method": "shm-ring-spin",
+      "queue_depth": 64,
+      "ring_capacity": 64,
+      "sampling_unit": null,
+      "spin_budget": 256,
+      "validation_policy": "full-payload-every-delivery;exact-sequence",
+      "variant": null,
+      "workload": "streaming"
+    },
+    "sources": [
+      "cases\\00043\\report.json",
+      "cases\\00048\\report.json",
+      "cases\\00097\\report.json",
+      "cases\\00107\\report.json",
+      "cases\\00145\\report.json"
+    ],
+    "launches": 5,
+    "rate_unit": "validated-deliveries/s",
+    "launch_rate": {
+      "values": [
+        22449.86219494144,
+        22507.756549791146,
+        22516.81587060225,
+        22564.974976474212,
+        22598.812682071773
+      ],
+      "median": 22516.81587060225,
+      "p10": 22449.86219494144,
+      "p90": 22598.812682071773
+    },
+    "launch_process_cpu_seconds": {
+      "values": [
+        2.375,
+        2.421875,
+        2.4375,
+        2.453125,
+        2.453125
+      ],
+      "median": 2.4375,
+      "p10": 2.375,
+      "p90": 2.453125
+    },
+    "launch_timed_seconds": {
+      "values": [
+        1.2013463,
+        1.2031478,
+        1.2057210999999999,
+        1.2062064000000001,
+        1.209317
+      ],
+      "median": 1.2057210999999999,
+      "p10": 1.2013463,
+      "p90": 1.209317
+    },
+    "cpu_time_scope": "process-lifetime-through-shutdown;includes-startup-and-warmup",
+    "minimum_trial_seconds": 1.2013463,
+    "latency_sampling_policy": "send-to-validated-delivery-observation;every-16th-sequence;first-65536-samples-per-trial",
+    "launch_payload_bytes_per_second": {
+      "values": [
+        1471274168.8076823,
+        1475068333.2471125,
+        1475662044.8957891,
+        1478818200.058214,
+        1481035787.9322557
+      ],
+      "median": 1475662044.8957891,
+      "p10": 1471274168.8076823,
+      "p90": 1481035787.9322557
+    },
+    "byte_count_direction": "requests",
+    "pooled_observed_latency_percentiles_micros": [
+      2829.5,
+      2881.4,
+      2980.3
+    ]
+  },
+  {
+    "group_id": "f41701dd0419",
+    "identity": {
+      "build_features": {
+        "borrowed_response": false,
+        "cached_cursors": false,
+        "conditional_wake": false,
+        "copy_elision": false,
+        "padded_layout": false
+      },
+      "config": {
+        "measurement": "batch",
+        "message_count": 2855185,
+        "message_size": 64,
+        "queue_depth": 2,
+        "ring_capacity": 64,
+        "trials": 1,
+        "validation": "full",
+        "warmup_count": 256,
+        "workload": "windowed"
+      },
+      "effective_child_affinity": 4,
+      "effective_parent_affinity": 1,
+      "effective_processor_group": 0,
+      "executable_sha256": "2a91cee0f0fea225eb4d1528bcd09fa39c7e8aac9dae3855715a4d0918b11eb2",
+      "measurement_batch_size": null,
+      "method": "shm-ring-hybrid",
+      "queue_depth": 2,
+      "ring_capacity": 64,
+      "sampling_unit": null,
+      "spin_budget": 256,
+      "validation_policy": "full-payload-every-delivery;exact-sequence",
+      "variant": null,
+      "workload": "windowed"
+    },
+    "sources": [
+      "cases\\00020\\report.json",
+      "cases\\00115\\report.json",
+      "cases\\00125\\report.json",
+      "cases\\00136\\report.json",
+      "cases\\00195\\report.json"
+    ],
+    "launches": 5,
+    "rate_unit": "validated-deliveries/s",
+    "launch_rate": {
+      "values": [
+        2501180.4281077674,
+        2555080.567074797,
+        2561102.55721406,
+        2577763.047511189,
+        2587208.888765653
+      ],
+      "median": 2561102.55721406,
+      "p10": 2501180.4281077674,
+      "p90": 2587208.888765653
+    },
+    "launch_process_cpu_seconds": {
+      "values": [
+        2.203125,
+        2.21875,
+        2.234375,
+        2.25,
+        2.28125
+      ],
+      "median": 2.234375,
+      "p10": 2.203125,
+      "p90": 2.28125
+    },
+    "launch_timed_seconds": {
+      "values": [
+        1.1035773,
+        1.1076212,
+        1.1148265,
+        1.117454,
+        1.141535
+      ],
+      "median": 1.1148265,
+      "p10": 1.1035773,
+      "p90": 1.141535
+    },
+    "cpu_time_scope": "process-lifetime-through-shutdown;includes-startup-and-warmup",
+    "minimum_trial_seconds": 1.1035773,
+    "latency_sampling_policy": "send-to-validated-delivery-observation;every-16th-sequence;first-65536-samples-per-trial",
+    "launch_payload_bytes_per_second": {
+      "values": [
+        160075547.3988971,
+        163525156.29278702,
+        163910563.66169983,
+        164976835.04071608,
+        165581368.8810018
+      ],
+      "median": 163910563.66169983,
+      "p10": 160075547.3988971,
+      "p90": 165581368.8810018
+    },
+    "byte_count_direction": "responses",
+    "pooled_observed_latency_percentiles_micros": [
+      0.7,
+      1.0,
+      1.4
+    ]
+  },
+  {
+    "group_id": "7d6733c71fc6",
+    "identity": {
+      "build_features": {
+        "borrowed_response": false,
+        "cached_cursors": false,
+        "conditional_wake": false,
+        "copy_elision": false,
+        "padded_layout": false
+      },
+      "config": {
+        "measurement": "batch",
+        "message_count": 2886371,
+        "message_size": 64,
+        "queue_depth": 8,
+        "ring_capacity": 64,
+        "trials": 1,
+        "validation": "full",
+        "warmup_count": 256,
+        "workload": "windowed"
+      },
+      "effective_child_affinity": 4,
+      "effective_parent_affinity": 1,
+      "effective_processor_group": 0,
+      "executable_sha256": "2a91cee0f0fea225eb4d1528bcd09fa39c7e8aac9dae3855715a4d0918b11eb2",
+      "measurement_batch_size": null,
+      "method": "shm-ring-hybrid",
+      "queue_depth": 8,
+      "ring_capacity": 64,
+      "sampling_unit": null,
+      "spin_budget": 256,
+      "validation_policy": "full-payload-every-delivery;exact-sequence",
+      "variant": null,
+      "workload": "windowed"
+    },
+    "sources": [
+      "cases\\00022\\report.json",
+      "cases\\00102\\report.json",
+      "cases\\00131\\report.json",
+      "cases\\00223\\report.json",
+      "cases\\00233\\report.json"
+    ],
+    "launches": 5,
+    "rate_unit": "validated-deliveries/s",
+    "launch_rate": {
+      "values": [
+        2620064.500129443,
+        2620379.19076278,
+        2638565.141465499,
+        2652447.418267151,
+        2658899.489752209
+      ],
+      "median": 2638565.141465499,
+      "p10": 2620064.500129443,
+      "p90": 2658899.489752209
+    },
+    "launch_process_cpu_seconds": {
+      "values": [
+        2.140625,
+        2.171875,
+        2.1875,
+        2.1875,
+        2.203125
+      ],
+      "median": 2.1875,
+      "p10": 2.140625,
+      "p90": 2.203125
+    },
+    "launch_timed_seconds": {
+      "values": [
+        1.085551,
+        1.0881916,
+        1.0939169,
+        1.1015089,
+        1.1016412
+      ],
+      "median": 1.0939169,
+      "p10": 1.085551,
+      "p90": 1.1016412
+    },
+    "cpu_time_scope": "process-lifetime-through-shutdown;includes-startup-and-warmup",
+    "minimum_trial_seconds": 1.085551,
+    "latency_sampling_policy": "send-to-validated-delivery-observation;every-16th-sequence;first-65536-samples-per-trial",
+    "launch_payload_bytes_per_second": {
+      "values": [
+        167684128.00828436,
+        167704268.20881793,
+        168868169.05379194,
+        169756634.76909766,
+        170169567.34414136
+      ],
+      "median": 168868169.05379194,
+      "p10": 167684128.00828436,
+      "p90": 170169567.34414136
+    },
+    "byte_count_direction": "responses",
+    "pooled_observed_latency_percentiles_micros": [
+      2.9000000000000004,
+      3.8,
+      5.5
+    ]
+  },
+  {
+    "group_id": "621f4a7a9524",
+    "identity": {
+      "build_features": {
+        "borrowed_response": false,
+        "cached_cursors": false,
+        "conditional_wake": false,
+        "copy_elision": false,
+        "padded_layout": false
+      },
+      "config": {
+        "measurement": "batch",
+        "message_count": 2985061,
+        "message_size": 64,
+        "queue_depth": 1,
+        "ring_capacity": 64,
+        "trials": 1,
+        "validation": "full",
+        "warmup_count": 256,
+        "workload": "windowed"
+      },
+      "effective_child_affinity": 4,
+      "effective_parent_affinity": 1,
+      "effective_processor_group": 0,
+      "executable_sha256": "2a91cee0f0fea225eb4d1528bcd09fa39c7e8aac9dae3855715a4d0918b11eb2",
+      "measurement_batch_size": null,
+      "method": "shm-ring-hybrid",
+      "queue_depth": 1,
+      "ring_capacity": 64,
+      "sampling_unit": null,
+      "spin_budget": 256,
+      "validation_policy": "full-payload-every-delivery;exact-sequence",
+      "variant": null,
+      "workload": "windowed"
+    },
+    "sources": [
+      "cases\\00001\\report.json",
+      "cases\\00025\\report.json",
+      "cases\\00083\\report.json",
+      "cases\\00096\\report.json",
+      "cases\\00163\\report.json"
+    ],
+    "launches": 5,
+    "rate_unit": "validated-deliveries/s",
+    "launch_rate": {
+      "values": [
+        2504952.5298118927,
+        2536924.457117759,
+        2550246.083038758,
+        2569189.3955668663,
+        2583969.2783151586
+      ],
+      "median": 2550246.083038758,
+      "p10": 2504952.5298118927,
+      "p90": 2583969.2783151586
+    },
+    "launch_process_cpu_seconds": {
+      "values": [
+        2.296875,
+        2.328125,
+        2.328125,
+        2.328125,
+        2.390625
+      ],
+      "median": 2.328125,
+      "p10": 2.296875,
+      "p90": 2.390625
+    },
+    "launch_timed_seconds": {
+      "values": [
+        1.1552231,
+        1.1618688,
+        1.1704992,
+        1.1766456,
+        1.1916636999999999
+      ],
+      "median": 1.1704992,
+      "p10": 1.1552231,
+      "p90": 1.1916636999999999
+    },
+    "cpu_time_scope": "process-lifetime-through-shutdown;includes-startup-and-warmup",
+    "minimum_trial_seconds": 1.1552231,
+    "latency_sampling_policy": "send-to-validated-delivery-observation;every-16th-sequence;first-65536-samples-per-trial",
+    "launch_payload_bytes_per_second": {
+      "values": [
+        160316961.90796113,
+        162363165.2555366,
+        163215749.3144805,
+        164428121.31627944,
+        165374033.81217015
+      ],
+      "median": 163215749.3144805,
+      "p10": 160316961.90796113,
+      "p90": 165374033.81217015
+    },
+    "byte_count_direction": "responses",
+    "pooled_observed_latency_percentiles_micros": [
+      0.39999999999999997,
+      0.5,
+      0.6
+    ]
+  },
+  {
+    "group_id": "216ff8bb7d70",
+    "identity": {
+      "build_features": {
+        "borrowed_response": false,
+        "cached_cursors": false,
+        "conditional_wake": false,
+        "copy_elision": false,
+        "padded_layout": false
+      },
+      "config": {
+        "measurement": "batch",
+        "message_count": 4072921,
+        "message_size": 64,
+        "queue_depth": 256,
+        "ring_capacity": 64,
+        "trials": 1,
+        "validation": "full",
+        "warmup_count": 256,
+        "workload": "streaming"
+      },
+      "effective_child_affinity": 4,
+      "effective_parent_affinity": 1,
+      "effective_processor_group": 0,
+      "executable_sha256": "2a91cee0f0fea225eb4d1528bcd09fa39c7e8aac9dae3855715a4d0918b11eb2",
+      "measurement_batch_size": null,
+      "method": "shm-ring-hybrid",
+      "queue_depth": 256,
+      "ring_capacity": 64,
+      "sampling_unit": null,
+      "spin_budget": 256,
+      "validation_policy": "full-payload-every-delivery;exact-sequence",
+      "variant": null,
+      "workload": "streaming"
+    },
+    "sources": [
+      "cases\\00014\\report.json",
+      "cases\\00052\\report.json",
+      "cases\\00081\\report.json",
+      "cases\\00160\\report.json",
+      "cases\\00198\\report.json"
+    ],
+    "launches": 5,
+    "rate_unit": "validated-deliveries/s",
+    "launch_rate": {
+      "values": [
+        3576153.573356164,
+        3578397.8658172293,
+        3592445.7506355043,
+        3654506.008966051,
+        3683667.821321009
+      ],
+      "median": 3592445.7506355043,
+      "p10": 3576153.573356164,
+      "p90": 3683667.821321009
+    },
+    "launch_process_cpu_seconds": {
+      "values": [
+        2.171875,
+        2.203125,
+        2.25,
+        2.265625,
+        2.296875
+      ],
+      "median": 2.25,
+      "p10": 2.171875,
+      "p90": 2.296875
+    },
+    "launch_timed_seconds": {
+      "values": [
+        1.10567,
+        1.1144929,
+        1.133746,
+        1.1381968,
+        1.1389111
+      ],
+      "median": 1.133746,
+      "p10": 1.10567,
+      "p90": 1.1389111
+    },
+    "cpu_time_scope": "process-lifetime-through-shutdown;includes-startup-and-warmup",
+    "minimum_trial_seconds": 1.10567,
+    "latency_sampling_policy": "send-to-validated-delivery-observation;every-16th-sequence;first-65536-samples-per-trial",
+    "launch_payload_bytes_per_second": {
+      "values": [
+        228873828.6947945,
+        229017463.41230267,
+        229916528.04067227,
+        233888384.57382727,
+        235754740.5645446
+      ],
+      "median": 229916528.04067227,
+      "p10": 228873828.6947945,
+      "p90": 235754740.5645446
+    },
+    "byte_count_direction": "requests",
+    "pooled_observed_latency_percentiles_micros": [
+      0.3,
+      0.3,
+      0.5
+    ]
+  },
+  {
+    "group_id": "c2fe9a052c55",
+    "identity": {
+      "build_features": {
+        "borrowed_response": false,
+        "cached_cursors": false,
+        "conditional_wake": false,
+        "copy_elision": false,
+        "padded_layout": false
+      },
+      "config": {
+        "measurement": "batch",
+        "message_count": 4130421,
+        "message_size": 64,
+        "queue_depth": 2,
+        "ring_capacity": 64,
+        "trials": 1,
+        "validation": "full",
+        "warmup_count": 256,
+        "workload": "streaming"
+      },
+      "effective_child_affinity": 4,
+      "effective_parent_affinity": 1,
+      "effective_processor_group": 0,
+      "executable_sha256": "2a91cee0f0fea225eb4d1528bcd09fa39c7e8aac9dae3855715a4d0918b11eb2",
+      "measurement_batch_size": null,
+      "method": "shm-ring-hybrid",
+      "queue_depth": 2,
+      "ring_capacity": 64,
+      "sampling_unit": null,
+      "spin_budget": 256,
+      "validation_policy": "full-payload-every-delivery;exact-sequence",
+      "variant": null,
+      "workload": "streaming"
+    },
+    "sources": [
+      "cases\\00104\\report.json",
+      "cases\\00140\\report.json",
+      "cases\\00185\\report.json",
+      "cases\\00192\\report.json",
+      "cases\\00197\\report.json"
+    ],
+    "launches": 5,
+    "rate_unit": "validated-deliveries/s",
+    "launch_rate": {
+      "values": [
+        3557898.858814739,
+        3588801.5780081195,
+        3628187.670443755,
+        3639753.7979559186,
+        3649926.757059569
+      ],
+      "median": 3628187.670443755,
+      "p10": 3557898.858814739,
+      "p90": 3649926.757059569
+    },
+    "launch_process_cpu_seconds": {
+      "values": [
+        2.25,
+        2.25,
+        2.265625,
+        2.28125,
+        2.3125
+      ],
+      "median": 2.265625,
+      "p10": 2.25,
+      "p90": 2.3125
+    },
+    "launch_timed_seconds": {
+      "values": [
+        1.1316449,
+        1.1348078,
+        1.1384254,
+        1.1509193,
+        1.1609158
+      ],
+      "median": 1.1384254,
+      "p10": 1.1316449,
+      "p90": 1.1609158
+    },
+    "cpu_time_scope": "process-lifetime-through-shutdown;includes-startup-and-warmup",
+    "minimum_trial_seconds": 1.1316449,
+    "latency_sampling_policy": "send-to-validated-delivery-observation;every-16th-sequence;first-65536-samples-per-trial",
+    "launch_payload_bytes_per_second": {
+      "values": [
+        227705526.9641433,
+        229683300.99251965,
+        232204010.90840033,
+        232944243.0691788,
+        233595312.45181242
+      ],
+      "median": 232204010.90840033,
+      "p10": 227705526.9641433,
+      "p90": 233595312.45181242
+    },
+    "byte_count_direction": "requests",
+    "pooled_observed_latency_percentiles_micros": [
+      0.3,
+      0.3,
+      0.39999999999999997
+    ]
+  },
+  {
+    "group_id": "c58a4b3ea2e9",
+    "identity": {
+      "build_features": {
+        "borrowed_response": false,
+        "cached_cursors": false,
+        "conditional_wake": false,
+        "copy_elision": false,
+        "padded_layout": false
+      },
+      "config": {
+        "measurement": "batch",
+        "message_count": 4393672,
+        "message_size": 64,
+        "queue_depth": 1,
+        "ring_capacity": 64,
+        "trials": 1,
+        "validation": "full",
+        "warmup_count": 256,
+        "workload": "streaming"
+      },
+      "effective_child_affinity": 4,
+      "effective_parent_affinity": 1,
+      "effective_processor_group": 0,
+      "executable_sha256": "2a91cee0f0fea225eb4d1528bcd09fa39c7e8aac9dae3855715a4d0918b11eb2",
+      "measurement_batch_size": null,
+      "method": "shm-ring-hybrid",
+      "queue_depth": 1,
+      "ring_capacity": 64,
+      "sampling_unit": null,
+      "spin_budget": 256,
+      "validation_policy": "full-payload-every-delivery;exact-sequence",
+      "variant": null,
+      "workload": "streaming"
+    },
+    "sources": [
+      "cases\\00061\\report.json",
+      "cases\\00069\\report.json",
+      "cases\\00184\\report.json",
+      "cases\\00213\\report.json",
+      "cases\\00247\\report.json"
+    ],
+    "launches": 5,
+    "rate_unit": "validated-deliveries/s",
+    "launch_rate": {
+      "values": [
+        3519066.7321408247,
+        3589795.4611597457,
+        3594795.8459253986,
+        3614013.614842745,
+        3633170.2612158316
+      ],
+      "median": 3594795.8459253986,
+      "p10": 3519066.7321408247,
+      "p90": 3633170.2612158316
+    },
+    "launch_process_cpu_seconds": {
+      "values": [
+        2.40625,
+        2.4375,
+        2.4375,
+        2.4375,
+        2.484375
+      ],
+      "median": 2.4375,
+      "p10": 2.40625,
+      "p90": 2.484375
+    },
+    "launch_timed_seconds": {
+      "values": [
+        1.2093218000000001,
+        1.215732,
+        1.2222313,
+        1.2239338,
+        1.2485333
+      ],
+      "median": 1.2222313,
+      "p10": 1.2093218000000001,
+      "p90": 1.2485333
+    },
+    "cpu_time_scope": "process-lifetime-through-shutdown;includes-startup-and-warmup",
+    "minimum_trial_seconds": 1.2093218000000001,
+    "latency_sampling_policy": "send-to-validated-delivery-observation;every-16th-sequence;first-65536-samples-per-trial",
+    "launch_payload_bytes_per_second": {
+      "values": [
+        225220270.85701278,
+        229746909.51422372,
+        230066934.1392255,
+        231296871.34993568,
+        232522896.71781322
+      ],
+      "median": 230066934.1392255,
+      "p10": 225220270.85701278,
+      "p90": 232522896.71781322
+    },
+    "byte_count_direction": "requests",
+    "pooled_observed_latency_percentiles_micros": [
+      0.3,
+      0.3,
+      0.39999999999999997
+    ]
+  },
+  {
+    "group_id": "ed9a331bb950",
+    "identity": {
+      "build_features": {
+        "borrowed_response": false,
+        "cached_cursors": false,
+        "conditional_wake": false,
+        "copy_elision": false,
+        "padded_layout": false
+      },
+      "config": {
+        "measurement": "batch",
+        "message_count": 4413397,
+        "message_size": 64,
+        "queue_depth": 64,
+        "ring_capacity": 64,
+        "trials": 1,
+        "validation": "full",
+        "warmup_count": 256,
+        "workload": "streaming"
+      },
+      "effective_child_affinity": 4,
+      "effective_parent_affinity": 1,
+      "effective_processor_group": 0,
+      "executable_sha256": "2a91cee0f0fea225eb4d1528bcd09fa39c7e8aac9dae3855715a4d0918b11eb2",
+      "measurement_batch_size": null,
+      "method": "shm-ring-hybrid",
+      "queue_depth": 64,
+      "ring_capacity": 64,
+      "sampling_unit": null,
+      "spin_budget": 256,
+      "validation_policy": "full-payload-every-delivery;exact-sequence",
+      "variant": null,
+      "workload": "streaming"
+    },
+    "sources": [
+      "cases\\00054\\report.json",
+      "cases\\00091\\report.json",
+      "cases\\00121\\report.json",
+      "cases\\00148\\report.json",
+      "cases\\00229\\report.json"
+    ],
+    "launches": 5,
+    "rate_unit": "validated-deliveries/s",
+    "launch_rate": {
+      "values": [
+        3532563.010916903,
+        3625247.8220898607,
+        3633163.2109993035,
+        3639177.911674138,
+        3666353.009707028
+      ],
+      "median": 3633163.2109993035,
+      "p10": 3532563.010916903,
+      "p90": 3666353.009707028
+    },
+    "launch_process_cpu_seconds": {
+      "values": [
+        2.40625,
+        2.4375,
+        2.453125,
+        2.453125,
+        2.46875
+      ],
+      "median": 2.453125,
+      "p10": 2.40625,
+      "p90": 2.46875
+    },
+    "launch_timed_seconds": {
+      "values": [
+        1.2037567,
+        1.2127456,
+        1.2147533,
+        1.2174056,
+        1.249347
+      ],
+      "median": 1.2147533,
+      "p10": 1.2037567,
+      "p90": 1.249347
+    },
+    "cpu_time_scope": "process-lifetime-through-shutdown;includes-startup-and-warmup",
+    "minimum_trial_seconds": 1.2037567,
+    "latency_sampling_policy": "send-to-validated-delivery-observation;every-16th-sequence;first-65536-samples-per-trial",
+    "launch_payload_bytes_per_second": {
+      "values": [
+        226084032.6986818,
+        232015860.61375108,
+        232522445.50395542,
+        232907386.34714484,
+        234646592.6212498
+      ],
+      "median": 232522445.50395542,
+      "p10": 226084032.6986818,
+      "p90": 234646592.6212498
+    },
+    "byte_count_direction": "requests",
+    "pooled_observed_latency_percentiles_micros": [
+      0.3,
+      0.3,
+      0.5
+    ]
+  },
+  {
+    "group_id": "64d2e9e5055c",
+    "identity": {
+      "build_features": {
+        "borrowed_response": false,
+        "cached_cursors": false,
+        "conditional_wake": false,
+        "copy_elision": false,
+        "padded_layout": false
+      },
+      "config": {
+        "measurement": "batch",
+        "message_count": 5197970,
+        "message_size": 64,
+        "queue_depth": 1,
+        "ring_capacity": 64,
+        "trials": 1,
+        "validation": "full",
+        "warmup_count": 256,
+        "workload": "windowed"
+      },
+      "effective_child_affinity": 4,
+      "effective_parent_affinity": 1,
+      "effective_processor_group": 0,
+      "executable_sha256": "b2ea31c94184bbd21cbd316daf6d2c50134721345ccc9d3f7e8bdc3c8f16d36a",
+      "measurement_batch_size": null,
+      "method": "shm-ring-spin",
+      "queue_depth": 1,
+      "ring_capacity": 64,
+      "sampling_unit": null,
+      "spin_budget": 256,
+      "validation_policy": "full-payload-every-delivery;exact-sequence",
+      "variant": null,
+      "workload": "windowed"
+    },
+    "sources": [
+      "cases\\00021\\report.json",
+      "cases\\00032\\report.json",
+      "cases\\00075\\report.json",
+      "cases\\00149\\report.json",
+      "cases\\00248\\report.json"
+    ],
+    "launches": 5,
+    "rate_unit": "validated-deliveries/s",
+    "launch_rate": {
+      "values": [
+        4009666.7622162863,
+        4011490.6177036637,
+        4119711.0288978238,
+        4134964.821571818,
+        4160480.870481994
+      ],
+      "median": 4119711.0288978238,
+      "p10": 4009666.7622162863,
+      "p90": 4160480.870481994
+    },
+    "launch_process_cpu_seconds": {
+      "values": [
+        2.484375,
+        2.484375,
+        2.5,
+        2.546875,
+        2.59375
+      ],
+      "median": 2.5,
+      "p10": 2.484375,
+      "p90": 2.59375
+    },
+    "launch_timed_seconds": {
+      "values": [
+        1.2493676,
+        1.2570772,
+        1.2617317,
+        1.2957702,
+        1.2963596
+      ],
+      "median": 1.2617317,
+      "p10": 1.2493676,
+      "p90": 1.2963596
+    },
+    "cpu_time_scope": "process-lifetime-through-shutdown;includes-startup-and-warmup",
+    "minimum_trial_seconds": 1.2493676,
+    "latency_sampling_policy": "send-to-validated-delivery-observation;every-16th-sequence;first-65536-samples-per-trial",
+    "launch_payload_bytes_per_second": {
+      "values": [
+        256618672.78184232,
+        256735399.53303447,
+        263661505.84946072,
+        264637748.58059636,
+        266270775.71084762
+      ],
+      "median": 263661505.84946072,
+      "p10": 256618672.78184232,
+      "p90": 266270775.71084762
+    },
+    "byte_count_direction": "responses",
+    "pooled_observed_latency_percentiles_micros": [
+      0.19999999999999998,
+      0.3,
+      0.39999999999999997
+    ]
+  },
+  {
+    "group_id": "92525cb9e5d8",
+    "identity": {
+      "build_features": {
+        "borrowed_response": false,
+        "cached_cursors": false,
+        "conditional_wake": false,
+        "copy_elision": false,
+        "padded_layout": false
+      },
+      "config": {
+        "measurement": "batch",
+        "message_count": 6734074,
+        "message_size": 64,
+        "queue_depth": 1,
+        "ring_capacity": 64,
+        "trials": 1,
+        "validation": "full",
+        "warmup_count": 256,
+        "workload": "streaming"
+      },
+      "effective_child_affinity": 4,
+      "effective_parent_affinity": 1,
+      "effective_processor_group": 0,
+      "executable_sha256": "b2ea31c94184bbd21cbd316daf6d2c50134721345ccc9d3f7e8bdc3c8f16d36a",
+      "measurement_batch_size": null,
+      "method": "shm-ring-spin",
+      "queue_depth": 1,
+      "ring_capacity": 64,
+      "sampling_unit": null,
+      "spin_budget": 256,
+      "validation_policy": "full-payload-every-delivery;exact-sequence",
+      "variant": null,
+      "workload": "streaming"
+    },
+    "sources": [
+      "cases\\00094\\report.json",
+      "cases\\00098\\report.json",
+      "cases\\00112\\report.json",
+      "cases\\00196\\report.json",
+      "cases\\00237\\report.json"
+    ],
+    "launches": 5,
+    "rate_unit": "validated-deliveries/s",
+    "launch_rate": {
+      "values": [
+        6283467.09581137,
+        6290094.592306124,
+        6313185.299796131,
+        6324969.293616519,
+        6329859.90709477
+      ],
+      "median": 6313185.299796131,
+      "p10": 6283467.09581137,
+      "p90": 6329859.90709477
+    },
+    "launch_process_cpu_seconds": {
+      "values": [
+        2.09375,
+        2.140625,
+        2.140625,
+        2.140625,
+        2.171875
+      ],
+      "median": 2.140625,
+      "p10": 2.09375,
+      "p90": 2.171875
+    },
+    "launch_timed_seconds": {
+      "values": [
+        1.0638583,
+        1.0646809,
+        1.0666682,
+        1.0705839,
+        1.0717131
+      ],
+      "median": 1.0666682,
+      "p10": 1.0638583,
+      "p90": 1.0717131
+    },
+    "cpu_time_scope": "process-lifetime-through-shutdown;includes-startup-and-warmup",
+    "minimum_trial_seconds": 1.0638583,
+    "latency_sampling_policy": "send-to-validated-delivery-observation;every-16th-sequence;first-65536-samples-per-trial",
+    "launch_payload_bytes_per_second": {
+      "values": [
+        402141894.13192767,
+        402566053.90759194,
+        404043859.1869524,
+        404798034.79145724,
+        405111034.0540653
+      ],
+      "median": 404043859.1869524,
+      "p10": 402141894.13192767,
+      "p90": 405111034.0540653
+    },
+    "byte_count_direction": "requests",
+    "pooled_observed_latency_percentiles_micros": [
+      0.19999999999999998,
+      0.19999999999999998,
+      0.19999999999999998
+    ]
+  },
+  {
+    "group_id": "c080205f507b",
+    "identity": {
+      "build_features": {
+        "borrowed_response": false,
+        "cached_cursors": false,
+        "conditional_wake": false,
+        "copy_elision": false,
+        "padded_layout": false
+      },
+      "config": {
+        "measurement": "batch",
+        "message_count": 8763060,
+        "message_size": 64,
+        "queue_depth": 2,
+        "ring_capacity": 64,
+        "trials": 1,
+        "validation": "full",
+        "warmup_count": 256,
+        "workload": "windowed"
+      },
+      "effective_child_affinity": 4,
+      "effective_parent_affinity": 1,
+      "effective_processor_group": 0,
+      "executable_sha256": "b2ea31c94184bbd21cbd316daf6d2c50134721345ccc9d3f7e8bdc3c8f16d36a",
+      "measurement_batch_size": null,
+      "method": "shm-ring-spin",
+      "queue_depth": 2,
+      "ring_capacity": 64,
+      "sampling_unit": null,
+      "spin_budget": 256,
+      "validation_policy": "full-payload-every-delivery;exact-sequence",
+      "variant": null,
+      "workload": "windowed"
+    },
+    "sources": [
+      "cases\\00024\\report.json",
+      "cases\\00082\\report.json",
+      "cases\\00159\\report.json",
+      "cases\\00183\\report.json",
+      "cases\\00243\\report.json"
+    ],
+    "launches": 5,
+    "rate_unit": "validated-deliveries/s",
+    "launch_rate": {
+      "values": [
+        7706996.47659958,
+        7826466.726803433,
+        7879880.616534616,
+        7883400.243868253,
+        7965780.919344635
+      ],
+      "median": 7879880.616534616,
+      "p10": 7706996.47659958,
+      "p90": 7965780.919344635
+    },
+    "launch_process_cpu_seconds": {
+      "values": [
+        2.203125,
+        2.234375,
+        2.234375,
+        2.25,
+        2.265625
+      ],
+      "median": 2.234375,
+      "p10": 2.203125,
+      "p90": 2.265625
+    },
+    "launch_timed_seconds": {
+      "values": [
+        1.100088,
+        1.1115838,
+        1.1120803,
+        1.11967,
+        1.1370266
+      ],
+      "median": 1.1120803,
+      "p10": 1.100088,
+      "p90": 1.1370266
+    },
+    "cpu_time_scope": "process-lifetime-through-shutdown;includes-startup-and-warmup",
+    "minimum_trial_seconds": 1.100088,
+    "latency_sampling_policy": "send-to-validated-delivery-observation;every-16th-sequence;first-65536-samples-per-trial",
+    "launch_payload_bytes_per_second": {
+      "values": [
+        493247774.5023731,
+        500893870.5154197,
+        504312359.4582154,
+        504537615.6075682,
+        509809978.8380566
+      ],
+      "median": 504312359.4582154,
+      "p10": 493247774.5023731,
+      "p90": 509809978.8380566
+    },
+    "byte_count_direction": "responses",
+    "pooled_observed_latency_percentiles_micros": [
+      0.19999999999999998,
+      0.39999999999999997,
+      0.39999999999999997
+    ]
+  },
+  {
+    "group_id": "35b51b95e3f0",
+    "identity": {
+      "build_features": {
+        "borrowed_response": false,
+        "cached_cursors": false,
+        "conditional_wake": false,
+        "copy_elision": false,
+        "padded_layout": false
+      },
+      "config": {
+        "measurement": "batch",
+        "message_count": 9218305,
+        "message_size": 64,
+        "queue_depth": 256,
+        "ring_capacity": 64,
+        "trials": 1,
+        "validation": "full",
+        "warmup_count": 256,
+        "workload": "windowed"
+      },
+      "effective_child_affinity": 4,
+      "effective_parent_affinity": 1,
+      "effective_processor_group": 0,
+      "executable_sha256": "b2ea31c94184bbd21cbd316daf6d2c50134721345ccc9d3f7e8bdc3c8f16d36a",
+      "measurement_batch_size": null,
+      "method": "shm-ring-spin",
+      "queue_depth": 256,
+      "ring_capacity": 64,
+      "sampling_unit": null,
+      "spin_budget": 256,
+      "validation_policy": "full-payload-every-delivery;exact-sequence",
+      "variant": null,
+      "workload": "windowed"
+    },
+    "sources": [
+      "cases\\00086\\report.json",
+      "cases\\00110\\report.json",
+      "cases\\00164\\report.json",
+      "cases\\00220\\report.json",
+      "cases\\00232\\report.json"
+    ],
+    "launches": 5,
+    "rate_unit": "validated-deliveries/s",
+    "launch_rate": {
+      "values": [
+        8311902.055166553,
+        8326987.580209416,
+        8366313.135530151,
+        8522975.120725825,
+        8719221.141472673
+      ],
+      "median": 8366313.135530151,
+      "p10": 8311902.055166553,
+      "p90": 8719221.141472673
+    },
+    "launch_process_cpu_seconds": {
+      "values": [
+        2.125,
+        2.15625,
+        2.1875,
+        2.21875,
+        2.21875
+      ],
+      "median": 2.1875,
+      "p10": 2.125,
+      "p90": 2.21875
+    },
+    "launch_timed_seconds": {
+      "values": [
+        1.0572395,
+        1.081583,
+        1.101836,
+        1.1070396,
+        1.1090488
+      ],
+      "median": 1.101836,
+      "p10": 1.0572395,
+      "p90": 1.1090488
+    },
+    "cpu_time_scope": "process-lifetime-through-shutdown;includes-startup-and-warmup",
+    "minimum_trial_seconds": 1.0572395,
+    "latency_sampling_policy": "send-to-validated-delivery-observation;every-16th-sequence;first-65536-samples-per-trial",
+    "launch_payload_bytes_per_second": {
+      "values": [
+        531961731.5306594,
+        532927205.13340265,
+        535444040.6739297,
+        545470407.7264528,
+        558030153.0542511
+      ],
+      "median": 535444040.6739297,
+      "p10": 531961731.5306594,
+      "p90": 558030153.0542511
+    },
+    "byte_count_direction": "responses",
+    "pooled_observed_latency_percentiles_micros": [
+      7.300000000000001,
+      10.7,
+      14.399999999999999
+    ]
+  },
+  {
+    "group_id": "53bff462816a",
+    "identity": {
+      "build_features": {
+        "borrowed_response": false,
+        "cached_cursors": false,
+        "conditional_wake": false,
+        "copy_elision": false,
+        "padded_layout": false
+      },
+      "config": {
+        "measurement": "batch",
+        "message_count": 9620670,
+        "message_size": 64,
+        "queue_depth": 64,
+        "ring_capacity": 64,
+        "trials": 1,
+        "validation": "full",
+        "warmup_count": 256,
+        "workload": "windowed"
+      },
+      "effective_child_affinity": 4,
+      "effective_parent_affinity": 1,
+      "effective_processor_group": 0,
+      "executable_sha256": "b2ea31c94184bbd21cbd316daf6d2c50134721345ccc9d3f7e8bdc3c8f16d36a",
+      "measurement_batch_size": null,
+      "method": "shm-ring-spin",
+      "queue_depth": 64,
+      "ring_capacity": 64,
+      "sampling_unit": null,
+      "spin_budget": 256,
+      "validation_policy": "full-payload-every-delivery;exact-sequence",
+      "variant": null,
+      "workload": "windowed"
+    },
+    "sources": [
+      "cases\\00007\\report.json",
+      "cases\\00018\\report.json",
+      "cases\\00036\\report.json",
+      "cases\\00100\\report.json",
+      "cases\\00174\\report.json"
+    ],
+    "launches": 5,
+    "rate_unit": "validated-deliveries/s",
+    "launch_rate": {
+      "values": [
+        7543200.830791993,
+        8492707.637978792,
+        8568069.775923176,
+        8691269.135044063,
+        8994134.96096518
+      ],
+      "median": 8568069.775923176,
+      "p10": 7543200.830791993,
+      "p90": 8994134.96096518
+    },
+    "launch_process_cpu_seconds": {
+      "values": [
+        2.125,
+        2.1875,
+        2.25,
+        2.265625,
+        2.546875
+      ],
+      "median": 2.25,
+      "p10": 2.125,
+      "p90": 2.546875
+    },
+    "launch_timed_seconds": {
+      "values": [
+        1.0696604,
+        1.106935,
+        1.1228515,
+        1.1328154,
+        1.2754094999999999
+      ],
+      "median": 1.1228515,
+      "p10": 1.0696604,
+      "p90": 1.2754094999999999
+    },
+    "cpu_time_scope": "process-lifetime-through-shutdown;includes-startup-and-warmup",
+    "minimum_trial_seconds": 1.0696604,
+    "latency_sampling_policy": "send-to-validated-delivery-observation;every-16th-sequence;first-65536-samples-per-trial",
+    "launch_payload_bytes_per_second": {
+      "values": [
+        482764853.17068756,
+        543533288.8306427,
+        548356465.6590832,
+        556241224.64282,
+        575624637.5017716
+      ],
+      "median": 548356465.6590832,
+      "p10": 482764853.17068756,
+      "p90": 575624637.5017716
+    },
+    "byte_count_direction": "responses",
+    "pooled_observed_latency_percentiles_micros": [
+      7.0,
+      10.8,
+      14.600000000000001
+    ]
+  }
+]

@@ -1,7 +1,14 @@
 [project]
 name = "ipc-bench-python-tools"
 version = "0.1.0"
-requires-python = ">=3.14,<3.15"
+requires-python = ">=3.14.7,<3.15"
+
+[dependency-groups]
+dev = ["ruff==0.16.6"]
+build = ["libclang==18.1.1"]
+
+[tool.uv]
+required-version = ">=0.12.9"
 
 [tool.ruff]
 target-version = "py314"
@@ -11,3 +18,5 @@ extend-exclude = ["results", "target"]
 
 [tool.ruff.lint]
 select = ["ALL"]
+# Use the repository LICENSE and the existing docstring convention.
+ignore = ["CPY001", "D203", "D213"]

@@ -13,7 +13,7 @@ use windows_sys::Win32::{
         FILE_GENERIC_WRITE, FILE_SHARE_NONE, OPEN_EXISTING, PIPE_ACCESS_DUPLEX,
     },
     System::{
-        IO::{GetOverlappedResult, OVERLAPPED},
+        IO::{CancelIoEx, GetOverlappedResult, OVERLAPPED},
         Pipes::{
             ConnectNamedPipe, CreateNamedPipeW, DisconnectNamedPipe, PIPE_READMODE_MESSAGE,
             PIPE_REJECT_REMOTE_CLIENTS, PIPE_TYPE_BYTE, PIPE_TYPE_MESSAGE,
@@ -28,7 +28,7 @@ use crate::util::{
     wait_for_signal, wide_string, win32_last_error, write_all_handle,
 };
 
-const ENV_PIPE_NAME: &str = "IPC_BENCH_PIPE_NAME";
+pub(crate) const ENV_PIPE_NAME: &str = "IPC_BENCH_PIPE_NAME";
 
 #[derive(Clone, Copy)]
 pub enum NamedPipeKind {
@@ -65,37 +65,37 @@ fn run_parent(config: BenchmarkConfig, kind: NamedPipeKind) -> Result<(), Box<dy
         NamedPipeKind::Overlapped => "named-pipe-overlapped",
     };
 
-    let mut outbound = vec![0_u8; config.message_size];
-    let mut inbound = vec![0_u8; config.message_size];
-    for (index, byte) in outbound.iter_mut().enumerate() {
-        *byte = (index % 251) as u8;
-    }
+    let mut outbound = vec![0_u8; config.wire_size()];
+    let mut inbound = vec![0_u8; config.wire_size()];
+    harness::initialize_payload(&mut outbound);
 
     let client_handle = client.raw();
     let report = match kind {
-        NamedPipeKind::ByteSync | NamedPipeKind::MessageSync => {
-            run_benchmark(method_name, &config, true, || {
-                write_all_handle(client_handle, &outbound).expect("pipe write should succeed");
-                read_exact_handle(client_handle, &mut inbound).expect("pipe read should succeed");
-                if !outbound.is_empty() {
-                    outbound.copy_from_slice(&inbound);
-                    outbound[0] = outbound[0].wrapping_add(1);
-                }
-            })
-        }
+        NamedPipeKind::ByteSync | NamedPipeKind::MessageSync => run_benchmark(
+            method_name,
+            &config,
+            true,
+            || -> Result<(), Box<dyn Error>> {
+                write_all_handle(client_handle, &outbound)?;
+                read_exact_handle(client_handle, &mut inbound)?;
+                harness::check_response_and_advance(&mut outbound, &inbound)?;
+                Ok(())
+            },
+        )?,
         NamedPipeKind::Overlapped => {
             let mut write_ctx = OverlappedContext::new()?;
             let mut read_ctx = OverlappedContext::new()?;
-            run_benchmark(method_name, &config, true, || {
-                write_all_overlapped(client_handle, &mut write_ctx, &outbound)
-                    .expect("overlapped pipe write should succeed");
-                read_exact_overlapped(client_handle, &mut read_ctx, &mut inbound)
-                    .expect("overlapped pipe read should succeed");
-                if !outbound.is_empty() {
-                    outbound.copy_from_slice(&inbound);
-                    outbound[0] = outbound[0].wrapping_add(1);
-                }
-            })
+            run_benchmark(
+                method_name,
+                &config,
+                true,
+                || -> Result<(), Box<dyn Error>> {
+                    write_all_overlapped(client_handle, &mut write_ctx, &outbound)?;
+                    read_exact_overlapped(client_handle, &mut read_ctx, &mut inbound)?;
+                    harness::check_response_and_advance(&mut outbound, &inbound)?;
+                    Ok(())
+                },
+            )?
         }
     };
 
@@ -110,7 +110,10 @@ fn run_parent(config: BenchmarkConfig, kind: NamedPipeKind) -> Result<(), Box<dy
     Ok(())
 }
 
-fn run_child(config: BenchmarkConfig, kind: NamedPipeKind) -> Result<(), Box<dyn Error>> {
+pub(crate) fn run_child(
+    config: BenchmarkConfig,
+    kind: NamedPipeKind,
+) -> Result<(), Box<dyn Error>> {
     let pipe_name = std::env::var(ENV_PIPE_NAME)?;
     let server = create_server(&pipe_name, kind)?;
     println!("ready");
@@ -119,12 +122,12 @@ fn run_child(config: BenchmarkConfig, kind: NamedPipeKind) -> Result<(), Box<dyn
     match kind {
         NamedPipeKind::ByteSync | NamedPipeKind::MessageSync => {
             connect_sync(server.raw())?;
-            echo_loop_sync(server.raw(), config.message_size)?;
+            echo_loop_sync(server.raw(), config.wire_size())?;
         }
         NamedPipeKind::Overlapped => {
             let mut connect_ctx = OverlappedContext::new()?;
             connect_overlapped(server.raw(), &mut connect_ctx)?;
-            echo_loop_overlapped(server.raw(), config.message_size)?;
+            echo_loop_overlapped(server.raw(), config.wire_size())?;
         }
     }
 
@@ -165,7 +168,7 @@ fn create_server(pipe_name: &str, kind: NamedPipeKind) -> io::Result<OwnedHandle
     OwnedHandle::from_file_handle(handle)
 }
 
-fn open_client(pipe_name: &str, kind: NamedPipeKind) -> io::Result<OwnedHandle> {
+pub(crate) fn open_client(pipe_name: &str, kind: NamedPipeKind) -> io::Result<OwnedHandle> {
     let pipe_name = pipe_name.to_owned();
     retry_with_backoff(200, Duration::from_millis(10), || {
         let pipe_name = wide_string(&pipe_name);
@@ -208,7 +211,7 @@ fn echo_loop_sync(server: HANDLE, message_size: usize) -> io::Result<()> {
         match read_exact_handle(server, &mut buf) {
             Ok(()) => {
                 if !buf.is_empty() {
-                    buf[0] = buf[0].wrapping_add(1);
+                    harness::transform_response(&mut buf);
                 }
                 write_all_handle(server, &buf)?;
             }
@@ -231,7 +234,7 @@ fn echo_loop_overlapped(server: HANDLE, message_size: usize) -> io::Result<()> {
         match read_exact_overlapped(server, &mut read_ctx, &mut buf) {
             Ok(()) => {
                 if !buf.is_empty() {
-                    buf[0] = buf[0].wrapping_add(1);
+                    harness::transform_response(&mut buf);
                 }
                 write_all_overlapped(server, &mut write_ctx, &buf)?;
             }
@@ -277,7 +280,7 @@ fn connect_overlapped(server: HANDLE, ctx: &mut OverlappedContext) -> io::Result
     match win32_last_error().raw_os_error() {
         Some(code) if code == ERROR_PIPE_CONNECTED as i32 => Ok(()),
         Some(code) if code == ERROR_IO_PENDING as i32 => {
-            wait_for_signal(ctx.event.raw())?;
+            wait_overlapped(server, ctx)?;
             let mut transferred = 0_u32;
             let ok = unsafe { GetOverlappedResult(server, &ctx.overlapped, &mut transferred, 1) };
             if ok == 0 {
@@ -314,7 +317,7 @@ fn write_all_overlapped(
             if error.raw_os_error() != Some(ERROR_IO_PENDING as i32) {
                 return Err(error);
             }
-            wait_for_signal(ctx.event.raw())?;
+            wait_overlapped(handle, ctx)?;
             let ok = unsafe { GetOverlappedResult(handle, &ctx.overlapped, &mut transferred, 1) };
             if ok == 0 {
                 return Err(io::Error::last_os_error());
@@ -361,7 +364,7 @@ fn read_exact_overlapped(
             if error.raw_os_error() != Some(ERROR_IO_PENDING as i32) {
                 return Err(error);
             }
-            wait_for_signal(ctx.event.raw())?;
+            wait_overlapped(handle, ctx)?;
             let ok = unsafe { GetOverlappedResult(handle, &ctx.overlapped, &mut transferred, 1) };
             if ok == 0 {
                 return Err(io::Error::last_os_error());
@@ -382,5 +385,18 @@ fn read_exact_overlapped(
         buf = rest;
     }
 
+    Ok(())
+}
+
+fn wait_overlapped(handle: HANDLE, ctx: &mut OverlappedContext) -> io::Result<()> {
+    if let Err(error) = wait_for_signal(ctx.event.raw()) {
+        unsafe {
+            CancelIoEx(handle, &ctx.overlapped);
+            let mut transferred = 0;
+            // Cancellation is asynchronous: stack context and data stay alive until completion.
+            GetOverlappedResult(handle, &ctx.overlapped, &mut transferred, 1);
+        }
+        return Err(error);
+    }
     Ok(())
 }

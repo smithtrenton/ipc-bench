@@ -27,6 +27,7 @@ fn main() {
         eprintln!("{error}");
         std::process::exit(1);
     }
+    harness::worker_finished();
 }
 
 fn run() -> Result<(), Box<dyn Error>> {
@@ -57,30 +58,26 @@ fn run_parent(config: BenchmarkConfig) -> Result<(), Box<dyn Error>> {
         "rpc_client_connect",
     )?;
 
-    let mut outbound = vec![0_u8; config.message_size];
-    let mut inbound = vec![0_u8; config.message_size];
-    for (index, byte) in outbound.iter_mut().enumerate() {
-        *byte = (index % 251) as u8;
-    }
+    let mut outbound = vec![0_u8; config.wire_size()];
+    let mut inbound = vec![0_u8; config.wire_size()];
+    harness::initialize_payload(&mut outbound);
 
-    let report = run_benchmark("rpc", &config, true, || {
+    let wire_length = u32::try_from(config.wire_size())?;
+    let report = run_benchmark("rpc", &config, true, || -> Result<(), Box<dyn Error>> {
         rpc_status(
             unsafe {
                 rpc_client_roundtrip(
                     binding,
                     outbound.as_ptr(),
                     inbound.as_mut_ptr(),
-                    config.message_size as u32,
+                    wire_length,
                 )
             },
             "rpc_client_roundtrip",
-        )
-        .expect("RPC roundtrip should succeed");
-        if !outbound.is_empty() {
-            outbound.copy_from_slice(&inbound);
-            outbound[0] = outbound[0].wrapping_add(1);
-        }
-    });
+        )?;
+        harness::check_response_and_advance(&mut outbound, &inbound)?;
+        Ok(())
+    })?;
 
     unsafe {
         rpc_client_disconnect(&mut binding);

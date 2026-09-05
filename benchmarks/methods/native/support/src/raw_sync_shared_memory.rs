@@ -12,7 +12,7 @@ use raw_sync::{
 };
 use shared_memory::{Shmem, ShmemConf};
 
-use crate::util::{slice_from_raw_parts, slice_from_raw_parts_mut, unique_name};
+use crate::util::{LayoutHeader, slice_from_raw_parts, slice_from_raw_parts_mut, unique_name};
 
 const ENV_MAPPING_NAME: &str = "IPC_BENCH_RAW_SYNC_MAPPING";
 
@@ -24,6 +24,7 @@ pub enum RawSyncMethod {
 
 #[repr(C)]
 struct RawSyncHeader {
+    layout: LayoutHeader,
     stop: AtomicBool,
 }
 
@@ -56,12 +57,16 @@ where
     E: EventInit,
 {
     let mapping_name = unique_name(method);
-    let layout = raw_sync_layout::<E>(config.message_size);
+    let layout = raw_sync_layout::<E>(config.wire_size())?;
     let mut mapping = ShmemConf::new()
         .os_id(mapping_name.as_str())
         .size(layout.total_size)
         .create()?;
 
+    unsafe {
+        (*mapping.as_ptr().cast::<RawSyncHeader>()).layout =
+            LayoutHeader::new(layout.total_size, 1, config.wire_size());
+    }
     header_mut(&mut mapping)
         .stop
         .store(false, Ordering::Release);
@@ -79,28 +84,20 @@ where
         return Err(format!("unexpected child readiness message `{readiness}`").into());
     }
 
-    let mut outbound = vec![0_u8; config.message_size];
-    let mut inbound = vec![0_u8; config.message_size];
-    for (index, byte) in outbound.iter_mut().enumerate() {
-        *byte = (index % 251) as u8;
-    }
+    let mut outbound = vec![0_u8; config.wire_size()];
+    let mut inbound = vec![0_u8; config.wire_size()];
+    harness::initialize_payload(&mut outbound);
 
-    let report = run_benchmark(method, &config, true, || {
+    let report = run_benchmark(method, &config, true, || -> Result<(), Box<dyn Error>> {
         request_slice_mut(&mut mapping, &layout).copy_from_slice(outbound.as_slice());
         fence(Ordering::Release);
-        request_event
-            .set(EventState::Signaled)
-            .expect("request event should signal");
-        response_event
-            .wait(Timeout::Infinite)
-            .expect("response wait should succeed");
+        request_event.set(EventState::Signaled)?;
+        response_event.wait(Timeout::Val(std::time::Duration::from_secs(5)))?;
         fence(Ordering::Acquire);
         inbound.copy_from_slice(response_slice(&mapping, &layout));
-        if !outbound.is_empty() {
-            outbound.copy_from_slice(inbound.as_slice());
-            outbound[0] = outbound[0].wrapping_add(1);
-        }
-    });
+        harness::check_response_and_advance(&mut outbound, &inbound)?;
+        Ok(())
+    })?;
 
     header_mut(&mut mapping).stop.store(true, Ordering::Release);
     request_event.set(EventState::Signaled)?;
@@ -120,7 +117,15 @@ where
 {
     let mapping_name = std::env::var(ENV_MAPPING_NAME)?;
     let mut mapping = ShmemConf::new().os_id(mapping_name.as_str()).open()?;
-    let layout = raw_sync_layout::<E>(config.message_size);
+    let layout = raw_sync_layout::<E>(config.wire_size())?;
+    if mapping.len() < layout.total_size {
+        return Err("shared mapping too short".into());
+    }
+    header(&mapping).layout.validate(LayoutHeader::new(
+        layout.total_size,
+        1,
+        config.wire_size(),
+    ))?;
     let request_event =
         unsafe { E::from_existing(mapping.as_ptr().add(layout.request_event_offset))? }.0;
     let response_event =
@@ -129,9 +134,9 @@ where
     println!("ready");
     io::stdout().flush()?;
 
-    let mut scratch = vec![0_u8; config.message_size];
+    let mut scratch = vec![0_u8; config.wire_size()];
     loop {
-        request_event.wait(Timeout::Infinite)?;
+        request_event.wait(Timeout::Val(std::time::Duration::from_secs(5)))?;
         fence(Ordering::Acquire);
         if header(&mapping).stop.load(Ordering::Acquire) {
             return Ok(());
@@ -139,7 +144,7 @@ where
 
         scratch.copy_from_slice(request_slice(&mapping, &layout));
         if !scratch.is_empty() {
-            scratch[0] = scratch[0].wrapping_add(1);
+            harness::transform_response(&mut scratch);
         }
         response_slice_mut(&mut mapping, &layout).copy_from_slice(scratch.as_slice());
         fence(Ordering::Release);
@@ -147,41 +152,53 @@ where
     }
 }
 
-fn raw_sync_layout<E>(message_size: usize) -> RawSyncLayout
+fn raw_sync_layout<E>(message_size: usize) -> io::Result<RawSyncLayout>
 where
     E: EventInit,
 {
+    let overflow = || io::Error::new(io::ErrorKind::InvalidInput, "raw sync layout overflow");
     let header_size = size_of::<RawSyncHeader>();
-    let request_event_offset = align_up(header_size, align_of::<usize>());
+    let request_event_offset = align_up(header_size, align_of::<usize>())?;
     let request_event_size = E::size_of(None);
     let response_event_offset = align_up(
-        request_event_offset + request_event_size,
+        request_event_offset
+            .checked_add(request_event_size)
+            .ok_or_else(overflow)?,
         align_of::<usize>(),
-    );
+    )?;
     let response_event_size = E::size_of(None);
-    let request_offset = response_event_offset + response_event_size;
-    let response_offset = request_offset + message_size;
-    let total_size = response_offset + message_size;
+    let request_offset = response_event_offset
+        .checked_add(response_event_size)
+        .ok_or_else(overflow)?;
+    let response_offset = request_offset
+        .checked_add(message_size)
+        .ok_or_else(overflow)?;
+    let total_size = response_offset
+        .checked_add(message_size)
+        .ok_or_else(overflow)?;
 
-    RawSyncLayout {
+    Ok(RawSyncLayout {
         request_event_offset,
         response_event_offset,
         request_offset,
         response_offset,
         total_size,
-    }
+    })
 }
 
-fn align_up(offset: usize, alignment: usize) -> usize {
-    (offset + (alignment - 1)) & !(alignment - 1)
+fn align_up(offset: usize, alignment: usize) -> io::Result<usize> {
+    offset
+        .checked_add(alignment - 1)
+        .map(|n| n & !(alignment - 1))
+        .ok_or_else(|| io::Error::new(io::ErrorKind::InvalidInput, "alignment overflow"))
 }
 
 fn header(mapping: &Shmem) -> &RawSyncHeader {
     unsafe { &*(mapping.as_ptr().cast::<RawSyncHeader>()) }
 }
 
-fn header_mut(mapping: &mut Shmem) -> &mut RawSyncHeader {
-    unsafe { &mut *(mapping.as_ptr().cast::<RawSyncHeader>()) }
+fn header_mut(mapping: &mut Shmem) -> &RawSyncHeader {
+    unsafe { &*(mapping.as_ptr().cast::<RawSyncHeader>()) }
 }
 
 fn request_slice<'a>(mapping: &'a Shmem, layout: &RawSyncLayout) -> &'a [u8] {

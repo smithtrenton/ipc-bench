@@ -3,4 +3,5 @@ fn main() {
         eprintln!("{error}");
         std::process::exit(1);
     }
+    support::worker_finished();
 }

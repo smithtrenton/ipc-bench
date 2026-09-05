@@ -7,12 +7,15 @@ const MAX_BATCH_SIZE: usize = 100;
 #[derive(Clone, Debug, Serialize)]
 pub struct TrialSummary {
     pub trial_index: usize,
+    pub samples: Vec<BatchMeasurement>,
+    pub latency_percentiles_micros: Option<[f64; 3]>,
     pub total_micros: f64,
     pub average_micros: f64,
     pub min_micros: f64,
     pub max_micros: f64,
     pub stddev_micros: f64,
     pub message_rate: f64,
+    pub round_trip_rate: f64,
 }
 
 #[derive(Clone, Debug, Serialize)]
@@ -23,36 +26,67 @@ pub struct AggregateSummary {
     pub max_micros: f64,
     pub stddev_micros: f64,
     pub message_rate: f64,
+    pub round_trip_rate: f64,
 }
 
-#[derive(Clone, Copy, Debug)]
-struct BatchMeasurement {
-    average_micros: f64,
-    operations: usize,
+#[derive(Clone, Copy, Debug, Serialize)]
+pub struct BatchMeasurement {
+    pub average_micros: f64,
+    pub operations: usize,
 }
 
-pub fn measure_trial<F>(trial_index: usize, message_count: usize, operation: &mut F) -> TrialSummary
+pub fn measure_trial<F>(
+    trial_index: usize,
+    message_count: usize,
+    latency: bool,
+    operation: &mut F,
+) -> Result<TrialSummary, Box<dyn std::error::Error>>
 where
-    F: FnMut(),
+    F: FnMut() -> Result<(), Box<dyn std::error::Error>>,
 {
-    let mut batches = Vec::with_capacity(message_count.min(TARGET_BATCHES_PER_TRIAL));
-    let batch_size = measurement_batch_size(message_count);
+    let batch_size = if latency {
+        1
+    } else {
+        measurement_batch_size(message_count)
+    };
+    let mut batches = Vec::with_capacity(message_count.div_ceil(batch_size));
     let mut remaining = message_count;
-
     while remaining > 0 {
         let operations = remaining.min(batch_size);
-        let start = Instant::now();
-        for _ in 0..operations {
-            operation();
+        if remaining <= batch_size {
+            crate::payload::set_full_validation(true);
         }
+        let start = Instant::now();
+        for index in 0..operations {
+            operation().map_err(|error| {
+                format!(
+                    "phase=timed trial={trial_index} iteration={}: {error}",
+                    message_count - remaining + index + 1
+                )
+            })?;
+        }
+        let elapsed = start.elapsed().as_secs_f64() * 1_000_000.0;
         batches.push(BatchMeasurement {
-            average_micros: start.elapsed().as_secs_f64() * 1_000_000.0 / operations as f64,
+            average_micros: elapsed / operations as f64,
             operations,
         });
         remaining -= operations;
     }
-
-    summarize_trial(trial_index, &batches)
+    let mut summary = summarize_trial(trial_index, &batches);
+    if !summary.round_trip_rate.is_finite() {
+        return Err(
+            format!("phase=timed trial={trial_index}: timer resolution insufficient").into(),
+        );
+    }
+    if latency {
+        let mut samples: Vec<_> = batches.iter().map(|b| b.average_micros).collect();
+        samples.sort_by(f64::total_cmp);
+        summary.latency_percentiles_micros = Some(
+            [0.50, 0.95, 0.99]
+                .map(|p| samples[((p * samples.len() as f64).ceil() as usize).saturating_sub(1)]),
+        );
+    }
+    Ok(summary)
 }
 
 pub fn aggregate_trials(trials: &[TrialSummary], message_count: usize) -> AggregateSummary {
@@ -92,10 +126,11 @@ pub fn aggregate_trials(trials: &[TrialSummary], message_count: usize) -> Aggreg
         max_micros,
         stddev_micros,
         message_rate,
+        round_trip_rate: message_rate,
     }
 }
 
-fn measurement_batch_size(message_count: usize) -> usize {
+pub fn measurement_batch_size(message_count: usize) -> usize {
     message_count
         .div_ceil(TARGET_BATCHES_PER_TRIAL)
         .clamp(1, MAX_BATCH_SIZE)
@@ -133,12 +168,15 @@ fn summarize_trial(trial_index: usize, batches: &[BatchMeasurement]) -> TrialSum
 
     TrialSummary {
         trial_index,
+        samples: batches.to_vec(),
+        latency_percentiles_micros: None,
         total_micros,
         average_micros,
         min_micros,
         max_micros,
         stddev_micros,
         message_rate,
+        round_trip_rate: message_rate,
     }
 }
 
@@ -152,10 +190,57 @@ mod tests {
     }
 
     #[test]
+    fn shared_uneven_batch_fixture() {
+        let fixture: serde_json::Value =
+            serde_json::from_str(include_str!("../../../tests/statistics.json")).unwrap();
+        let batches: Vec<_> = fixture["batches"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .map(|b| super::BatchMeasurement {
+                average_micros: b["average_micros"].as_f64().unwrap(),
+                operations: b["operations"].as_u64().unwrap() as usize,
+            })
+            .collect();
+        let trial = serde_json::to_value(super::summarize_trial(1, &batches)).unwrap();
+        for key in [
+            "total_micros",
+            "average_micros",
+            "min_micros",
+            "max_micros",
+            "stddev_micros",
+            "round_trip_rate",
+        ] {
+            approx_equal(trial[key].as_f64().unwrap(), fixture[key].as_f64().unwrap());
+        }
+    }
+
+    #[test]
+    fn retains_uneven_final_batch_and_contextual_failure() {
+        let trial = super::measure_trial(2, 205, false, &mut || Ok(())).unwrap();
+        assert_eq!(trial.samples.len(), 69);
+        assert_eq!(trial.samples.last().unwrap().operations, 1);
+        let error =
+            super::measure_trial(7, 10, false, &mut || Err("peer died".into())).unwrap_err();
+        assert!(error.to_string().contains("trial=7 iteration=1"));
+        let single = super::summarize_trial(
+            1,
+            &[super::BatchMeasurement {
+                average_micros: 2.0,
+                operations: 1,
+            }],
+        );
+        assert_eq!(single.stddev_micros, 0.0);
+    }
+
+    #[test]
     fn aggregates_trial_summaries() {
         let trials = vec![
             TrialSummary {
                 trial_index: 1,
+                samples: vec![],
+                latency_percentiles_micros: None,
+                round_trip_rate: 100.0,
                 total_micros: 10.0,
                 average_micros: 1.0,
                 min_micros: 0.5,
@@ -165,6 +250,9 @@ mod tests {
             },
             TrialSummary {
                 trial_index: 2,
+                samples: vec![],
+                latency_percentiles_micros: None,
+                round_trip_rate: 140.0,
                 total_micros: 14.0,
                 average_micros: 1.4,
                 min_micros: 0.4,
