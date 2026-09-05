@@ -44,9 +44,9 @@ jobs:
       - name: Check measurement tooling
         shell: pwsh
         run: |
-          uv run --locked ruff check scripts/benchmark_suite.py scripts/experiment_suite.py scripts/throughput_suite.py scripts/publication.py scripts/package_results.py scripts/verify_transports.py scripts/verify_affinity.py tests --select E4,E7,E9,F
+          uv run --locked ruff check scripts/benchmark_suite.py scripts/experiment_suite.py scripts/throughput_suite.py scripts/refresh_benchmarks.py scripts/publication.py scripts/package_results.py scripts/verify_transports.py scripts/verify_affinity.py tests --select E4,E7,E9,F
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-          uv run --locked ruff format --check scripts/benchmark_suite.py scripts/experiment_suite.py scripts/throughput_suite.py scripts/publication.py scripts/package_results.py scripts/verify_transports.py scripts/verify_affinity.py tests
+          uv run --locked ruff format --check scripts/benchmark_suite.py scripts/experiment_suite.py scripts/throughput_suite.py scripts/refresh_benchmarks.py scripts/publication.py scripts/package_results.py scripts/verify_transports.py scripts/verify_affinity.py tests
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
       - name: Check Rust formatting

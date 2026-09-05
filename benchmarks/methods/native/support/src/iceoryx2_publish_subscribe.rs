@@ -15,7 +15,7 @@ use iceoryx2::port::{
 };
 use iceoryx2::prelude::*;
 
-use crate::util::{configure_iceoryx2_logging, unique_name};
+use crate::util::{configure_iceoryx2_logging, create_iceoryx2_node, unique_name};
 
 const ENV_REQUEST_SERVICE_NAME: &str = "IPC_BENCH_ICEORYX2_REQUEST_SERVICE";
 const ENV_RESPONSE_SERVICE_NAME: &str = "IPC_BENCH_ICEORYX2_RESPONSE_SERVICE";
@@ -51,7 +51,7 @@ fn run_parent(config: BenchmarkConfig) -> Result<(), Box<dyn Error>> {
         method_name(),
         unique_name("response-service")
     );
-    let node = NodeBuilder::new().create::<ipc::Service>()?;
+    let node = create_iceoryx2_node()?;
     let request_service_id: ServiceName = request_service_name.as_str().try_into()?;
     let response_service_id: ServiceName = response_service_name.as_str().try_into()?;
     let request_service = create_service(&node, &request_service_id)?;
@@ -112,7 +112,7 @@ fn run_parent(config: BenchmarkConfig) -> Result<(), Box<dyn Error>> {
 fn run_child(config: BenchmarkConfig) -> Result<(), Box<dyn Error>> {
     let request_service_name = std::env::var(ENV_REQUEST_SERVICE_NAME)?;
     let response_service_name = std::env::var(ENV_RESPONSE_SERVICE_NAME)?;
-    let node = NodeBuilder::new().create::<ipc::Service>()?;
+    let node = create_iceoryx2_node()?;
     let request_service_id: ServiceName = request_service_name.as_str().try_into()?;
     let response_service_id: ServiceName = response_service_name.as_str().try_into()?;
     let request_service = open_service(&node, &request_service_id)?;

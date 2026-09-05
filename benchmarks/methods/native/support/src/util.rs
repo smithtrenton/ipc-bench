@@ -3,7 +3,7 @@ use std::{
     time::{Duration, SystemTime, UNIX_EPOCH},
 };
 
-use iceoryx2::prelude::{LogLevel, set_log_level};
+use iceoryx2::prelude::{Config, LogLevel, Node, NodeBuilder, SemanticString, ipc, set_log_level};
 use windows_sys::Win32::{
     Foundation::{
         CloseHandle, GetLastError, HANDLE, INVALID_HANDLE_VALUE, WAIT_FAILED, WAIT_OBJECT_0,
@@ -56,6 +56,46 @@ pub fn unique_name(prefix: &str) -> String {
 
 pub fn configure_iceoryx2_logging() {
     set_log_level(LogLevel::Error);
+}
+
+pub fn create_iceoryx2_node() -> Result<Node<ipc::Service>, Box<dyn std::error::Error>> {
+    create_iceoryx2_node_with_config(Config::global_config())
+}
+
+fn create_iceoryx2_node_with_config(
+    config: &Config,
+) -> Result<Node<ipc::Service>, Box<dyn std::error::Error>> {
+    // iceoryx2 0.9 creates its persistent node counter before creating the root directory.
+    // Fresh Windows hosts therefore need the configured root before NodeBuilder::create.
+    let root = std::str::from_utf8(config.global.root_path().as_bytes())?;
+    std::fs::create_dir_all(root).map_err(|error| {
+        io::Error::new(
+            error.kind(),
+            format!("create iceoryx2 root {root}: {error}"),
+        )
+    })?;
+    Ok(NodeBuilder::new().config(config).create::<ipc::Service>()?)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn iceoryx2_node_creates_missing_root() {
+        let directory = std::env::temp_dir().join(unique_name("ipc-bench-node-test"));
+        let root = directory.join("nested");
+        let mut config = Config::default();
+        config.global.set_root_path(
+            &iceoryx2::prelude::Path::new(root.to_str().unwrap().as_bytes()).unwrap(),
+        );
+        assert!(!root.exists());
+        let first = create_iceoryx2_node_with_config(&config).unwrap();
+        let second = create_iceoryx2_node_with_config(&config).unwrap();
+        assert_ne!(first.id(), second.id());
+        drop((first, second));
+        std::fs::remove_dir_all(directory).unwrap();
+    }
 }
 
 pub fn retry_with_backoff<F, T>(attempts: usize, delay: Duration, mut action: F) -> io::Result<T>
